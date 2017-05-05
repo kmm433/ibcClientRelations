@@ -1,0 +1,76 @@
+/*
+ *  Key Colour Definitions
+ *  Business Chamber Colours
+ *  Logo-blue:          #2462ab
+ *  Logo-yellow:        #ffb200
+ *  Theme Colours
+ *  Background-signup:  #f5f5f5
+ *  Border-colour:      #BCBCBC
+ *  Font-color:         #6B6B6B
+*/
+.background-blue {
+  background-color: #2462ab;
+  height: 200px;
+}
+
+/*Override for the login box container*/
+.login-box {
+  max-width: 400px;
+  position: relative;
+  top: 20%;
+  height: auto;
+  background: #FFFFFF;
+  border: 2px solid #BCBCBC;
+  border-radius: 10px;
+  padding: 0;
+  padding-top: 6%;
+}
+
+.signup-box {
+  background-color: #f5f5f5;
+  width: 100%;
+  margin-top: 5px;
+  padding: 3% 10% 1% 10%;
+  border-top: 1px solid #BCBCBC;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.container {
+  width: 100%;
+}
+
+.form-underline {
+  border: 0;
+  border-bottom: 1px solid #BCBCBC;
+  width: 100%;
+}
+
+.sign-in {
+  width: 40%;
+}
+
+.logo-container {
+  position: relative;
+  max-width: 200px;
+  width: 35%;
+  margin: 0 auto;
+  top: 40%;
+  z-index: 1;
+}
+
+.logo {
+  display: block;
+  width: 100%;
+}
+
+#forgotten-password {
+    display: inline;
+    text-align: right;
+    float: right;
+    padding-top: 2%;
+}
+
+form {
+  margin: 5% 5%;
+}
