@@ -37,7 +37,7 @@ body {
 .signinBox {
   border-color: #BCBCBC;
   width: 33%;
-  height: 100%;
+  height: 500px;
   border: 2px solid #BCBCBC;
   position: relative;
   top: -20%;
@@ -59,11 +59,35 @@ body {
   width: 75%;
 }
 
-
 .signInButton {
   background: transparent;
   border: 1px solid #2462ab;
+  border-radius: 5px;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.2em;
   color: #2462ab;
   margin: 10%;
+  display: inline-block;
+  padding: 1% 5%;
+}
+
+.forgotPassword {
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75em;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+
+.signInForm {
+  margin-top: 0px;
+}
+
+.logo {
+  position: relative;
+  top: -20%;
+  margin: 0 auto;
+  display: block;
+  width: 60%;
 }
