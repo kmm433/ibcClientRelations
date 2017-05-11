@@ -17,7 +17,13 @@
   },
   "homepage": "https://github.com/kmm433/ibcClientRelations#readme",
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
     "grunt": "^1.0.1",
     "grunt-phpunit": "^0.3.6"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
   }
 }
