@@ -1,6 +1,5 @@
 <?php
   session_start();
-  // Check if previously invalid password
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" type ="text/css" href="css/index.css">
+    <link rel="stylesheet" type ="text/css" href="css/signin.css">
   </head>
   <body>
     <!--Blue background panel-->
