@@ -1,8 +1,6 @@
 <?php
   session_start();
   // Check if previously invalid password
-  if(empty($_SESSION['user']))
-    echo('Invalid Username or password.');
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,6 +32,9 @@
               <input type="password" class="form-underline" name="password">
             </div>
             <button type="submit" class="btn btn-primary sign-in" name="signin">Sign in</button>
+            <?php if($_GET)
+              if($_GET['status'] == 'invalid')
+                echo('<p>Invalid username or password.</p>');?>
             <p id="forgotten-password"><a href="#">Forgotten Password</a></p>
           </form>
         </div>

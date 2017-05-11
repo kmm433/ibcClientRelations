@@ -13,7 +13,7 @@ if($user) {
   $_SESSION['user'] = $user;
   header('Location: ../index.php');
 } else {
-  header('Location: ../index.php?status=invalid');
+  header('Location: ../signin.php?status=invalid');
 }
 
 ?>
