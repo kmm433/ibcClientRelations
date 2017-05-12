@@ -1,0 +1,29 @@
+{
+  "name": "ibc_client_relations",
+  "version": "1.0.0",
+  "description": "A web based client relations management system for the Illawarra Business Chamber",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kmm433/ibcClientRelations.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kmm433/ibcClientRelations/issues"
+  },
+  "homepage": "https://github.com/kmm433/ibcClientRelations#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "grunt": "^1.0.1",
+    "grunt-phpunit": "^0.3.6"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  }
+}

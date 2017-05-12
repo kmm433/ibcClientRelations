@@ -13,6 +13,10 @@
   height: 200px;
 }
 
+.invalid {
+  background-color: #f2dede;
+}
+
 /*Override for the login box container*/
 .login-box {
   max-width: 400px;
