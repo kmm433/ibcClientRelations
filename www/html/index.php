@@ -3,13 +3,18 @@
   // Verify that the user has signed in and enfore if they have not
   if(!$_SESSION['user'])
     header('Location: signin.php');
-    echo('Welcome.');
 ?>
-<!DOCTYPE html>\
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Illawarra Business Chamber | Home</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+  </head>
   <body>
-    <form action="php/process_signout.php" method="POST">
-      <button type="submit">Sign Out</button>
-    </form>
+    <div id="app"></div>
+    <script type="text/javascript" src="/js/index.js"></script>
   </body>
 </html>
