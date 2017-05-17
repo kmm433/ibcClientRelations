@@ -9687,7 +9687,7 @@ var Menu = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'side-menu' },
+        { className: 'side-menu hidden-sm' },
         _react2.default.createElement(_MenuLogo2.default, null),
         _react2.default.createElement(_MenuWelcome2.default, null),
         _react2.default.createElement(
