@@ -6,7 +6,7 @@ import MenuWelcome from './Menu/MenuWelcome.js';
 class Menu extends React.Component {
   render() {
     return(
-      <div className='side-menu hidden-sm'>
+      <div className='side-menu'>
         <MenuLogo />
         <MenuWelcome />
         <ul>

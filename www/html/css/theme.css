@@ -100,7 +100,7 @@ body {
   padding-top: 15px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 720px) {
   .side-menu {
     display: none;
   }
