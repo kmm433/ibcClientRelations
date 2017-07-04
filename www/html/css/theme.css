@@ -12,6 +12,11 @@ body {
   background-color: #F5F5F5;
 }
 
+.test {
+  width:100%;
+  background-color: red;
+}
+
 .side-menu {
   height: 100%;
   position: fixed;;
@@ -23,8 +28,12 @@ body {
 .side-menu ul {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 8px 10px 8px 10px;
   background-color: #2462AB;
+}
+
+.side-menu li:hover {
+  background-color: #2F7AD3;
 }
 
 .side-menu a {
@@ -63,6 +72,10 @@ body {
   margin-bottom: 0;
   border: 0;
   color: #FFFFFF;
+}
+
+.active-route {
+  font-weight: bold;
 }
 
 #bottom-options {

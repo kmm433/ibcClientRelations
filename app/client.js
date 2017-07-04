@@ -5,7 +5,7 @@ import Layout from './components/Layout.js';
 class App extends React.Component {
   render(){
     return(
-    <Layout />
+      <Layout />
     );
   }
 };
