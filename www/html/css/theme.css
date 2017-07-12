@@ -108,6 +108,7 @@ body {
 }
 
 #notice-board {
+  float: right;
   margin-left: 22%;
   margin-right: 20%;
   padding-top: 15px;
