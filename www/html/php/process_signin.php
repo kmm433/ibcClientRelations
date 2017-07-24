@@ -1,10 +1,9 @@
 <?php
 session_start();
 include 'db_handler.php';
-include '../../inc/dbinfo.inc';
 
 // Verifies the provided credentials with the database and saves the session
-$db = new DB_Handler(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+$db = new DB_Handler();
 $email = $_POST['email'];
 $password = $_POST['password'];
 
