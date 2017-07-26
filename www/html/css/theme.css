@@ -1,0 +1,127 @@
+/*
+ *  Key Colour Definitions
+ *  Business Chamber Colours
+ *  Logo-blue:          #2462ab
+ *  Logo-yellow:        #ffb200
+ *  Theme Colours
+ *  Background-signup:  #f5f5f5
+ *  Border-colour:      #BCBCBC
+ *  Font-color:         #6B6B6B
+*/
+body {
+  background-color: #F5F5F5;
+}
+
+.test {
+  width:100%;
+  background-color: red;
+}
+
+.side-menu {
+  height: 100%;
+  position: fixed;;
+  background-color: #2462AB;
+  padding-bottom: 20px;
+  width: 20%;
+}
+
+.side-menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 8px 10px 8px 10px;
+  background-color: #2462AB;
+}
+
+.side-menu li:hover {
+  background-color: #2F7AD3;
+}
+
+.side-menu a {
+  display: block;
+  color: #FFFFFF;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+
+.notice {
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #FFFFFF;
+  border: 1px solid #BCBCBC;
+  border-radius: 10px;
+  border-top-right-radius: 0px;
+}
+
+.notice-title {
+  margin: 0px;
+  background-color: #2462AB;
+  border-bottom: 1px solid #BCBCBC;
+  border-top-left-radius: 10px;
+  padding: 5px 10px;
+}
+
+.notice-content {
+  padding: 5px 10px;
+}
+
+.notice h2 {
+  font-size: 150%;
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border: 0;
+  color: #FFFFFF;
+}
+
+.active-route {
+  font-weight: bold;
+}
+
+#bottom-options {
+  position: fixed;
+  bottom: 0px;
+}
+
+#menu-logo {
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#menu-logo img {
+  padding-top: 20px;
+  max-width: 105px;
+  width: 100%;
+}
+
+#menu-welcome {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 2px solid #BCBCBC;
+}
+
+#menu-welcome h1 {
+  color: #FFFFFF;
+  font-size: 150%;
+}
+
+#notice-board {
+  float: right;
+  margin-left: 22%;
+  margin-right: 20%;
+  padding-top: 15px;
+}
+
+@media (max-width: 720px) {
+  .side-menu {
+    display: none;
+  }
+}
+
+@media (min-width: 720px) {
+  .small-side-menu {
+    display: block;
+  }
+}

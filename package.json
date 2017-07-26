@@ -17,13 +17,18 @@
   },
   "homepage": "https://github.com/kmm433/ibcClientRelations#readme",
   "devDependencies": {
+    "babel": "^6.23.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
     "grunt": "^1.0.1",
     "grunt-phpunit": "^0.3.6"
   },
   "dependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-router-dom": "^4.1.1"
   }
 }
