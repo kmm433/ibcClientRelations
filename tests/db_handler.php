@@ -28,6 +28,15 @@ class DB_Handler
     }
     return false;
   }
+
+  function getArray($query) {
+    $sql = $this->db->prepare($query);
+    if ($sql->execute()) {
+      $row = $sql->fetchAll(PDO::FETCH_COLUMN);
+      return $row;
+    }
+    return false;
+  }
 }
 
 ?>
