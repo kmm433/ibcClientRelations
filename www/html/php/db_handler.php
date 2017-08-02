@@ -25,11 +25,11 @@ class DB_Handler
 
   // Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
-    $sql = $this->db->prepare("SELECT password, ID FROM users WHERE name='$username'");
+    $sql = $this->db->prepare("SELECT password FROM USER WHERE email='$username'");
     if($sql->execute()) {
       $row = $sql->fetch(PDO::FETCH_ASSOC);
       if(password_verify($password, $row['password']))
-        return $row['ID'];
+        return $username;
     }
     return false;
   }
