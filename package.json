@@ -27,6 +27,7 @@
     "grunt-phpunit": "^0.3.6"
   },
   "dependencies": {
+    "jquery": "^3.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-router-dom": "^4.1.1"

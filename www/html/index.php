@@ -10,11 +10,12 @@
     <title>Illawarra Business Chamber | Home</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/theme.css" />
   </head>
   <body>
     <div id="app"></div>
     <script type="text/javascript" src="/js/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   </body>
 </html>
