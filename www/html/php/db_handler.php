@@ -34,6 +34,16 @@ class DB_Handler
     return false;
   }
 
+  // Returns the user's chamberID
+  function getChamber($email_addr) {
+    $sql = $this->db->prepare("SELECT chamberID FROM USER WHERE email='$email_addr'");
+    if ($sql->execute()) {
+      $result = $sql->fetch(PDO::FETCH_ASSOC);
+      return $result['chamberID'];
+    }
+    return false;
+  }
+
   // Get the user's metadata
   function getUserData($email_addr) {
     $sql = $this->db->prepare("SELECT firstname, lastname, type, chamberID, businessID FROM USER WHERE email='$email_addr'");
@@ -43,6 +53,15 @@ class DB_Handler
       return $results;
     }
     return false;
+  }
+
+  // Retrieve all members of a chamber
+  function getChamberMembers($chamberID) {
+    $sql = $this->db->prepare("SELECT firstname, lastname, email, businessID FROM USER WHERE chamberID=$chamberID;");
+    if ($sql->execute()) {
+      return $sql->fetchall();
+    }
+    return $chamberID;
   }
 }
 

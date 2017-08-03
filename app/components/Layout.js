@@ -4,6 +4,7 @@ import ReactRouter from 'react-router-dom';
 import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
+import MemberInfo from './MemberInfo';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -17,7 +18,7 @@ class Layout extends React.Component {
             <Route exact={true} path='/index.php' component={NoticeBoard} />
             <Route path='/calendar' component={Calendar} />
             <Route path='/profile' component={Calendar} />
-            <Route path='/member_information' component={Calendar} />
+            <Route path='/member_information' component={MemberInfo} />
             <Route path='/upcoming_events' component={Calendar} />
             <Route path='/help' component={Calendar} />
           </div>
