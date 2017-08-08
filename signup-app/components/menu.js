@@ -1,75 +1,54 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
+import {NavLink} from 'react-router-dom';
 
 var optionsArray = []
 
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {data: undefined};
-    console.log('1 ',optionsArray);
+    this.state = {chamber: 'shit'};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-    /*componentDidMount(){
-      $.ajax({
-        url: '/php/chamber_list.php',
-        type:'GET',
-        async: false,
-        dataType: "json",
-        success : function(response){
-          optionsArray= response;
-          this.setState({data: response});
-        }.bind(this),
-        error: function(xhr, status, err){
-          console.log('error')
-        }.bind(this)
-      });
-      console.log('2', this.state.data)
-
-    }*/
-
-    componentWillMount(){
-      $.ajax({
-        url: '/php/chamber_list.php',
-        type:'GET',
-        dataType: "json",
-        async: false,
-        success : function(response){
-          optionsArray=response;
-
-        }.bind(this),
-        error: function(xhr, status, err){
-          console.log('error')
-        }.bind(this)
-      });
-      console.log('2', optionsArray)
-
-
-    }
-
-
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  //
+  componentWillReceiveProps(nextProps) {
+    optionsArray=nextProps.chamber_list;
   }
 
+  //when the user changes the selected option from the drop down menu update the state
+  handleChange(event) {
+    var temp = event.target.value;
+    this.setState({
+      chamber: temp
+    });
+    console.log("here", this.state.chamber)
+  }
+  /*On submit call the function in the parent component and give it the selected chamber*/
   handleSubmit(event) {
-    alert('Which Chamber ' + this.state.value);
+      console.log("hereeee", this.state.chamber)
+    var temp = this.state.chamber;
+    this.props.callbackFromParent(temp).bind(this);
     event.preventDefault();
   }
 
   render() {
-    console.log('3', optionsArray)
     return (
       <div>
-        {console.log('testing', optionsArray)}
-        <ul>
-          {optionsArray.map((item,index) =>
-              <li key={index}>{item}</li>)}
-        </ul>
+        <form>
+          <label>
+            Which Chamber would you like to join?
+            <select value={this.state.value} onChange={this.handleChange}>
+              {Object.keys(optionsArray).map((item,index) =>
+                  <option key = {index} value={item}>{optionsArray[item]}</option>)}
+            </select>
+          </label>
+          <button onClick={this.handleSubmit}>
+          <NavLink activeClassName='active-route' to='/page'>Submit</NavLink>
+        </button>
+        </form>
       </div>
 
     );

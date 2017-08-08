@@ -49,7 +49,7 @@ class DB_Handler
   function getList($query) {
     $sql = $this->db->prepare($query);
     if ($sql->execute()) {
-      $row = $sql->fetchAll(PDO::FETCH_COLUMN);
+      $row = $sql->fetchAll(PDO::FETCH_KEY_PAIR);
       return $row;
     }
     return false;

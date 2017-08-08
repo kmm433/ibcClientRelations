@@ -1,5 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import List from './components/menu.js';
+import { BrowserRouter } from 'react-router-dom'
+import Main from './components/route.js';
 
-ReactDOM.render(<List />, document.getElementById('signup-app'));
+ReactDOM.render((
+  <BrowserRouter>
+    <Main />
+  </BrowserRouter>
+), document.getElementById('signup-app'))
