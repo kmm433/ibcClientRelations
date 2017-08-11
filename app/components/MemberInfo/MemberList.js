@@ -10,27 +10,32 @@ class MemberList extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // Update the list of members
-    console.log('recieved new props');
     this.setState({member_list: nextProps.member_list});
   }
 
   //TODO: Create rows for every user, this doesn't work A.T.M.
   generateTableBody(){
-    return (
-      this.state.member_list.map(x => <td>x</td>)
-    );
+    if (this.state.member_list)
+      return (
+        this.state.member_list.map((x) => <tr key="{x}['email']">
+            <td className='member-first-name'>{x['firstname']}</td>
+            <td className='member-last-name'>{x['lastname']}</td>
+            <td className='member-email'>{x['email']}</td>
+            <td className='member-business-name'>{x['businessname']}</td>
+        </tr>));
+    else
+      return (this.state.member_list);
   }
 
   render() {
     return (
-        <table>
+        <table id='member-list' className='rounded-table'>
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email Address</th>
-              <th>Business</th>
-              <th>Date Joined</th>
+              <th className='member-first-name'>First Name</th>
+              <th className='member-last-name'>Last Name</th>
+              <th className='member-email'>Email Address</th>
+              <th className='member-business-name'>Business</th>
             </tr>
           </thead>
           <tbody>

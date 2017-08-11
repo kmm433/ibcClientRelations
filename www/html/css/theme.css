@@ -107,11 +107,71 @@ body {
   font-size: 150%;
 }
 
+.rounded-table {
+  border: none;
+}
+
+.rounded-table th, .rounded-table td {
+  padding: 1px 5px;
+}
+
+.rounded-table thead th {
+  background-color: #2462AB; 
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.rounded-table thead th:first-child {
+  border-radius: 10px 0 0 0; 
+}
+
+.rounded-table tbody td {
+  border: none;
+  border-top: 1px solid #BCBCBC;
+}
+
+.rounded-table tbody tr:nth-child(odd) {
+  background-color: #E5E5E5;
+}
+
+.rounded-table tbody tr:nth-child(even) {
+  background-color: #F5F5F5;
+}
+
+.rounded-table tbody tr:last-child td:first-child{
+  border-radius: 0 0 0 10px;
+}
+
+.rounded-table tbody tr:last-child td:last-child{
+  border-radius: 0 0 10px 0;
+}
+
+.rounded-table td {
+  background-color: inherit;
+}
+
+.member-first-name, .member-last-name {
+  max-width: 100px;
+  min-width: 10%;
+}
+
+.member-email {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.member-business-name {
+  max-width: 300px;
+  min-width: 30%;
+}
+
 .main-component {
   float: left;
   margin-left: 22%;
   margin-right: 20%;
   padding-top: 15px;
+  width: 70%;
 }
 
 @media (max-width: 720px) {
