@@ -15,15 +15,23 @@ class MemberList extends React.Component {
 
   //TODO: Create rows for every user, this doesn't work A.T.M.
   generateTableBody(){
-    if (this.state.member_list)
-      return (
-        this.state.member_list.map((x) => <tr key="{x}['email']">
+    if (this.state.member_list) {
+      var today = new Date();
+      var result =  this.state.member_list.map((x) => {
+        var expDate = new Date(x['Expiry']);
+        console.log(today, ' : ', expDate, ' : ', x['Expiry']);
+        return (
+          <tr key='member'>
             <td className='member-first-name'>{x['firstname']}</td>
             <td className='member-last-name'>{x['lastname']}</td>
             <td className='member-email'>{x['email']}</td>
             <td className='member-business-name'>{x['businessname']}</td>
-        </tr>));
-    else
+            <td className={'member-expiry ' + (today > expDate ? 'expiry-alert': '')}>{expDate.toDateString()}</td>
+          </tr>
+        );
+      });
+      return (result);
+    } else
       return (this.state.member_list);
   }
 
@@ -36,6 +44,7 @@ class MemberList extends React.Component {
               <th className='member-last-name'>Last Name</th>
               <th className='member-email'>Email Address</th>
               <th className='member-business-name'>Business</th>
+              <th className='member-expiry'>Membership Expiry</th>
             </tr>
           </thead>
           <tbody>

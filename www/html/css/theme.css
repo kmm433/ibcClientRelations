@@ -107,6 +107,8 @@ body {
   font-size: 150%;
 }
 
+/* The following is to style the chamber member list table*/
+
 .rounded-table {
   border: none;
 }
@@ -139,13 +141,6 @@ body {
   background-color: #F5F5F5;
 }
 
-.rounded-table tbody tr:last-child td:first-child{
-  border-radius: 0 0 0 10px;
-}
-
-.rounded-table tbody tr:last-child td:last-child{
-  border-radius: 0 0 10px 0;
-}
 
 .rounded-table td {
   background-color: inherit;
@@ -164,6 +159,15 @@ body {
 .member-business-name {
   max-width: 300px;
   min-width: 30%;
+}
+
+.member-expiry {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.rounded-table .expiry-alert {
+  background-color: #DCA7A7;
 }
 
 .main-component {
