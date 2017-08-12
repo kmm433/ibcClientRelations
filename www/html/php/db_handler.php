@@ -54,6 +54,16 @@ class DB_Handler
     }
     return false;
   }
+
+  function getEntries($query){
+      $sql = $this->db->prepare($query);
+      if ($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_KEY_PAIR);
+        return $row;
+      }
+      return false;
+
+  }
 }
 
 ?>
