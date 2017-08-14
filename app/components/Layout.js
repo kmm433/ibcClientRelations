@@ -10,6 +10,9 @@ class Layout extends React.Component {
     return (
       <div>
         {/*This list defines all possible location that can be navigated to*/}
+        <div>
+            <Menu />
+        </div>
           <div>
             <Route exact={true} path='/' component={NoticeBoard} />
             <Route exact={true} path='/index.php' component={NoticeBoard} />
@@ -19,7 +22,6 @@ class Layout extends React.Component {
             <Route path='/upcoming_events' component={Calendar} />
             <Route path='/help' component={Calendar} />
           </div>
-        <Menu />
       </div>
     );
   }

@@ -1,10 +1,16 @@
+/*
+- At this stage infinite scroll works by getting ALL messages and storing them
+in messages, then getting the next lot as required
+*/
+
+
 import React from 'react';
 import Notice from './NoticeBoard/Notice.js'
 import $ from 'jquery';   /*For ajax query */
-import Infinite from '@srph/react-infinite-scroll';
+import Infinite from '@srph/react-infinite-scroll'; /*For inf scroll */
 
 var count = 0;
-var singleMessage = []
+var hasMore = true;
 var messages = []
 
 const Loader = () =>
@@ -14,7 +20,6 @@ const Loader = () =>
     <div />
   </div>
 
-
 class NoticeBoard extends React.Component {
   constructor(props) {
     super(props);
@@ -22,10 +27,11 @@ class NoticeBoard extends React.Component {
         items: [],
         loading: false
     };
-    //this.request = this.request.bind(this)
+    this.request = this.request.bind(this)
   }
 
   componentWillMount(){
+    // get the initial load of messages (15 at a time)
     this.get_messages();
     this.request();
   }
@@ -33,7 +39,7 @@ class NoticeBoard extends React.Component {
 
   render(){
     return(
-        <div id="notice-board">
+        <div id="notice-board" class="w-col w-col-9">
           <Infinite callback={this.request} disabled={this.state.loading}>
             {this.state.items.map((item, i) =>
              <row key={i}>
@@ -63,17 +69,18 @@ class NoticeBoard extends React.Component {
   get_nextMessages(){
     console.log('getNextMessages Called')
     var getNext = []
-    for(var i = 0; i < 10; i++){
-      if(count == messages.length){
-        count = 0;
-        console.log('count set to 0', messages.length)
-      }
-      getNext.push(<Notice key={messages[count].NotificationID} title={messages[count].NoticeTitle + messages[count].NotificationID} message={messages[count].Notice}/>)
-      count = count + 1;
+    if(count == messages.length){
+      hasMore = false;
     }
-
+    else{
+        for(var i = 0; i < 15; i++){
+            if (count != messages.length){
+              getNext.push(<Notice key={messages[count].NotificationID} title={messages[count].NoticeTitle + messages[count].NotificationID} message={messages[count].Notice}/>)
+              count = count + 1;
+            }
+        }
+    }
     return getNext;
-
   }
 
 
@@ -91,11 +98,6 @@ class NoticeBoard extends React.Component {
           console.log('get_messages Error')
         }.bind(this)
       });
-
-      /* Cycle through all messages, setup to display on noticeboard */
-      //for (var i = 0; i < messages.length; i++) {
-      //  singleMessage.push(<Notice key={messages[i].NotificationID} title={messages[i].NoticeTitle + messages[i].NotificationID} message={messages[i].Notice}/>);
-      //}
   }
 
 

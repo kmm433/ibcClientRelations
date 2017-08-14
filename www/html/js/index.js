@@ -25827,6 +25827,11 @@ var Layout = function (_React$Component) {
         _react2.default.createElement(
           'div',
           null,
+          _react2.default.createElement(_Menu2.default, null)
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _NoticeBoard2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/index.php', component: _NoticeBoard2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/calendar', component: _Calendar2.default }),
@@ -25834,8 +25839,7 @@ var Layout = function (_React$Component) {
           _react2.default.createElement(_reactRouterDom.Route, { path: '/member_information', component: _Calendar2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/upcoming_events', component: _Calendar2.default }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/help', component: _Calendar2.default })
-        ),
-        _react2.default.createElement(_Menu2.default, null)
+        )
       );
     }
   }]);
@@ -26196,11 +26200,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*For ajax query */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - At this stage infinite scroll works by getting ALL messages and storing them
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               in messages, then getting the next lot as required
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
+/*For ajax query */
+
+
+/*For inf scroll */
 
 var count = 0;
-var singleMessage = [];
+var hasMore = true;
 var messages = [];
 
 var Loader = function Loader() {
@@ -26225,13 +26236,14 @@ var NoticeBoard = function (_React$Component) {
       items: [],
       loading: false
     };
-    //this.request = this.request.bind(this)
+    _this.request = _this.request.bind(_this);
     return _this;
   }
 
   _createClass(NoticeBoard, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
+      // get the initial load of messages (15 at a time)
       this.get_messages();
       this.request();
     }
@@ -26240,7 +26252,7 @@ var NoticeBoard = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { id: 'notice-board' },
+        { id: 'notice-board', 'class': 'w-col w-col-9' },
         _react2.default.createElement(
           _reactInfiniteScroll2.default,
           { callback: this.request, disabled: this.state.loading },
@@ -26273,15 +26285,16 @@ var NoticeBoard = function (_React$Component) {
     value: function get_nextMessages() {
       console.log('getNextMessages Called');
       var getNext = [];
-      for (var i = 0; i < 10; i++) {
-        if (count == messages.length) {
-          count = 0;
-          console.log('count set to 0', messages.length);
+      if (count == messages.length) {
+        hasMore = false;
+      } else {
+        for (var i = 0; i < 15; i++) {
+          if (count != messages.length) {
+            getNext.push(_react2.default.createElement(_Notice2.default, { key: messages[count].NotificationID, title: messages[count].NoticeTitle + messages[count].NotificationID, message: messages[count].Notice }));
+            count = count + 1;
+          }
         }
-        getNext.push(_react2.default.createElement(_Notice2.default, { key: messages[count].NotificationID, title: messages[count].NoticeTitle + messages[count].NotificationID, message: messages[count].Notice }));
-        count = count + 1;
       }
-
       return getNext;
     }
   }, {
@@ -26300,11 +26313,6 @@ var NoticeBoard = function (_React$Component) {
           console.log('get_messages Error');
         }.bind(this)
       });
-
-      /* Cycle through all messages, setup to display on noticeboard */
-      //for (var i = 0; i < messages.length; i++) {
-      //  singleMessage.push(<Notice key={messages[i].NotificationID} title={messages[i].NoticeTitle + messages[i].NotificationID} message={messages[i].Notice}/>);
-      //}
     }
   }]);
 
