@@ -44,7 +44,7 @@
           </form>
         </div>
         <div class="container signup-box">
-          <p>Not a member? <a href="#">Sign up!</a></p>
+          <p>Not a member? <a href="./signup.php">Sign up!</a></p>
         </div>
       </div>
     </div>

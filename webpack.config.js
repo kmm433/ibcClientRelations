@@ -1,8 +1,11 @@
 module.exports = {
-    entry: "./app/client.js",
+    entry: {
+      homepage: "./app/client.js",
+      signup: "./signup-app/app.js"
+    },
     output: {
         path: __dirname + '/www/html/js',
-        filename: "index.js"
+        filename: "[name].index.js"
     },
     module: {
       loaders: [
