@@ -45,6 +45,7 @@ body {
 
 .notice {
   position: relative;
+  margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
   background-color: #FFFFFF;
@@ -108,9 +109,8 @@ body {
 }
 
 #notice-board {
-  float: right;
-  margin-left: 22%;
-  margin-right: 20%;
+  margin-left: 280px;
+  margin-right: 150px;
   padding-top: 15px;
 }
 
