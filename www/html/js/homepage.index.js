@@ -36463,6 +36463,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                - At this stage infinite scroll works by getting ALL messages and storing them
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                in messages, then getting the next lot as required
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Todo:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - If you go to another page then back again it loses messages
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 /*For ajax query */
@@ -36497,7 +36499,6 @@ var NoticeBoard = function (_React$Component) {
       loading: false
     };
     _this.request = _this.request.bind(_this);
-    count = 0;
     return _this;
   }
 
@@ -36511,9 +36512,10 @@ var NoticeBoard = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      console.log("SET STATE");
       return _react2.default.createElement(
         'div',
-        { id: 'notice-board', 'class': 'w-col w-col-9' },
+        { id: 'notice-board' },
         _react2.default.createElement(
           _reactInfiniteScroll2.default,
           { callback: this.request, disabled: this.state.loading },
@@ -36568,7 +36570,7 @@ var NoticeBoard = function (_React$Component) {
         dataType: "json",
         success: function (response) {
           messages = response;
-          console.log('get_messages Success');
+          console.log('TEST:get_messages Success');
         }.bind(this),
         error: function (xhr, status, err) {
           console.log('get_messages Error');

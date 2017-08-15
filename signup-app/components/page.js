@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import DynamicForm from "react-dynamic-form";
 
 var fieldsArray = {}
 

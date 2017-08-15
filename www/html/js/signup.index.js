@@ -36260,10 +36260,6 @@ var _jquery = __webpack_require__(97);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactDynamicForm = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"react-dynamic-form\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _reactDynamicForm2 = _interopRequireDefault(_reactDynamicForm);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }

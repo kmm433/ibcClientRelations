@@ -1,6 +1,8 @@
 /*
 - At this stage infinite scroll works by getting ALL messages and storing them
 in messages, then getting the next lot as required
+Todo:
+- If you go to another page then back again it loses messages
 */
 
 
@@ -9,9 +11,10 @@ import Notice from './NoticeBoard/Notice.js'
 import $ from 'jquery';   /*For ajax query */
 import Infinite from '@srph/react-infinite-scroll'; /*For inf scroll */
 
+
 var count = 0;
 var hasMore = true;
-var messages = []
+var messages = [];
 
 const Loader = () =>
   <div className="loader">
@@ -23,6 +26,7 @@ const Loader = () =>
 class NoticeBoard extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
         items: [],
         loading: false
@@ -34,12 +38,12 @@ class NoticeBoard extends React.Component {
     // get the initial load of messages (15 at a time)
     this.get_messages();
     this.request();
-  }
-
+    }
 
   render(){
+    console.log("SET STATE");
     return(
-        <div id="notice-board" class="w-col w-col-9">
+        <div id="notice-board">
           <Infinite callback={this.request} disabled={this.state.loading}>
             {this.state.items.map((item, i) =>
              <row key={i}>
@@ -92,7 +96,7 @@ class NoticeBoard extends React.Component {
         dataType: "json",
         success : function(response){
           messages = response;
-          console.log('get_messages Success')
+          console.log('TEST:get_messages Success')
         }.bind(this),
         error: function(xhr, status, err){
           console.log('get_messages Error')
