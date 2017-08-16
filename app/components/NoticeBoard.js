@@ -2,19 +2,23 @@
 - At this stage infinite scroll works by getting ALL messages and storing them
 in messages, then getting the next lot as required
 Todo:
-- If you go to another page then back again it loses messages
+- Surveys
+- in each SP if given a userID check what other groups user belongs too
+- in the php pages need to get the associated UserId / ChamberID / BusinessID
+ / GroupID from session variables
 */
 
 
 import React from 'react';
-import Notice from './NoticeBoard/Notice.js'
+import Notice from './NoticeBoard/Notice.js';
+import NoticeEvent from './NoticeBoard/NoticeEvent.js';
 import $ from 'jquery';   /*For ajax query */
 import Infinite from '@srph/react-infinite-scroll'; /*For inf scroll */
 
 
-var count = 0;
-var hasMore = true;
-var messages = [];
+var count = 0;          // Used by inf scroll to know which to display next
+var hasMore = true;     // Sets to false when all data has been displayed
+var messages = [];      // Stores all notice info, notifications / events / surveys
 
 const Loader = () =>
   <div className="loader">
@@ -26,7 +30,6 @@ const Loader = () =>
 class NoticeBoard extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
         items: [],
         loading: false
@@ -35,13 +38,13 @@ class NoticeBoard extends React.Component {
   }
 
   componentWillMount(){
-    // get the initial load of messages (15 at a time)
-    this.get_messages();
+    /* get the initial load of messages (15 at a time) */
+    count = 0;
+    this.get_AllNotices();
     this.request();
     }
 
   render(){
-    console.log("SET STATE");
     return(
         <div id="notice-board">
           <Infinite callback={this.request} disabled={this.state.loading}>
@@ -55,10 +58,10 @@ class NoticeBoard extends React.Component {
           {this.state.loading && <Loader />}
         </div>
     );
-
   }
 
 
+  /* Sets the state items[] with next load of messages */
   request(){
     this.setState({ loading: true });
     setTimeout(() => {
@@ -70,8 +73,9 @@ class NoticeBoard extends React.Component {
 
   }
 
+  /* Returns the next 15 messages */
   get_nextMessages(){
-    console.log('getNextMessages Called')
+    //console.log('getNextMessages Called')
     var getNext = []
     if(count == messages.length){
       hasMore = false;
@@ -79,7 +83,7 @@ class NoticeBoard extends React.Component {
     else{
         for(var i = 0; i < 15; i++){
             if (count != messages.length){
-              getNext.push(<Notice key={messages[count].NotificationID} title={messages[count].NoticeTitle + messages[count].NotificationID} message={messages[count].Notice}/>)
+              getNext.push(messages[count])
               count = count + 1;
             }
         }
@@ -87,22 +91,94 @@ class NoticeBoard extends React.Component {
     return getNext;
   }
 
-
-  get_messages(){
-    $.ajax({
-        url: '/php/get_messages.php',
-        type:'GET',
-        async: false,
-        dataType: "json",
-        success : function(response){
-          messages = response;
-          console.log('TEST:get_messages Success')
-        }.bind(this),
-        error: function(xhr, status, err){
-          console.log('get_messages Error')
-        }.bind(this)
+  /* Calls the SQL query to return Notifications */
+  get_notifications(){
+      var notifications = [];
+      $.ajax({
+          url: '/php/get_Notifications.php',
+          type:'GET',
+          async: false,
+          dataType: "json",
+          success : function(response){
+              notifications = response;
+              console.log('get_Notifications Success')
+          }.bind(this),
+          error: function(xhr, status, err){
+              console.log('get_Notifications Error')
+          }.bind(this)
       });
+      return notifications;
   }
+
+  /* Calls the SQL query to return Events */
+  get_events(){
+      var events = [];
+      $.ajax({
+            url: '/php/get_Events.php',
+            type:'GET',
+            async: false,
+            dataType: "json",
+            success : function(response){
+                events = response;
+                console.log('get_Events Success')
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_Events Error')
+            }.bind(this)
+        });
+        return events;
+    }
+
+    /* Calls the SQL query to return Surveys */
+    get_surveys(){
+        var surveys = [];
+        $.ajax({
+            url: '/php/get_Notifications.php',
+            type:'GET',
+            async: false,
+            dataType: "json",
+            success : function(response){
+                surveys = response;
+                console.log('get_Notifications Success')
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_Notifications Error')
+            }.bind(this)
+        });
+        return surveys;
+    }
+
+    /* Calls each sql function, formats data as needed and adds to messages */
+    get_AllNotices(){
+        var notifs = this.get_notifications();
+        var events = this.get_events();
+        //var survey = this.get_surveys();
+
+        for(var i = 0; i < notifs.length; i++){
+            messages.push(<Notice
+                key={notifs[i].NotificationID}
+                title={notifs[i].NoticeTitle + notifs[i].NotificationID}
+                message={notifs[i].Notice}
+                DatePosted={notifs[i].DatePosted}
+            />)
+        }
+        for(var i = 0; i < events.length; i++){
+            messages.push(<NoticeEvent
+                key={events[i].EventID}
+                title={events[i].EventTitle + events[i].EventID}
+                message={events[i].Event}
+                eventdate={events[i].EventDate}
+                startTime={events[i].startTime}
+                endTime={events[i].endTime}
+                EventURL={events[i].EventURL}
+                DatePosted={events[i].DatePosted}
+            />)
+        }
+        // Todo: Surveys
+        // Todo: Sort the whole messages list by DatePosted
+    }
+
+
 
 
 };

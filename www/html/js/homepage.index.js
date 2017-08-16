@@ -36057,7 +36057,7 @@ var _NoticeBoard = __webpack_require__(231);
 
 var _NoticeBoard2 = _interopRequireDefault(_NoticeBoard);
 
-var _Calendar = __webpack_require__(240);
+var _Calendar = __webpack_require__(241);
 
 var _Calendar2 = _interopRequireDefault(_Calendar);
 
@@ -36433,7 +36433,7 @@ exports.default = MenuWelcome;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -36446,11 +36446,15 @@ var _Notice = __webpack_require__(232);
 
 var _Notice2 = _interopRequireDefault(_Notice);
 
+var _NoticeEvent = __webpack_require__(233);
+
+var _NoticeEvent2 = _interopRequireDefault(_NoticeEvent);
+
 var _jquery = __webpack_require__(97);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactInfiniteScroll = __webpack_require__(233);
+var _reactInfiniteScroll = __webpack_require__(234);
 
 var _reactInfiniteScroll2 = _interopRequireDefault(_reactInfiniteScroll);
 
@@ -36464,7 +36468,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                - At this stage infinite scroll works by getting ALL messages and storing them
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                in messages, then getting the next lot as required
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Todo:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - If you go to another page then back again it loses messages
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - Surveys
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - in each SP if given a userID check what other groups user belongs too
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - in the php pages need to get the associated UserId / ChamberID / BusinessID
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                / GroupID from session variables
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 /*For ajax query */
@@ -36472,114 +36479,202 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*For inf scroll */
 
-var count = 0;
-var hasMore = true;
-var messages = [];
+var count = 0; // Used by inf scroll to know which to display next
+var hasMore = true; // Sets to false when all data has been displayed
+var messages = []; // Stores all notice info, notifications / events / surveys
 
 var Loader = function Loader() {
-  return _react2.default.createElement(
-    'div',
-    { className: 'loader' },
-    _react2.default.createElement('div', null),
-    _react2.default.createElement('div', null),
-    _react2.default.createElement('div', null)
-  );
+    return _react2.default.createElement(
+        'div',
+        { className: 'loader' },
+        _react2.default.createElement('div', null),
+        _react2.default.createElement('div', null),
+        _react2.default.createElement('div', null)
+    );
 };
 
 var NoticeBoard = function (_React$Component) {
-  _inherits(NoticeBoard, _React$Component);
+    _inherits(NoticeBoard, _React$Component);
 
-  function NoticeBoard(props) {
-    _classCallCheck(this, NoticeBoard);
+    function NoticeBoard(props) {
+        _classCallCheck(this, NoticeBoard);
 
-    var _this = _possibleConstructorReturn(this, (NoticeBoard.__proto__ || Object.getPrototypeOf(NoticeBoard)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (NoticeBoard.__proto__ || Object.getPrototypeOf(NoticeBoard)).call(this, props));
 
-    _this.state = {
-      items: [],
-      loading: false
-    };
-    _this.request = _this.request.bind(_this);
-    return _this;
-  }
-
-  _createClass(NoticeBoard, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      // get the initial load of messages (15 at a time)
-      this.get_messages();
-      this.request();
+        _this.state = {
+            items: [],
+            loading: false
+        };
+        _this.request = _this.request.bind(_this);
+        return _this;
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      console.log("SET STATE");
-      return _react2.default.createElement(
-        'div',
-        { id: 'notice-board' },
-        _react2.default.createElement(
-          _reactInfiniteScroll2.default,
-          { callback: this.request, disabled: this.state.loading },
-          this.state.items.map(function (item, i) {
-            return _react2.default.createElement(
-              'row',
-              { key: i },
-              item
-            );
-          })
-        ),
-        this.state.loading && _react2.default.createElement(Loader, null)
-      );
-    }
-  }, {
-    key: 'request',
-    value: function request() {
-      var _this2 = this;
 
-      this.setState({ loading: true });
-      setTimeout(function () {
-        _this2.setState({
-          loading: false,
-          items: _this2.state.items.concat(_this2.get_nextMessages())
-        });
-      }, 500);
-    }
-  }, {
-    key: 'get_nextMessages',
-    value: function get_nextMessages() {
-      console.log('getNextMessages Called');
-      var getNext = [];
-      if (count == messages.length) {
-        hasMore = false;
-      } else {
-        for (var i = 0; i < 15; i++) {
-          if (count != messages.length) {
-            getNext.push(_react2.default.createElement(_Notice2.default, { key: messages[count].NotificationID, title: messages[count].NoticeTitle + messages[count].NotificationID, message: messages[count].Notice }));
-            count = count + 1;
-          }
+    _createClass(NoticeBoard, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            /* get the initial load of messages (15 at a time) */
+            count = 0;
+            this.get_AllNotices();
+            this.request();
         }
-      }
-      return getNext;
-    }
-  }, {
-    key: 'get_messages',
-    value: function get_messages() {
-      _jquery2.default.ajax({
-        url: '/php/get_messages.php',
-        type: 'GET',
-        async: false,
-        dataType: "json",
-        success: function (response) {
-          messages = response;
-          console.log('TEST:get_messages Success');
-        }.bind(this),
-        error: function (xhr, status, err) {
-          console.log('get_messages Error');
-        }.bind(this)
-      });
-    }
-  }]);
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { id: 'notice-board' },
+                _react2.default.createElement(
+                    _reactInfiniteScroll2.default,
+                    { callback: this.request, disabled: this.state.loading },
+                    this.state.items.map(function (item, i) {
+                        return _react2.default.createElement(
+                            'row',
+                            { key: i },
+                            item
+                        );
+                    })
+                ),
+                this.state.loading && _react2.default.createElement(Loader, null)
+            );
+        }
 
-  return NoticeBoard;
+        /* Sets the state items[] with next load of messages */
+
+    }, {
+        key: 'request',
+        value: function request() {
+            var _this2 = this;
+
+            this.setState({ loading: true });
+            setTimeout(function () {
+                _this2.setState({
+                    loading: false,
+                    items: _this2.state.items.concat(_this2.get_nextMessages())
+                });
+            }, 500);
+        }
+
+        /* Returns the next 15 messages */
+
+    }, {
+        key: 'get_nextMessages',
+        value: function get_nextMessages() {
+            //console.log('getNextMessages Called')
+            var getNext = [];
+            if (count == messages.length) {
+                hasMore = false;
+            } else {
+                for (var i = 0; i < 15; i++) {
+                    if (count != messages.length) {
+                        getNext.push(messages[count]);
+                        count = count + 1;
+                    }
+                }
+            }
+            return getNext;
+        }
+
+        /* Calls the SQL query to return Notifications */
+
+    }, {
+        key: 'get_notifications',
+        value: function get_notifications() {
+            var notifications = [];
+            _jquery2.default.ajax({
+                url: '/php/get_Notifications.php',
+                type: 'GET',
+                async: false,
+                dataType: "json",
+                success: function (response) {
+                    notifications = response;
+                    console.log('get_Notifications Success');
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.log('get_Notifications Error');
+                }.bind(this)
+            });
+            return notifications;
+        }
+
+        /* Calls the SQL query to return Events */
+
+    }, {
+        key: 'get_events',
+        value: function get_events() {
+            var events = [];
+            _jquery2.default.ajax({
+                url: '/php/get_Events.php',
+                type: 'GET',
+                async: false,
+                dataType: "json",
+                success: function (response) {
+                    events = response;
+                    console.log('get_Events Success');
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.log('get_Events Error');
+                }.bind(this)
+            });
+            return events;
+        }
+
+        /* Calls the SQL query to return Surveys */
+
+    }, {
+        key: 'get_surveys',
+        value: function get_surveys() {
+            var surveys = [];
+            _jquery2.default.ajax({
+                url: '/php/get_Notifications.php',
+                type: 'GET',
+                async: false,
+                dataType: "json",
+                success: function (response) {
+                    surveys = response;
+                    console.log('get_Notifications Success');
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.log('get_Notifications Error');
+                }.bind(this)
+            });
+            return surveys;
+        }
+
+        /* Calls each sql function, formats data as needed and adds to messages */
+
+    }, {
+        key: 'get_AllNotices',
+        value: function get_AllNotices() {
+            var notifs = this.get_notifications();
+            var events = this.get_events();
+            //var survey = this.get_surveys();
+
+            for (var i = 0; i < notifs.length; i++) {
+                messages.push(_react2.default.createElement(_Notice2.default, {
+                    key: notifs[i].NotificationID,
+                    title: notifs[i].NoticeTitle + notifs[i].NotificationID,
+                    message: notifs[i].Notice,
+                    DatePosted: notifs[i].DatePosted
+                }));
+            }
+            for (var i = 0; i < events.length; i++) {
+                messages.push(_react2.default.createElement(_NoticeEvent2.default, {
+                    key: events[i].EventID,
+                    title: events[i].EventTitle + events[i].EventID,
+                    message: events[i].Event,
+                    eventdate: events[i].EventDate,
+                    startTime: events[i].startTime,
+                    endTime: events[i].endTime,
+                    EventURL: events[i].EventURL,
+                    DatePosted: events[i].DatePosted
+                }));
+            }
+            // Todo: Surveys
+            // Todo: Sort the whole messages list by DatePosted
+        }
+    }]);
+
+    return NoticeBoard;
 }(_react2.default.Component);
 
 ;
@@ -36665,6 +36760,84 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var NoticeEvent = function (_React$Component) {
+  _inherits(NoticeEvent, _React$Component);
+
+  function NoticeEvent() {
+    _classCallCheck(this, NoticeEvent);
+
+    return _possibleConstructorReturn(this, (NoticeEvent.__proto__ || Object.getPrototypeOf(NoticeEvent)).apply(this, arguments));
+  }
+
+  _createClass(NoticeEvent, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "notice" },
+        _react2.default.createElement(
+          "div",
+          { className: "notice-title" },
+          _react2.default.createElement(
+            "h2",
+            null,
+            this.props.title
+          )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "notice-content" },
+          _react2.default.createElement(
+            "p",
+            null,
+            this.props.message
+          )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "notice-content" },
+          _react2.default.createElement(
+            "p",
+            null,
+            this.props.eventdate
+          )
+        )
+      );
+    }
+  }]);
+
+  return NoticeEvent;
+}(_react2.default.Component);
+
+;
+
+exports.default = NoticeEvent;
+
+/***/ }),
+/* 234 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -36673,11 +36846,11 @@ var _react = __webpack_require__(6);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _scrollTop = __webpack_require__(234);
+var _scrollTop = __webpack_require__(235);
 
 var _scrollTop2 = _interopRequireDefault(_scrollTop);
 
-var _height = __webpack_require__(235);
+var _height = __webpack_require__(236);
 
 var _height2 = _interopRequireDefault(_height);
 
@@ -36811,7 +36984,7 @@ exports.default = Infinite;
 
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36827,13 +37000,13 @@ module.exports = function scrollTop(node, val) {
 };
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var offset = __webpack_require__(236),
+var offset = __webpack_require__(237),
     getWindow = __webpack_require__(224);
 
 module.exports = function height(node, client) {
@@ -36842,14 +37015,14 @@ module.exports = function height(node, client) {
 };
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var contains = __webpack_require__(237),
+var contains = __webpack_require__(238),
     getWindow = __webpack_require__(224),
-    ownerDocument = __webpack_require__(239);
+    ownerDocument = __webpack_require__(240);
 
 module.exports = function offset(node) {
   var doc = ownerDocument(node),
@@ -36878,12 +37051,12 @@ module.exports = function offset(node) {
 };
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var canUseDOM = __webpack_require__(238);
+var canUseDOM = __webpack_require__(239);
 
 var contains = (function () {
   var root = canUseDOM && document.documentElement;
@@ -36904,7 +37077,7 @@ var contains = (function () {
 module.exports = contains;
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36912,7 +37085,7 @@ module.exports = contains;
 module.exports = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36928,7 +37101,7 @@ function ownerDocument(node) {
 module.exports = exports["default"];
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
