@@ -36114,7 +36114,7 @@ var Menu = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouterDom.NavLink,
-              { activeClassName: 'active-route', to: '/profile.php' },
+              { activeClassName: 'active-route', to: '/profile' },
               'My Profile'
             )
           ),
