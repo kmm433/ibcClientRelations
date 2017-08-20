@@ -79,6 +79,10 @@ body {
   font-weight: bold;
 }
 
+.HelpPage {
+  float: center;
+}
+
 #bottom-options {
   position: fixed;
   bottom: 0px;

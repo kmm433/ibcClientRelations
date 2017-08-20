@@ -10,6 +10,7 @@ class Help extends React.Component {
     return(
       <div className="notice">
         <div className="notice-title">
+      <div className="HelpPage">
           <h2>Hello</h2>
         </div>
         <div className="notice-content">
