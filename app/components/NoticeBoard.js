@@ -2,7 +2,7 @@
 - At this stage infinite scroll works by getting ALL messages and storing them
 in messages, then getting the next lot as required
 Todo:
-- Surveys
+- Surveys formatting
 - in each SP if given a userID check what other groups user belongs too
 - in the php pages need to get the associated UserId / ChamberID / BusinessID
  / GroupID from session variables
@@ -12,6 +12,7 @@ Todo:
 import React from 'react';
 import Notice from './NoticeBoard/Notice.js';
 import NoticeEvent from './NoticeBoard/NoticeEvent.js';
+import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';
 import $ from 'jquery';   /*For ajax query */
 import Infinite from '@srph/react-infinite-scroll'; /*For inf scroll */
 
@@ -133,16 +134,16 @@ class NoticeBoard extends React.Component {
     get_surveys(){
         var surveys = [];
         $.ajax({
-            url: '/php/get_Notifications.php',
+            url: '/php/get_Surveys.php',
             type:'GET',
             async: false,
             dataType: "json",
             success : function(response){
                 surveys = response;
-                console.log('get_Notifications Success')
+                console.log('get_Surveys Success')
             }.bind(this),
             error: function(xhr, status, err){
-                console.log('get_Notifications Error')
+                console.log('get_Surveys Error')
             }.bind(this)
         });
         return surveys;
@@ -152,7 +153,7 @@ class NoticeBoard extends React.Component {
     get_AllNotices(){
         var notifs = this.get_notifications();
         var events = this.get_events();
-        //var survey = this.get_surveys();
+        var survey = this.get_surveys();
 
         for(var i = 0; i < notifs.length; i++){
             messages.push(<Notice
@@ -174,12 +175,22 @@ class NoticeBoard extends React.Component {
                 DatePosted={events[i].DatePosted}
             />)
         }
-        // Todo: Surveys
-        // Todo: Sort the whole messages list by DatePosted
+        for(var i = 0; i < survey.length; i++){
+            messages.push(<NoticeSurvey
+                key={survey[i].SurveyID}
+                title={survey[i].SurveyTitle + survey[i].SurveyID}
+                DatePosted={survey[i].DatePosted}
+                noQuestions={survey[i].noQuestions}
+            />)
+        }
+
+        // Sort the messages based on DatePosted
+        messages.sort(function(a, b) {
+            a = new Date(a.props.DatePosted);
+            b = new Date(b.props.DatePosted);
+            return a<b ? -1 : a>b ? 1 : 0;
+        });
     }
-
-
-
 
 };
 export default NoticeBoard;

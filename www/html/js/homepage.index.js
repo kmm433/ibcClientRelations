@@ -36057,7 +36057,7 @@ var _NoticeBoard = __webpack_require__(231);
 
 var _NoticeBoard2 = _interopRequireDefault(_NoticeBoard);
 
-var _Calendar = __webpack_require__(241);
+var _Calendar = __webpack_require__(242);
 
 var _Calendar2 = _interopRequireDefault(_Calendar);
 
@@ -36450,11 +36450,15 @@ var _NoticeEvent = __webpack_require__(233);
 
 var _NoticeEvent2 = _interopRequireDefault(_NoticeEvent);
 
+var _NoticeSurvey = __webpack_require__(234);
+
+var _NoticeSurvey2 = _interopRequireDefault(_NoticeSurvey);
+
 var _jquery = __webpack_require__(97);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactInfiniteScroll = __webpack_require__(234);
+var _reactInfiniteScroll = __webpack_require__(235);
 
 var _reactInfiniteScroll2 = _interopRequireDefault(_reactInfiniteScroll);
 
@@ -36468,7 +36472,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                - At this stage infinite scroll works by getting ALL messages and storing them
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                in messages, then getting the next lot as required
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Todo:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - Surveys
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - Surveys formatting
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                - in each SP if given a userID check what other groups user belongs too
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                - in the php pages need to get the associated UserId / ChamberID / BusinessID
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 / GroupID from session variables
@@ -36625,16 +36629,16 @@ var NoticeBoard = function (_React$Component) {
         value: function get_surveys() {
             var surveys = [];
             _jquery2.default.ajax({
-                url: '/php/get_Notifications.php',
+                url: '/php/get_Surveys.php',
                 type: 'GET',
                 async: false,
                 dataType: "json",
                 success: function (response) {
                     surveys = response;
-                    console.log('get_Notifications Success');
+                    console.log('get_Surveys Success');
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    console.log('get_Notifications Error');
+                    console.log('get_Surveys Error');
                 }.bind(this)
             });
             return surveys;
@@ -36647,7 +36651,7 @@ var NoticeBoard = function (_React$Component) {
         value: function get_AllNotices() {
             var notifs = this.get_notifications();
             var events = this.get_events();
-            //var survey = this.get_surveys();
+            var survey = this.get_surveys();
 
             for (var i = 0; i < notifs.length; i++) {
                 messages.push(_react2.default.createElement(_Notice2.default, {
@@ -36669,8 +36673,21 @@ var NoticeBoard = function (_React$Component) {
                     DatePosted: events[i].DatePosted
                 }));
             }
-            // Todo: Surveys
-            // Todo: Sort the whole messages list by DatePosted
+            for (var i = 0; i < survey.length; i++) {
+                messages.push(_react2.default.createElement(_NoticeSurvey2.default, {
+                    key: survey[i].SurveyID,
+                    title: survey[i].SurveyTitle + survey[i].SurveyID,
+                    DatePosted: survey[i].DatePosted,
+                    noQuestions: survey[i].noQuestions
+                }));
+            }
+
+            // Sort the messages based on DatePosted
+            messages.sort(function (a, b) {
+                a = new Date(a.props.DatePosted);
+                b = new Date(b.props.DatePosted);
+                return a < b ? -1 : a > b ? 1 : 0;
+            });
         }
     }]);
 
@@ -36704,6 +36721,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+key={notifs[i].NotificationID}
+title={notifs[i].NoticeTitle + notifs[i].NotificationID}
+message={notifs[i].Notice}
+DatePosted={notifs[i].DatePosted}
+*/
 
 var Notice = function (_React$Component) {
   _inherits(Notice, _React$Component);
@@ -36774,6 +36798,17 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/*
+key={events[i].EventID}
+title={events[i].EventTitle + events[i].EventID}
+message={events[i].Event}
+eventdate={events[i].EventDate}
+startTime={events[i].startTime}
+endTime={events[i].endTime}
+EventURL={events[i].EventURL}
+DatePosted={events[i].DatePosted}
+*/
+
 var NoticeEvent = function (_React$Component) {
   _inherits(NoticeEvent, _React$Component);
 
@@ -36814,6 +36849,30 @@ var NoticeEvent = function (_React$Component) {
             "p",
             null,
             this.props.eventdate
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            "startTime: ",
+            this.props.startTime
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            "endTime: ",
+            this.props.endTime
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            "EventURL: ",
+            this.props.EventURL
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            "DatePosted: ",
+            this.props.DatePosted
           )
         )
       );
@@ -36838,6 +36897,89 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+
+key={survey[i].SurveyID}
+title={survey[i].SurveyTitle + survey[i].SurveyID}
+DatePosted={survey[i].DatePosted}
+noQuestions={survey[i].noQuestions}
+
+*/
+
+var NoticeSurvey = function (_React$Component) {
+  _inherits(NoticeSurvey, _React$Component);
+
+  function NoticeSurvey() {
+    _classCallCheck(this, NoticeSurvey);
+
+    return _possibleConstructorReturn(this, (NoticeSurvey.__proto__ || Object.getPrototypeOf(NoticeSurvey)).apply(this, arguments));
+  }
+
+  _createClass(NoticeSurvey, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "notice" },
+        _react2.default.createElement(
+          "div",
+          { className: "notice-title" },
+          _react2.default.createElement(
+            "h2",
+            null,
+            this.props.title
+          )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "notice-content" },
+          _react2.default.createElement(
+            "p",
+            null,
+            this.props.DatePosted
+          ),
+          _react2.default.createElement(
+            "p",
+            null,
+            this.props.noQuestions
+          )
+        )
+      );
+    }
+  }]);
+
+  return NoticeSurvey;
+}(_react2.default.Component);
+
+;
+
+exports.default = NoticeSurvey;
+
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -36846,11 +36988,11 @@ var _react = __webpack_require__(6);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _scrollTop = __webpack_require__(235);
+var _scrollTop = __webpack_require__(236);
 
 var _scrollTop2 = _interopRequireDefault(_scrollTop);
 
-var _height = __webpack_require__(236);
+var _height = __webpack_require__(237);
 
 var _height2 = _interopRequireDefault(_height);
 
@@ -36984,7 +37126,7 @@ exports.default = Infinite;
 
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37000,13 +37142,13 @@ module.exports = function scrollTop(node, val) {
 };
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var offset = __webpack_require__(237),
+var offset = __webpack_require__(238),
     getWindow = __webpack_require__(224);
 
 module.exports = function height(node, client) {
@@ -37015,14 +37157,14 @@ module.exports = function height(node, client) {
 };
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var contains = __webpack_require__(238),
+var contains = __webpack_require__(239),
     getWindow = __webpack_require__(224),
-    ownerDocument = __webpack_require__(240);
+    ownerDocument = __webpack_require__(241);
 
 module.exports = function offset(node) {
   var doc = ownerDocument(node),
@@ -37051,12 +37193,12 @@ module.exports = function offset(node) {
 };
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var canUseDOM = __webpack_require__(239);
+var canUseDOM = __webpack_require__(240);
 
 var contains = (function () {
   var root = canUseDOM && document.documentElement;
@@ -37077,7 +37219,7 @@ var contains = (function () {
 module.exports = contains;
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37085,7 +37227,7 @@ module.exports = contains;
 module.exports = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37101,7 +37243,7 @@ function ownerDocument(node) {
 module.exports = exports["default"];
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

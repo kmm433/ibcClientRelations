@@ -63,6 +63,15 @@ class DB_Handler
     }
   }
 
+   // NoticeBoard: Return Surveys (only ID's and titles)
+  function get_Surveys(){
+    $sql = $this->db->prepare("CALL SPgetSurvey(0,-1,-1,-1);");
+    if($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+  }
+
 
   //return a column
   function getList($query) {
