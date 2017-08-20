@@ -36114,7 +36114,7 @@ var Menu = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouterDom.NavLink,
-              { activeClassName: 'active-route', to: 'yahoo.com' },
+              { text: 'My Profile', link: 'php/profile.php' },
               'My Profile'
             )
           ),
@@ -36123,7 +36123,7 @@ var Menu = function (_React$Component) {
             null,
             _react2.default.createElement(
               _reactRouterDom.NavLink,
-              { activeClassName: 'active-route', to: 'https://www.timeanddate.com/calendar/' },
+              { activeClassName: 'active-route', to: '' },
               'Calendar'
             )
           ),
@@ -36158,7 +36158,7 @@ var Menu = function (_React$Component) {
               null,
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
-                { activeClassName: 'active-route', to: '/kbase.php' },
+                { activeClassName: 'active-route', to: '' },
                 'FAQ'
               )
             )
