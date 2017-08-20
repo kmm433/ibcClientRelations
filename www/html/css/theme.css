@@ -66,6 +66,11 @@ body {
   padding: 5px 10px;
 }
 
+.survey-content {
+  padding: 5px 10px;
+  margin-bottom: 40px;
+}
+
 .notice h2 {
   font-size: 150%;
   padding-top: 0;
@@ -78,6 +83,27 @@ body {
 .active-route {
   font-weight: bold;
 }
+
+.surveyQuestion {
+    text-align: center;
+}
+
+.slick-next:before{
+    color: black;
+}
+.slick-prev:before{
+    color: black;
+}
+
+.slick-next{
+    right: 0%;
+}
+
+.slick-prev{
+    z-index:100000;
+    left: 0%;
+}
+
 
 #bottom-options {
   position: fixed;

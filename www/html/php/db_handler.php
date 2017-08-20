@@ -72,6 +72,24 @@ class DB_Handler
     }
   }
 
+   // NoticeBoard: Return Surveys Questions
+  function get_SurveyQuestions($surveyID){
+      $sql = $this->db->prepare("CALL SPgetSurveyQuestion($surveyID);");
+      if($sql->execute()) {
+          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+          return $row;
+      }
+  }
+
+  // NoticeBoard: Return Surveys Answers
+ function get_SurveyAnswers($surveyID){
+     $sql = $this->db->prepare("CALL SPgetSurveyAnswers($surveyID);");
+     if($sql->execute()) {
+         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+         return $row;
+     }
+ }
+
 
   //return a column
   function getList($query) {

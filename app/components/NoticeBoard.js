@@ -178,6 +178,7 @@ class NoticeBoard extends React.Component {
         for(var i = 0; i < survey.length; i++){
             messages.push(<NoticeSurvey
                 key={survey[i].SurveyID}
+                SurveyID={survey[i].SurveyID}
                 title={survey[i].SurveyTitle + survey[i].SurveyID}
                 DatePosted={survey[i].DatePosted}
                 noQuestions={survey[i].noQuestions}
