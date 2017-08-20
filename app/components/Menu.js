@@ -14,10 +14,10 @@ class Menu extends React.Component {
         <li><NavLink exact activeClassName='active-route' to='/'>
           Home
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/profile.php'>
+        <li><NavLink activeClassName='active-route' to='yahoo.com'>
           My Profile
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/calendar.html'>
+        <li><NavLink activeClassName='active-route' to='https://www.timeanddate.com/calendar/'>
           Calendar
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/member_information'>
