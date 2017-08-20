@@ -9,19 +9,18 @@ class Help extends React.Component {
     console.log("HELLO STEF");
     return(
       <div className="notice">
-        <div className="notice-title">
+        <div  className="notice-title">
       <div className="HelpPage">
-          <h2>Hello</h2>
-        </div>
-        <div className="notice-content">
-          <p>asdasdas</p>
+        <h1> Frequently Asked Questions </h1>
+
+<p>1. A question goes here</p>
+<p>An answer goes in here</p>
+
         </div>
       </div>
+    </div>
     );
 
 }
-
-
-
 };
 export default Help;

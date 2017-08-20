@@ -80,8 +80,9 @@ body {
 }
 
 .HelpPage {
-  float: center;
+  float: right;
 }
+
 
 #bottom-options {
   position: fixed;
