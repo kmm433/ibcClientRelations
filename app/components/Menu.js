@@ -14,12 +14,10 @@ class Menu extends React.Component {
         <li><NavLink exact activeClassName='active-route' to='/'>
           Home
         </NavLink></li>
-        <li>
-
-      <MenuItem text="My Profile" link="php/profile.php" />></li>
-
-
-        <li><NavLink text="Calendar" link='calendar.php'>
+        <li><NavLink activeClassName='active-route' to='php/profile.php'>
+          My Profile
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='php/calendar.php'>
           Calendar
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/member_information'>
@@ -32,11 +30,9 @@ class Menu extends React.Component {
       <div id="bottom-options">
         <ul>
           <MenuItem text="Sign Out" link="php/process_signout.php" />
-          <li>
-            <NavLink activeClassName='active-route' to='kbase.php'>
-            FAQ
-          </NavLink>
-        </li>
+          <li><NavLink activeClassName='active-route' to='php/kbase.php'>
+            Help
+          </NavLink></li>
         </ul>
       </div>
     </div>

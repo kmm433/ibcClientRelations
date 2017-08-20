@@ -36112,18 +36112,15 @@ var Menu = function (_React$Component) {
           _react2.default.createElement(
             'li',
             null,
-            _react2.default.createElement(
-              _reactRouterDom.NavLink,
-              { text: 'My Profile', link: 'php/profile.php' },
-              'My Profile'
-            )
+            _react2.default.createElement(_MenuItem2.default, { text: 'My Profile', link: 'php/profile.php' }),
+            '>'
           ),
           _react2.default.createElement(
             'li',
             null,
             _react2.default.createElement(
               _reactRouterDom.NavLink,
-              { activeClassName: 'active-route', to: '' },
+              { text: 'Calendar', link: 'calendar.php' },
               'Calendar'
             )
           ),
@@ -36158,7 +36155,7 @@ var Menu = function (_React$Component) {
               null,
               _react2.default.createElement(
                 _reactRouterDom.NavLink,
-                { activeClassName: 'active-route', to: '' },
+                { activeClassName: 'active-route', to: 'kbase.php' },
                 'FAQ'
               )
             )
