@@ -14,7 +14,7 @@ class Menu extends React.Component {
         <li><NavLink exact activeClassName='active-route' to='/'>
           Home
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='php/profile.php'>
+        <li><NavLink activeClassName='active-route' to='profile'>
           My Profile
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='php/calendar.php'>
