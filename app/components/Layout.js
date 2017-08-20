@@ -3,6 +3,7 @@ import Menu from './Menu.js';
 import ReactRouter from 'react-router-dom';
 import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
+import Help from './Help';
 import Calendar from './Calendar';
 
 class Layout extends React.Component {
@@ -20,7 +21,7 @@ class Layout extends React.Component {
             <Route path='/profile' component={Calendar} />
             <Route path='/member_information' component={Calendar} />
             <Route path='/upcoming_events' component={Calendar} />
-            <Route path='/help' component={Calendar} />
+            <Route path='/help' component={Help} />
           </div>
       </div>
     );
