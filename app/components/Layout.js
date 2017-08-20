@@ -4,6 +4,7 @@ import ReactRouter from 'react-router-dom';
 import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
+import Form from './Signup/form';
 
 class Layout extends React.Component {
   render() {
@@ -17,6 +18,7 @@ class Layout extends React.Component {
             <Route path='/profile' component={Calendar} />
             <Route path='/member_information' component={Calendar} />
             <Route path='/upcoming_events' component={Calendar} />
+            <Route path='/edit_signup' component={Form} />
             <Route path='/help' component={Calendar} />
           </div>
         <Menu />

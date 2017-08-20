@@ -20,7 +20,7 @@ class Main extends React.Component {
 
     /*ajax call to get list of chambers to display*/
     componentWillMount() {
-      $.ajax({url: '/php/chamber_list.php', type: 'GET', dataType: 'json',
+      $.ajax({url: '/php/chamber_list.php', type: 'POST', dataType: 'json',
       success: response => {
         this.setState({chamber_list: response})
       }});
@@ -29,6 +29,7 @@ class Main extends React.Component {
   /*function to send to child to get the chamber id of page to load*/
   myCallback (dataFromChild) {
        this.setState({ chamber_id: dataFromChild });
+       console.log("chamberID", this.state.chamber_id)
    }
 
 

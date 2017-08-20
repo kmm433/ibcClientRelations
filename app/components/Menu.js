@@ -26,6 +26,9 @@ class Menu extends React.Component {
         <li><NavLink activeClassName='active-route' to='/upcoming_events'>
           Upcoming Events
         </NavLink></li>
+    <li><NavLink activeClassName='active-route' to='/edit_signup'>
+          Edit Signup Form
+        </NavLink></li>
       </ul>
       <div id="bottom-options">
         <ul>

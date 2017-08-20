@@ -9,6 +9,7 @@ class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {chamber: 'shit'};
+    
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -24,13 +25,12 @@ class List extends React.Component {
     this.setState({
       chamber: temp
     });
-    console.log("here", this.state.chamber)
   }
+
   /*On submit call the function in the parent component and give it the selected chamber*/
   handleSubmit(event) {
-      console.log("hereeee", this.state.chamber)
     var temp = this.state.chamber;
-    this.props.callbackFromParent(temp).bind(this);
+    this.props.callbackFromParent(temp);
     event.preventDefault();
   }
 
