@@ -54,8 +54,8 @@
                 <table align="right">
                   <tbody>
                     <tr>
-                      <td> FB LINK </td>
-                      <td> LINKEDIN </td>
+                      <td> <input type="button" src="fblogo.png"/> </td>
+                      <td> <input type="button" style="background-image:url('linkedin.png')"/> </td>
                     </tr>
                 </table>
 
