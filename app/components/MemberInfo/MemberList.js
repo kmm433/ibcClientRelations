@@ -17,6 +17,7 @@ class MemberList extends React.Component {
 
   // Determines whether a member should be displayed based on the search criteriawe
   searchDisplay(search_criteria, member) {
+    console.log('Checking member: '+member['firstname']);
     if (this.props.search_criteria === '') {
       return true;
     }
@@ -32,6 +33,7 @@ class MemberList extends React.Component {
     if (member['businessname'].toLowerCase().includes(this.props.search_criteria.toLowerCase())){
       return true;
     }
+    console.log('not displaying them.');
     return false;
   }
 
@@ -43,7 +45,7 @@ class MemberList extends React.Component {
         console.log(today, ' : ', expDate, ' : ', x['Expiry']);
         if(this.searchDisplay(this.props.search_criteria, x)) {
           return (
-            <tr key='member'>
+            <tr key={x['email']}>
               <td className='member-first-name'>{x['firstname']}</td>
               <td className='member-last-name'>{x['lastname']}</td>
               <td className='member-email'>{x['email']}</td>
