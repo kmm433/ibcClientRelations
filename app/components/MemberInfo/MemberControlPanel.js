@@ -21,8 +21,9 @@ class MemberControlPanel extends React.Component {
     });
     if (target === 'add')
       this.setState({add_mode: true});
-    if (target === 'delete')
-      this.setState({delete_mode: true});
+    if (target === 'delete') {
+      this.props.toggleDeleteMode();
+    }
   }
 
   handleSearch(event) {
