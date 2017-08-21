@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 
 class MemberList extends React.Component {
 
@@ -10,9 +11,41 @@ class MemberList extends React.Component {
     };
   }
 
+  // Update the list of members
   componentWillReceiveProps(nextProps) {
-    // Update the list of members
     this.setState({member_list: nextProps.member_list});
+  }
+
+  // Topggles the display of the delete confirmation
+  handleDelete(event) {
+    var firstname = event.target.parentElement.nextSibling.nextSibling;
+    var lastname = firstname.nextSibling;
+    var email = lastname.nextSibling
+    var user = {
+      firstname: firstname.innerHTML,
+      lastname: lastname.innerHTML,
+      email: email.innerHTML
+    };
+    this.props.setSelectedUser(user);
+    this.props.setActionType('delete');
+  }
+
+  renderDeleteColumn() {
+    if (this.props.delete_display) {
+      return (
+        <th className='member-delete-button'></th>
+      );
+    }
+  }
+
+  renderDeleteButtons() {
+    if (this.props.delete_display) {
+      return (
+        <td className='member-delete-button'>
+        <button className='btn btn-danger' onClick={(event) => this.handleDelete(event)}>Delete</button>
+      </td>
+      );
+    }
   }
 
   // Determines whether a member should be displayed based on the search criteriawe
@@ -44,9 +77,7 @@ class MemberList extends React.Component {
         if(this.searchDisplay(this.props.search_criteria, x)) {
           return (
             <tr key={x['email']} id={x['email']}>
-              <td className='member-delete-button' style={this.props.delete_display ? {}:{display: 'none'}}>
-                <button className='btn btn-danger'>Delete</button>
-              </td>
+              {this.renderDeleteButtons()}
               <td className='member-profile-picture'><img src='img/default_profile_pic_small.png' /></td>
               <td className='member-first-name'>{x['firstname']}</td>
               <td className='member-last-name'>{x['lastname']}</td>
@@ -68,11 +99,10 @@ class MemberList extends React.Component {
   render() {
     return (
       <div>
-        <p>Searching for: {this.props.search_criteria}</p>
         <table id='member-list' className='rounded-table'>
           <thead>
             <tr>
-              <th className='member-delete-button' style={this.props.delete_display ? {}:{display: 'none'}}></th>
+              {this.renderDeleteColumn()}
               <th className='member-profile-picture'>Profile Picture</th>
               <th className='member-first-name'>First Name</th>
               <th className='member-last-name'>Last Name</th>

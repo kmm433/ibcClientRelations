@@ -142,7 +142,6 @@ body {
   background-color: #F5F5F5;
 }
 
-
 .rounded-table td {
   background-color: inherit;
 }
@@ -169,6 +168,10 @@ body {
 
 .rounded-table .expiry-alert {
   background-color: #DCA7A7;
+}
+
+.confirmation-button {
+  margin: 10px 5px;
 }
 
 #member-control-panel {

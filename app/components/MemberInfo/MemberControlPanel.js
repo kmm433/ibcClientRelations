@@ -14,7 +14,6 @@ class MemberControlPanel extends React.Component {
 
   // Changes the available control component
   toggleControlView(target) {
-    console.log('Toggling the display.' + target);
     this.setState({
       delete_mode: false,
       add_mode: false
@@ -23,6 +22,8 @@ class MemberControlPanel extends React.Component {
       this.setState({add_mode: true});
     if (target === 'delete') {
       this.props.toggleDeleteMode();
+      this.props.setSelectedUser(null);
+      this.props.setActionType(null);
     }
   }
 
