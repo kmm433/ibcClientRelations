@@ -1,0 +1,19 @@
+
+.header-blue{
+  background-color: #2462ab;
+  height: 200px;
+}
+
+.logo {
+  position:absolute;
+  left:30px;
+  top:50px;
+  width:15%;
+}
+
+h1 {
+  position:absolute;
+right:20px;
+top: 120px;
+color: white;
+}

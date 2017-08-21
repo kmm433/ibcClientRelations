@@ -64,6 +64,34 @@ class DB_Handler
     }
     return $chamberID;
   }
-}
+  
+  // return messages
+  function get_messages(){ /*todo: pass group ID, select * where groupID matches*/
+    $sql = $this->db->prepare("SELECT * FROM NOTIFICATION");
+    if($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+        //$results = array ('NotificationID'=>$row['NotificationID'],'NoticeTitle'=>$row['NoticeTitle'], 'Notice'=>$row['Notice'], 'GroupID'=>$row['GroupID'], 'DatePosted'=>$row['DatePosted']);
+        return $row;
+    }
+  }
 
+  //return a column
+  function getList($query) {
+    $sql = $this->db->prepare($query);
+    if ($sql->execute()) {
+      $row = $sql->fetchAll(PDO::FETCH_KEY_PAIR);
+      return $row;
+    }
+    return false;
+  }
+
+  function getEntries($query){
+      $sql = $this->db->prepare($query);
+      if ($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_KEY_PAIR);
+        return $row;
+      }
+      return false;
+  }
+}
 ?>

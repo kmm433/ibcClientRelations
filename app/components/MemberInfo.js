@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import MemberControlPanel from './MemberInfo/MemberControlPanel.js';
 import MemberList from './MemberInfo/MemberList.js';
 
 class MemberInfo extends React.Component {
@@ -8,6 +9,8 @@ class MemberInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {member_list: null};
+    this.state = {search_criteria: ''}
+    this.updateSearchCriteria = this.updateSearchCriteria.bind(this);
   }
 
   // Fetch this chamber's members
@@ -18,10 +21,17 @@ class MemberInfo extends React.Component {
     }})
   }
 
+  // Alows the control panel to update the list's search criteria
+  updateSearchCriteria(criteria) {
+    this.setState({search_criteria: criteria});
+  }
+
   render() {
     return (
       <div className="main-component">
-        <MemberList member_list={this.state.member_list}/>
+        <MemberControlPanel updateSearchCriteria={this.updateSearchCriteria}/>
+        <MemberList member_list={this.state.member_list}
+          search_criteria={this.state.search_criteria}/>
       </div>
     );
   }
