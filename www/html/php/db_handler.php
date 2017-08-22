@@ -1,5 +1,9 @@
 <?php
 include '../../inc/dbinfo.inc';
+session_start();
+// Verify that the user has signed in and enfore if they have not
+if(!$_SESSION['user'])
+  header('Location: ../signin.php');
 
 class DB_Handler
 {
@@ -57,14 +61,14 @@ class DB_Handler
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, Expiry 
+      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, Expiry
           FROM USER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID;");
     if ($sql->execute()) {
       return $sql->fetchall();
     }
     return $chamberID;
   }
-  
+
   // return messages
   function get_messages(){ /*todo: pass group ID, select * where groupID matches*/
     $sql = $this->db->prepare("SELECT * FROM NOTIFICATION");
