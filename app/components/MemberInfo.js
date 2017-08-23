@@ -12,12 +12,14 @@ class MemberInfo extends React.Component {
     this.state = {
       member_list: null,
       search_criteria: '',
+      edit_display: false,
       delete_display: false,
       selected_user: null,
-      action_type: null
+      action_type: null,
+      comment_mode: false
     };
     this.updateSearchCriteria = this.updateSearchCriteria.bind(this);
-    this.toggleDeleteMode = this.toggleDeleteMode.bind(this);
+    this.toggleMode = this.toggleMode.bind(this);
     this.setSelectedUser = this.setSelectedUser.bind(this);
     this.setActionType = this.setActionType.bind(this);
   }
@@ -34,15 +36,25 @@ class MemberInfo extends React.Component {
   updateSearchCriteria(criteria) {
     this.setState({search_criteria: criteria});
   }
-  // Toggle delete mode
-  toggleDeleteMode() {
-    this.setState({delete_display: !this.state.delete_display});
+
+  // Diables all modes that might be active
+  toggleMode(mode) {
+    this.setState({
+      delete_display: false,
+      edit_display: false
+    });
+    if (mode === 'edit')
+      this.setState({edit_display: true});
+    if (mode === 'delete')
+      this.setState({delete_display: true});
   }
 
+  // Selects a user for further action
   setSelectedUser(user) {
     this.setState({selected_user: user});
   }
 
+  // Sets the type of action that should be performed
   setActionType(action) {
     this.setState({action_type: action});
   }
@@ -52,7 +64,7 @@ class MemberInfo extends React.Component {
       <div className="main-component">
         <MemberControlPanel
           updateSearchCriteria={this.updateSearchCriteria}
-          toggleDeleteMode={this.toggleDeleteMode}
+          toggleMode={this.toggleMode}
           setActionType={this.setActionType}
           setSelectedUser={this.setSelectedUser}
         />
@@ -65,6 +77,7 @@ class MemberInfo extends React.Component {
         <MemberList
           member_list={this.state.member_list}
           search_criteria={this.state.search_criteria}
+          edit_display={this.state.edit_display}
           delete_display={this.state.delete_display}
           setActionType={this.setActionType}
           setSelectedUser={this.setSelectedUser}

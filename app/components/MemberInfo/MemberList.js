@@ -9,6 +9,7 @@ class MemberList extends React.Component {
     this.state = {
       member_list: this.props.member_list
     };
+    this.handleRowClick = this.handleRowClick.bind(this);
   }
 
   // Update the list of members
@@ -16,7 +17,7 @@ class MemberList extends React.Component {
     this.setState({member_list: nextProps.member_list});
   }
 
-  // Topggles the display of the delete confirmation
+  // Toggles the display of the delete confirmation
   handleDelete(event) {
     var firstname = event.target.parentElement.nextSibling.nextSibling;
     var lastname = firstname.nextSibling;
@@ -28,8 +29,32 @@ class MemberList extends React.Component {
     };
     this.props.setSelectedUser(user);
     this.props.setActionType('delete');
+    event.stopPropagation();
   }
 
+  // Toggles the display of edit mode
+  handleEdit(event) {
+    var firstname = event.target.parentElement.nextSibling.nextSibling;
+    var lastname = firstname.nextSibling;
+    var email = lastname.nextSibling
+    var user = {
+      firstname: firstname.innerHTML,
+      lastname: lastname.innerHTML,
+      email: email.innerHTML
+    };
+    this.props.setSelectedUser(user);
+    this.props.setActionType('edit');
+    event.stopPropagation();
+  }
+
+  // If a member's row is clicked
+  handleRowClick(event) {
+    console.log('Clicked the row: ' + event.target.type);
+    this.props.setSelectedUser(event.target.type);
+    this.props.setActionType('comment');
+  }
+
+  // Render an empty cell for the top of the column
   renderDeleteColumn() {
     if (this.props.delete_display) {
       return (
@@ -38,11 +63,32 @@ class MemberList extends React.Component {
     }
   }
 
+  // Determines whether the delete buttons should be displayed next to members
   renderDeleteButtons() {
     if (this.props.delete_display) {
       return (
         <td className='member-delete-button'>
         <button className='btn btn-danger' onClick={(event) => this.handleDelete(event)}>Delete</button>
+      </td>
+      );
+    }
+  }
+
+  // Render an empty cell for the top of the column
+  renderEditColumn() {
+    if (this.props.edit_display) {
+      return (
+        <th className='member-edit-button'></th>
+      );
+    }
+  }
+
+  // Determines whether the delete buttons should be displayed next to members
+  renderEditButtons() {
+    if (this.props.edit_display) {
+      return (
+        <td className='member-edit-button'>
+        <button className='btn btn-warning' onClick={(event) => this.handleEdit(event)}>Edit</button>
       </td>
       );
     }
@@ -69,6 +115,7 @@ class MemberList extends React.Component {
     return false;
   }
 
+  // Creates a row for each displayed user
   generateTableBody() {
     if (this.state.member_list) {
       var today = new Date();
@@ -76,7 +123,8 @@ class MemberList extends React.Component {
         var expDate = new Date(x['Expiry']);
         if(this.searchDisplay(this.props.search_criteria, x)) {
           return (
-            <tr key={x['email']} id={x['email']}>
+            <tr key={x['email']} id={x['email']} onClick={(event) => this.handleRowClick(event)}>
+              {this.renderEditButtons()}
               {this.renderDeleteButtons()}
               <td className='member-profile-picture'><img src='img/default_profile_pic_small.png' /></td>
               <td className='member-first-name'>{x['firstname']}</td>
@@ -102,6 +150,7 @@ class MemberList extends React.Component {
         <table id='member-list' className='rounded-table'>
           <thead>
             <tr>
+              {this.renderEditColumn()}
               {this.renderDeleteColumn()}
               <th className='member-profile-picture'>Profile Picture</th>
               <th className='member-first-name'>First Name</th>
