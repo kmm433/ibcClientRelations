@@ -1,28 +1,43 @@
-import React from 'react';
-import $ from 'jquery';   /*For ajax query */
-import Slider from 'react-slick';   //https://github.com/akiran/react-slick
-
-
 /*
-key={survey[i].SurveyID}
-SurveyID={survey[i].SurveyID}
-title={survey[i].SurveyTitle + survey[i].SurveyID}
-DatePosted={survey[i].DatePosted}
-noQuestions={survey[i].noQuestions}
+Todo:
+- Get different answer types, start determining which question holds which type
+- Add submit functionality
+
+Page Gets:
+    key={survey[i].SurveyID}
+    SurveyID={survey[i].SurveyID}
+    title={survey[i].SurveyTitle + survey[i].SurveyID}
+    DatePosted={survey[i].DatePosted}
+    noQuestions={survey[i].noQuestions}
 */
+
+import React from 'react';
+import $ from 'jquery';             /* For ajax query */
+import Slider from 'react-slick';   /* https://github.com/akiran/react-slick */
 
 var questions = [];
 var answers = [];
 
+const Loader = () =>
+  <div className="loader">
+    <div />
+    <div />
+    <div />
+  </div>
+
 class NoticeSurvey extends React.Component {
     constructor(props) {
       super(props);
+      this.state = {
+          items: []
+      };
     }
 
     componentWillMount(){
         /* get all Questions and Answers */
         this.get_SurveyQuestions();
         this.get_SurveyAnswers();
+        this.setData();
     }
 
     get_SurveyQuestions(){
@@ -63,6 +78,29 @@ class NoticeSurvey extends React.Component {
             });
         }
 
+        setData(){
+            var FormattedOutput = [];
+            // Cycle through questions and each set of answers
+            for(var i = 0; i < questions.length; i++){
+                var tmpA = [];
+                for(var b = 0; b < answers.length; b++){
+                    if (answers[b].questionNo == questions[i].questionNo){
+                        tmpA.push(<p key={answers[b].questionNo + answers[b].answer}> {answers[b].answer} </p>);
+                    }
+                }
+            // Add to the class
+                FormattedOutput.push(<Survey
+                        key={questions[i].questionNo}
+                        question={questions[i].question}
+                        answers={tmpA}
+                />)
+            }
+            // Set the state with the items
+            this.setState({
+                items: FormattedOutput
+            });
+        }
+
 
   render(){
       var settings = {
@@ -77,29 +115,16 @@ class NoticeSurvey extends React.Component {
       <div className="notice">
         <div className="notice-title">
           <h2>{this.props.title}</h2>
+          <h2>{this.props.DatePosted}</h2>
         </div>
         <div className="survey-content">
-            <p>{this.props.DatePosted}</p>
-            <div className="surveyQuestion">
-                <Slider {...settings}>
-                    <div>
-                        <h3>{questions[0].question}</h3>
-                        <p>{answers[0].answer}</p>
-                        <p>{answers[1].answer}</p>
-                    </div>
-                    <div>
-                        <h3>{questions[1].question}</h3>
-                        <p>{answers[2].answer}</p>
-                        <p>{answers[3].answer}</p>
-                        <p>{answers[3].answer}</p>
-                        <p>{answers[3].answer}</p>
-                    </div>
-                    <div><h3>3</h3></div>
-                    <div><h3>4</h3></div>
-                    <div><h3>5</h3></div>
-                    <div><h3>6</h3></div>
-                </Slider>
-            </div>
+            <Slider {...settings}>
+                {this.state.items.map((item, i) =>
+                 <div key={i}>
+                   {item}
+               </div>
+               )}
+            </Slider>
         </div>
       </div>
     );
@@ -107,3 +132,14 @@ class NoticeSurvey extends React.Component {
 };
 
 export default NoticeSurvey;
+
+class Survey extends React.Component {
+  render(){
+    return(
+        <div>
+            <h3>{this.props.question}</h3>
+            <div>{this.props.answers}</div>
+        </div>
+    );
+  }
+};

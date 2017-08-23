@@ -37627,22 +37627,36 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*For ajax query */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Todo:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - Get different answer types, start determining which question holds which type
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - Add submit functionality
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Page Gets:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   key={survey[i].SurveyID}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   SurveyID={survey[i].SurveyID}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   title={survey[i].SurveyTitle + survey[i].SurveyID}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   DatePosted={survey[i].DatePosted}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   noQuestions={survey[i].noQuestions}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+
+/* For ajax query */
 
 
-//https://github.com/akiran/react-slick
-
-
-/*
-key={survey[i].SurveyID}
-SurveyID={survey[i].SurveyID}
-title={survey[i].SurveyTitle + survey[i].SurveyID}
-DatePosted={survey[i].DatePosted}
-noQuestions={survey[i].noQuestions}
-*/
+/* https://github.com/akiran/react-slick */
 
 var questions = [];
 var answers = [];
+
+var Loader = function Loader() {
+    return _react2.default.createElement(
+        'div',
+        { className: 'loader' },
+        _react2.default.createElement('div', null),
+        _react2.default.createElement('div', null),
+        _react2.default.createElement('div', null)
+    );
+};
 
 var NoticeSurvey = function (_React$Component) {
     _inherits(NoticeSurvey, _React$Component);
@@ -37650,7 +37664,12 @@ var NoticeSurvey = function (_React$Component) {
     function NoticeSurvey(props) {
         _classCallCheck(this, NoticeSurvey);
 
-        return _possibleConstructorReturn(this, (NoticeSurvey.__proto__ || Object.getPrototypeOf(NoticeSurvey)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (NoticeSurvey.__proto__ || Object.getPrototypeOf(NoticeSurvey)).call(this, props));
+
+        _this.state = {
+            items: []
+        };
+        return _this;
     }
 
     _createClass(NoticeSurvey, [{
@@ -37659,6 +37678,7 @@ var NoticeSurvey = function (_React$Component) {
             /* get all Questions and Answers */
             this.get_SurveyQuestions();
             this.get_SurveyAnswers();
+            this.setData();
         }
     }, {
         key: 'get_SurveyQuestions',
@@ -37701,6 +37721,36 @@ var NoticeSurvey = function (_React$Component) {
             });
         }
     }, {
+        key: 'setData',
+        value: function setData() {
+            var FormattedOutput = [];
+            // Cycle through questions and each set of answers
+            for (var i = 0; i < questions.length; i++) {
+                var tmpA = [];
+                for (var b = 0; b < answers.length; b++) {
+                    if (answers[b].questionNo == questions[i].questionNo) {
+                        tmpA.push(_react2.default.createElement(
+                            'p',
+                            { key: answers[b].questionNo + answers[b].answer },
+                            ' ',
+                            answers[b].answer,
+                            ' '
+                        ));
+                    }
+                }
+                // Add to the class
+                FormattedOutput.push(_react2.default.createElement(Survey, {
+                    key: questions[i].questionNo,
+                    question: questions[i].question,
+                    answers: tmpA
+                }));
+            }
+            // Set the state with the items
+            this.setState({
+                items: FormattedOutput
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var settings = {
@@ -37721,107 +37771,26 @@ var NoticeSurvey = function (_React$Component) {
                         'h2',
                         null,
                         this.props.title
+                    ),
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        this.props.DatePosted
                     )
                 ),
                 _react2.default.createElement(
                     'div',
                     { className: 'survey-content' },
                     _react2.default.createElement(
-                        'p',
-                        null,
-                        this.props.DatePosted
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'surveyQuestion' },
-                        _react2.default.createElement(
-                            _reactSlick2.default,
-                            settings,
-                            _react2.default.createElement(
+                        _reactSlick2.default,
+                        settings,
+                        this.state.items.map(function (item, i) {
+                            return _react2.default.createElement(
                                 'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    questions[0].question
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[0].answer
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[1].answer
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    questions[1].question
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[2].answer
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[3].answer
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[3].answer
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    answers[3].answer
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    '3'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    '4'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    '5'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                null,
-                                _react2.default.createElement(
-                                    'h3',
-                                    null,
-                                    '6'
-                                )
-                            )
-                        )
+                                { key: i },
+                                item
+                            );
+                        })
                     )
                 )
             );
@@ -37834,6 +37803,40 @@ var NoticeSurvey = function (_React$Component) {
 ;
 
 exports.default = NoticeSurvey;
+
+var Survey = function (_React$Component2) {
+    _inherits(Survey, _React$Component2);
+
+    function Survey() {
+        _classCallCheck(this, Survey);
+
+        return _possibleConstructorReturn(this, (Survey.__proto__ || Object.getPrototypeOf(Survey)).apply(this, arguments));
+    }
+
+    _createClass(Survey, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.props.question
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    this.props.answers
+                )
+            );
+        }
+    }]);
+
+    return Survey;
+}(_react2.default.Component);
+
+;
 
 /***/ }),
 /* 240 */

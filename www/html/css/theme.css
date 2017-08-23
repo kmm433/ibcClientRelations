@@ -69,6 +69,7 @@ body {
 .survey-content {
   padding: 5px 10px;
   margin-bottom: 40px;
+  text-align: center;
 }
 
 .notice h2 {
@@ -82,10 +83,6 @@ body {
 
 .active-route {
   font-weight: bold;
-}
-
-.surveyQuestion {
-    text-align: center;
 }
 
 .slick-next:before{
