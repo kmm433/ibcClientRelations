@@ -72,6 +72,15 @@ body {
   text-align: center;
 }
 
+#SurveyAnswers{
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+#btnSubmitSurvey{
+    margin-top: 30px;
+}
+
 .notice h2 {
   font-size: 150%;
   padding-top: 0;

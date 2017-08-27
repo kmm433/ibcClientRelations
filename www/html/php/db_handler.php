@@ -90,6 +90,11 @@ class DB_Handler
      }
  }
 
+ // NoticeBoard Surveys: submit Survey Answers
+function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
+    $sql = $this->db->prepare("CALL SPinsertSurveyAnswers(0,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
+    $sql->execute();
+}
 
   //return a column
   function getList($query) {

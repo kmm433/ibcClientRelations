@@ -32,6 +32,7 @@
     "react": "^15.5.4",
     "react-dom": "^15.6.1",
     "react-dynamic-form": "^1.0.1",
+    "react-radio-buttons": "^1.1.1",
     "react-router-dom": "^4.1.2",
     "reactstrap": "^4.8.0"
   }
