@@ -14,6 +14,7 @@ class MemberInfo extends React.Component {
       search_criteria: '',
       edit_display: false,
       delete_display: false,
+      group_display: false,
       selected_user: null,
       action_type: null,
       comment_mode: false
@@ -41,7 +42,8 @@ class MemberInfo extends React.Component {
   toggleMode(mode) {
     this.setState({
       delete_display: false,
-      edit_display: false
+      edit_display: false,
+      group_display: false
     });
     if (mode === 'edit')
       this.setState({edit_display: true});

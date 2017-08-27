@@ -22,6 +22,7 @@ class Main extends React.Component {
     componentWillMount() {
       $.ajax({url: '/php/chamber_list.php', type: 'POST', dataType: 'json',
       success: response => {
+        console.log('Ajax call occured');
         this.setState({chamber_list: response})
       }});
     }

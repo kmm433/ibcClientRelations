@@ -51,7 +51,6 @@ class Menu extends React.Component {
           Edit Signup Form
         </NavLink></li>
 
-
         {/*The exec_menu will only by created if the user is type 1*/}
         {this.state.exec_menu}
       </ul>

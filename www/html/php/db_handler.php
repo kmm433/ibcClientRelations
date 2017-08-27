@@ -1,5 +1,9 @@
 <?php
 include '../../inc/dbinfo.inc';
+session_start();
+// Verify that the user has signed in and enfore if they have not
+if(!$_SESSION['user'])
+  header('Location: ../signin.php');
 
 class DB_Handler
 {
@@ -53,8 +57,28 @@ class DB_Handler
       return $results;
     }
     return false;
-}
+  }
 
+  // Retrieve all members of a chamber
+  function getChamberMembers($chamberID) {
+      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry
+          FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
+          ORDER BY lastname;");
+    if ($sql->execute()) {
+      return $sql->fetchall();
+    }
+    return $chamberID;
+  }
+
+  // return messages
+  function get_messages(){ /*todo: pass group ID, select * where groupID matches*/
+    $sql = $this->db->prepare("SELECT * FROM NOTIFICATION");
+    if($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+        //$results = array ('NotificationID'=>$row['NotificationID'],'NoticeTitle'=>$row['NoticeTitle'], 'Notice'=>$row['Notice'], 'GroupID'=>$row['GroupID'], 'DatePosted'=>$row['DatePosted']);
+        return $row;
+    }
+  }
 
     // NoticeBoard: Return Notifications
    function get_Notifications(){
@@ -101,13 +125,11 @@ class DB_Handler
       }
   }
 
-
-
- // NoticeBoard Surveys: submit Survey Answers
-function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
+   // NoticeBoard Surveys: submit Survey Answers
+  function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
     $sql = $this->db->prepare("CALL SPinsertSurveyAnswers(0,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
     $sql->execute();
-}
+  }
 
   //return a column
   function getList($query) {
@@ -139,6 +161,14 @@ function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Ans
       return $count;
 
   }
-}
 
+  // Creates a group for a specified chamber using a specified name
+  function createGroup($chamberId, $groupName) {
+    $sql = $this->db->prepare("INSERT INTO CHAMBER_GROUPS_$chamberId (groupName) VALUES ('$groupName')");
+    if ($sql->execute()) {
+      return true;
+    }
+    return false;
+  }
+}
 ?>

@@ -41,6 +41,7 @@ class NoticeBoard extends React.Component {
   componentWillMount(){
     /* get the initial load of messages (15 at a time) */
     count = 0;
+    messages = [];
     this.get_AllNotices();
     this.request();
     }
@@ -71,7 +72,6 @@ class NoticeBoard extends React.Component {
         items: this.state.items.concat(this.get_nextMessages())
       });
     }, 500);
-
   }
 
   /* Returns the next 15 messages */

@@ -26,7 +26,7 @@ body {
 
 .side-menu {
   height: 100%;
-  position: fixed;;
+  position: fixed;
   background-color: #2462AB;
   padding-bottom: 20px;
   width: 20%;
@@ -35,7 +35,7 @@ body {
 .side-menu ul {
   list-style-type: none;
   margin: 0;
-  padding: 8px 10px 8px 10px;
+  padding: 0px 10px 0px 10px;
   background-color: #2462AB;
 }
 
@@ -118,7 +118,7 @@ body {
 }
 
 #bottom-options {
-  position: fixed;
+  position: relative;
   bottom: 0px;
 }
 
@@ -144,6 +144,103 @@ body {
 #menu-welcome h1 {
   color: #FFFFFF;
   font-size: 150%;
+}
+
+/* The following is to style the chamber member list table*/
+
+.rounded-table {
+  border: none;
+}
+
+.rounded-table th, .rounded-table td {
+  padding: 1px 5px;
+}
+
+.rounded-table thead th {
+  background-color: #2462AB;
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.rounded-table thead th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+.rounded-table tbody td {
+  border: none;
+  border-top: 1px solid #BCBCBC;
+}
+
+.rounded-table tbody tr:nth-child(odd) {
+  background-color: #E5E5E5;
+}
+
+.rounded-table tbody tr:nth-child(even) {
+  background-color: #F5F5F5;
+}
+
+.rounded-table td {
+  background-color: inherit;
+}
+
+.member-first-name, .member-last-name {
+  max-width: 100px;
+  min-width: 10%;
+}
+
+.member-email {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.member-business-name {
+  max-width: 300px;
+  min-width: 30%;
+}
+
+.member-expiry {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.rounded-table .expiry-alert {
+  background-color: #DCA7A7;
+}
+
+.confirmation-button {
+  margin: 10px 5px;
+}
+.btn {
+  margin: 5px;
+}
+
+.member-control-panel {
+  margin-top: 10px;
+  border-top-left-radius: 10px;
+}
+
+.member-control-panel ul, .member-control-panel .search {
+  display: inline-block;
+}
+.member-control-panel ul {
+  margin-top: 10px;
+}
+
+.member-control-panel .search {
+  float: right;
+  margin: 7px;
+}
+
+.member-control-panel .search input {
+  border-radius: 4px;
+  border: 1px solid #BCBCBC;
+}
+
+.main-component {
+  float: left;
+  margin-left: 22%;
+  margin-right: 20%;
 }
 
 #notice-board {
@@ -259,4 +356,11 @@ body {
   .small-side-menu {
     display: block;
   }
+}
+
+/* Overriding some boostrap colors for a custom color scheme.*/
+.panel-primary .panel-heading{
+  background-color: #2462AB;
+  border-bottom: 1px solid #BCBCBC;
+  border-top-left-radius: 10px;
 }

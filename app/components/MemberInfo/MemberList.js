@@ -120,7 +120,7 @@ class MemberList extends React.Component {
     if (this.state.member_list) {
       var today = new Date();
       var result =  this.state.member_list.map((x) => {
-        var expDate = new Date(x['Expiry']);
+        var expDate = new Date(x['expiry']);
         if(this.searchDisplay(this.props.search_criteria, x)) {
           return (
             <tr key={x['email']} id={x['email']} onClick={(event) => this.handleRowClick(event)}>

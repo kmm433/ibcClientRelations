@@ -13,6 +13,8 @@ $user = $db->validateUser($email, $password);
 
 if($user) {
   $_SESSION['user'] = $user;
+  $_SESSION['chamber'] = $db->getChamber($user);
+  echo $_SESSION['chamber'];
   header('Location: ../index.php');
 } else {
   header('Location: ../signin.php?status=invalid');
