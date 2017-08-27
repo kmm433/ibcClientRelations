@@ -1,8 +1,8 @@
 <?php
   session_start();
   $login_status = "";
-  if($_GET)
-    if($_GET['status'] == 'invalid')
+  if($_POST)
+    if($_POST['status'] == 'invalid')
       $login_status = "invalid";
 ?>
 <!DOCTYPE html>

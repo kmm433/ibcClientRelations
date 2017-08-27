@@ -17,6 +17,13 @@ body {
   background-color: red;
 }
 
+
+.signup-fields label, .signup-fields input {
+    float: none; /* if you had floats before? otherwise inline-block will behave differently */
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .side-menu {
   height: 100%;
   position: fixed;;
@@ -110,7 +117,6 @@ body {
     left: 0%;
 }
 
-
 #bottom-options {
   position: fixed;
   bottom: 0px;
@@ -144,6 +150,103 @@ body {
   margin-left: 20%;
   margin-right: 5%;
   padding-top: 15px;
+}
+
+/* The following is to style the chamber member list table*/
+
+.rounded-table {
+  border: none;
+}
+
+.rounded-table th, .rounded-table td {
+  padding: 1px 5px;
+}
+
+.rounded-table thead th {
+  background-color: #2462AB;
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.rounded-table thead th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+.rounded-table tbody td {
+  border: none;
+  border-top: 1px solid #BCBCBC;
+}
+
+.rounded-table tbody tr:nth-child(odd) {
+  background-color: #E5E5E5;
+}
+
+.rounded-table tbody tr:nth-child(even) {
+  background-color: #F5F5F5;
+}
+
+.rounded-table td {
+  background-color: inherit;
+}
+
+.member-first-name, .member-last-name {
+  max-width: 100px;
+  min-width: 10%;
+}
+
+.member-email {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.member-business-name {
+  max-width: 300px;
+  min-width: 30%;
+}
+
+.member-expiry {
+  max-width: 200px;
+  min-width: 20%;
+}
+
+.rounded-table .expiry-alert {
+  background-color: #DCA7A7;
+}
+
+.confirmation-button {
+  margin: 10px 5px;
+}
+
+#member-control-panel {
+  background-color: #FFFFFF;
+  border: 1px solid #BCBCBC;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  margin: 10px 0px
+
+}
+
+#member-control-panel ul, #member-control-panel .search {
+  display: inline-block;
+}
+#member-control-panel ul {
+  margin-top: 10px;
+}
+
+#member-control-panel .search {
+  float: right;
+  margin: 7px;
+}
+
+#member-control-panel .search input {
+  border-radius: 4px;
+  border: 1px solid #BCBCBC;
+}
+.main-component {
+  float: left;
+  margin-left: 22%;
+  margin-right: 20%;
 }
 
 @media (max-width: 720px) {

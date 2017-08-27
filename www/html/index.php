@@ -1,6 +1,6 @@
 <?php
   session_start();
-  // Verify that the user has signed in and enfore if they have not
+  // Verify that the user has signed in and enforce if they have not
   if(!$_SESSION['user'])
     header('Location: signin.php');
 ?>

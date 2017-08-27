@@ -7,6 +7,7 @@
     <meta http-equiv="Cache-control" content="no-cache">
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/signup.css">
+    <link rel="stylesheet" href="css/theme.css">
   </head>
   <body style="background-color:#f5f5f5;text-align:center" >
     <div class="header-blue">
