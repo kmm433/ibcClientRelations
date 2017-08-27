@@ -1,5 +1,6 @@
 import React from 'react';
 import MemberDetailsEditor from './MemberDetailsEditor';
+import MemberGroupControl from './MemberGroupControl';
 
 class MemberActionPanel extends React.Component {
 
@@ -13,7 +14,6 @@ class MemberActionPanel extends React.Component {
     this.props.setSelectedUser(null);
     this.props.setActionType(null);
   }
-
 
   // Determines whether the delete confirmation box should be shown, and the user selected.
   renderControlPanel(user) {
@@ -40,11 +40,20 @@ class MemberActionPanel extends React.Component {
         </div>
       );
     }
+
+    // If comment mode is entered display the comment section
     else if (this.props.action_type === 'comment') {
       return (
-        <div className = 'alert alert-info'>
+        <div className = 'panel panel-body'>
           <p>Comment Section Placeholder {this.props.user}</p>
         </div>
+      );
+    }
+
+    // If group mode is entered display the group selection menu
+    else if (this.props.action_type === 'group') {
+      return (
+        <MemberGroupControl />
       );
     }
   }

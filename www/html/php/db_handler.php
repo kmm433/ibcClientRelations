@@ -61,8 +61,9 @@ class DB_Handler
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, Expiry
-          FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID;");
+      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry
+          FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
+          ORDER BY lastname;");
     if ($sql->execute()) {
       return $sql->fetchall();
     }
@@ -96,6 +97,15 @@ class DB_Handler
         return $row;
       }
       return false;
+  }
+
+  // Creates a group for a specified chamber using a specified name
+  function createGroup($chamberId, $groupName) {
+    $sql = $this->db->prepare("INSERT INTO CHAMBER_GROUPS_$chamberId (groupName) VALUES ('$groupName')");
+    if ($sql->execute()) {
+      return true;
+    }
+    return false;
   }
 }
 ?>
