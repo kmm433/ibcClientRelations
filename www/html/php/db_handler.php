@@ -57,7 +57,7 @@ class DB_Handler
       return $results;
     }
     return false;
-}
+  }
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
@@ -78,6 +78,7 @@ class DB_Handler
         //$results = array ('NotificationID'=>$row['NotificationID'],'NoticeTitle'=>$row['NoticeTitle'], 'Notice'=>$row['Notice'], 'GroupID'=>$row['GroupID'], 'DatePosted'=>$row['DatePosted']);
         return $row;
     }
+  }
 
     // NoticeBoard: Return Notifications
    function get_Notifications(){
@@ -124,13 +125,11 @@ class DB_Handler
       }
   }
 
-
-
- // NoticeBoard Surveys: submit Survey Answers
-function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
+   // NoticeBoard Surveys: submit Survey Answers
+  function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
     $sql = $this->db->prepare("CALL SPinsertSurveyAnswers(0,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
     $sql->execute();
-}
+  }
 
   //return a column
   function getList($query) {
@@ -162,7 +161,6 @@ function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Ans
       return $count;
 
   }
-}
 
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $groupName) {
