@@ -66,6 +66,21 @@ body {
   padding: 5px 10px;
 }
 
+.survey-content {
+  padding: 5px 10px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+#SurveyAnswers{
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+#btnSubmitSurvey{
+    margin-top: 30px;
+}
+
 .notice h2 {
   font-size: 150%;
   padding-top: 0;
@@ -78,6 +93,23 @@ body {
 .active-route {
   font-weight: bold;
 }
+
+.slick-next:before{
+    color: black;
+}
+.slick-prev:before{
+    color: black;
+}
+
+.slick-next{
+    right: 0%;
+}
+
+.slick-prev{
+    z-index:100000;
+    left: 0%;
+}
+
 
 #bottom-options {
   position: fixed;
@@ -109,8 +141,8 @@ body {
 }
 
 #notice-board {
-  margin-left: 280px;
-  margin-right: 150px;
+  margin-left: 20%;
+  margin-right: 5%;
   padding-top: 15px;
 }
 
