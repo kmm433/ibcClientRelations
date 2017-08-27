@@ -101,13 +101,6 @@ body {
   font-weight: bold;
 }
 
-<<<<<<< HEAD
-.surveyQuestion {
-    text-align: center;
-}
-
-=======
->>>>>>> master
 .slick-next:before{
     color: black;
 }
@@ -124,10 +117,6 @@ body {
     left: 0%;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 #bottom-options {
   position: fixed;
   bottom: 0px;
@@ -161,7 +150,6 @@ body {
   margin-left: 20%;
   margin-right: 5%;
   padding-top: 15px;
-<<<<<<< HEAD
 }
 
 /* The following is to style the chamber member list table*/
@@ -259,8 +247,6 @@ body {
   float: left;
   margin-left: 22%;
   margin-right: 20%;
-=======
->>>>>>> master
 }
 
 @media (max-width: 720px) {
