@@ -18,6 +18,9 @@ class Layout extends React.Component {
           first_name={this.props.first_name}
         />
         {/*This list defines all possible location that can be navigated to*/}
+        <div>
+            <Menu />
+        </div>
           <div>
             <Route exact={true} path='/' component={NoticeBoard} />
             <Route exact={true} path='/index.php' component={NoticeBoard} />
@@ -28,7 +31,6 @@ class Layout extends React.Component {
             <Route path='/edit_signup' component={Form} />
             <Route path='/help' component={Calendar} />
           </div>
-        <Menu />
       </div>
     );
   }
