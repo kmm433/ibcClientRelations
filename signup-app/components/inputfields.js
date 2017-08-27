@@ -1,40 +1,97 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
+import isEmail from 'validator/lib/isEmail';
+import isLength from 'validator/lib/isLength';
+import matches from 'validator/lib/matches';
 
 var inputArray = [];
+var variable = "test";
+
+ const getAnswers = (i) => (event) =>{
+    inputArray[i] = event.target.value
+}
+const checkDuplicate = (e) => {
+    console.log("sending", e)
+    $.ajax({url: '/php/user_duplicate.php', type: 'POST', dataType: 'json',
+        data: {
+            'email': e,
+        },
+    success: response => {
+            console.log("exists: ", response)
+            return(response);
+    }});
+}
+
 
 class Fields extends React.Component {
 
   constructor(props) {
       super(props);
-      console.log("display",props.displayname)
 
       this.state = {
+          errorEmail: "",
+          errorPassword: "",
+          email: "",
+          password: "",
           input: [],
+          answers: []
         };
-
-        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.validateEmail = this.validateEmail.bind(this);
+        this.validatePassword = this.validatePassword.bind(this);
     }
 
-    handleChange(event) {
-     console.log(event.target.value)
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.sendAnswers();
+        console.log(inputArray)
     }
 
-    handleSubmit(event){
-        console.log(event.target.value)
-        this.setState({input: event.target.value});
+    sendAnswers() {
+        console.log(this.props.columnname)
+        console.log(inputArray)
+        $.ajax({url: '/php/insert_user_data.php', type: 'POST', dataType: 'json',
+            data: {
+                'chamberID': this.props.chamber,
+                'email': this.state.email,
+                'password': this.state.password,
+                'answers': inputArray,
+                'column': this.props.columnname,
+                'table': this.props.tablename
+            },
+        success: response => {
+                console.log("successful", response)
+        },
+        error: response => {console.log("unsuccessful", response)}
+    });
+    }
 
-            $.ajax({url: '/php/insert_user_data.php', type: 'POST', dataType: 'json',
-                data: {
-                    'test': this.state.input
-                },
-            success: response => {
-              console.log("success")
-            }});
+    validateEmail(event) {
+        var temp = event.target.value;
+        this.setState({ email: event.target.value})
+        if(!(isEmail(temp)))
+            this.setState({errorEmail: "Invalid Email"});
+        else {
+            if((checkDuplicate(temp))==false)
+                this.setState({ errorEmail: "That email is already assigned to a user"})
 
-        console.log("submitted")
+        }
+    }
+    validatePassword(event) {
+        var temp = event.target.name;
+        console.log("great", event.target.name)
+        var options = {min:8, max: 16};
+        if(!(isLength(event.target.value, options)))
+            this.setState({errorPassword: "Password must be 8-16 characters"});
+        else
+            this.setState({password: event.target.value});
+
+            console.log("password",this.state.password)
+        if(event.target.name == 'confirmpassword' && !(event.target.value == this.state.password)){
+            this.setState({errorPassword: "Password's do not match"});
+        }
     }
 
     render(){
@@ -42,13 +99,27 @@ class Fields extends React.Component {
             <div>
             <label>
                 <div>
-                    {console.log("input", this.props.displayname)}
+                    <label> {this.state.errorEmail} </label>
+                        <label className= "signup-fields">
+                            Email:
+                            <input key ="username" type="email" name="email" onBlur={this.validateEmail}/>
+                        </label>
+                        <label> {this.state.errorPassword} </label>
+                        <label className= "signup-fields">
+                            Password:
+                            <input key ="pass" type="password" name="password" onBlur={this.validatePassword} />
+                        </label>
+                        <label className= "signup-fields">
+                            Confirm Password:
+                            <input key ="passconfirm" type="password" name="confirmpassword" onBlur={this.validatePassword} />
+                        </label>
+
                         {this.props.displayname.map((item, i) =>
-                            <label key ={item}>
+                            <label className= "signup-fields" key ={item}>
                                 {item}:
-                                <input key ={item} type={this.props.inputype} name={this.props.columnname} onChange={this.handleChange} />
+                                <input key ={item} type={this.props.inputype} name={this.props.displayname} onChange={getAnswers(i)} />
                             </label>
-                    )}
+                        )}
                     <input type="submit" value="Submit" onClick={this.handleSubmit}/>
                 </div>
               </label>
@@ -58,9 +129,3 @@ class Fields extends React.Component {
     }
 }
 export default Fields;
-
-/*{Object.keys(this.state.displayname).map((item,i) =>
-    <label> {this.state.displayname[i]} {console.log("test", item)}
-        <input type={this.state.inputtype[i]} key = {this.state.displayname[i]} name={this.state.displayname[i]}
-            onChange={this.handleChange}/>
-    </label>)}*/

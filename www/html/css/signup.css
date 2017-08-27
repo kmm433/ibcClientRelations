@@ -17,3 +17,10 @@ right:20px;
 top: 120px;
 color: white;
 }
+
+.signup-fields {
+    display: grid;
+      grid-template-columns: 1fr 3fr;
+      padding: 5px;
+
+}

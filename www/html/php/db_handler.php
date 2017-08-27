@@ -1,9 +1,5 @@
 <?php
 include '../../inc/dbinfo.inc';
-session_start();
-// Verify that the user has signed in and enfore if they have not
-if(!$_SESSION['user'])
-  header('Location: ../signin.php');
 
 class DB_Handler
 {
@@ -27,7 +23,7 @@ class DB_Handler
     $this->db=null;
   }
 
-  // Request validation of a user profile return ID if successful
+// Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
     $sql = $this->db->prepare("SELECT password FROM USER WHERE email='$username'");
     if($sql->execute()) {
@@ -57,26 +53,52 @@ class DB_Handler
       return $results;
     }
     return false;
-  }
+}
 
-  // Retrieve all members of a chamber
-  function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, Expiry
-          FROM USER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID;");
-    if ($sql->execute()) {
-      return $sql->fetchall();
-    }
-    return $chamberID;
-  }
 
-  // return messages
-  function get_messages(){ /*todo: pass group ID, select * where groupID matches*/
-    $sql = $this->db->prepare("SELECT * FROM NOTIFICATION");
-    if($sql->execute()) {
-        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-        //$results = array ('NotificationID'=>$row['NotificationID'],'NoticeTitle'=>$row['NoticeTitle'], 'Notice'=>$row['Notice'], 'GroupID'=>$row['GroupID'], 'DatePosted'=>$row['DatePosted']);
-        return $row;
-    }
+    // NoticeBoard: Return Notifications
+   function get_Notifications(){
+     $sql = $this->db->prepare("CALL SPgetNotifications(0,-1,-1,-1);");
+     if($sql->execute()) {
+         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+         return $row;
+     }
+   }
+
+   // NoticeBoard: Return Events
+   function get_Events(){
+     $sql = $this->db->prepare("CALL SPgetEvents(0,-1,-1,-1);");
+     if($sql->execute()) {
+         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+         return $row;
+     }
+   }
+
+    // NoticeBoard: Return Surveys (only ID's and titles)
+   function get_Surveys(){
+     $sql = $this->db->prepare("CALL SPgetSurvey(0,-1,-1,-1);");
+     if($sql->execute()) {
+         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+         return $row;
+     }
+   }
+
+    // NoticeBoard: Return Surveys Questions
+   function get_SurveyQuestions($surveyID){
+       $sql = $this->db->prepare("CALL SPgetSurveyQuestion($surveyID);");
+       if($sql->execute()) {
+           $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+           return $row;
+       }
+   }
+
+   // NoticeBoard: Return Surveys Answers
+  function get_SurveyAnswers($surveyID){
+      $sql = $this->db->prepare("CALL SPgetSurveyAnswers($surveyID);");
+      if($sql->execute()) {
+          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+          return $row;
+      }
   }
 
   //return a column
@@ -96,6 +118,20 @@ class DB_Handler
         return $row;
       }
       return false;
+
+  }
+
+  function insertUser($query){
+      $sql = $this->db->prepare($query);
+      $sql->execute();
+
+  }
+  function countUser($query){
+      $sql = $this->db->prepare($query);
+      $count = $sql->rowCount();
+      return $count;
+
   }
 }
+
 ?>

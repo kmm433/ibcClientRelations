@@ -17,9 +17,16 @@ body {
   background-color: red;
 }
 
+
+.signup-fields label, .signup-fields input {
+    float: none; /* if you had floats before? otherwise inline-block will behave differently */
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .side-menu {
   height: 100%;
-  position: fixed;
+  position: fixed;;
   background-color: #2462AB;
   padding-bottom: 20px;
   width: 20%;
@@ -28,7 +35,7 @@ body {
 .side-menu ul {
   list-style-type: none;
   margin: 0;
-  padding: 0px 10px 0px 10px;
+  padding: 8px 10px 8px 10px;
   background-color: #2462AB;
 }
 
@@ -45,7 +52,6 @@ body {
 
 .notice {
   position: relative;
-  margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
   background-color: #FFFFFF;
@@ -79,8 +85,28 @@ body {
   font-weight: bold;
 }
 
+.surveyQuestion {
+    text-align: center;
+}
+
+.slick-next:before{
+    color: black;
+}
+.slick-prev:before{
+    color: black;
+}
+
+.slick-next{
+    right: 0%;
+}
+
+.slick-prev{
+    z-index:100000;
+    left: 0%;
+}
+
 #bottom-options {
-  position: relative;
+  position: fixed;
   bottom: 0px;
 }
 
@@ -106,6 +132,12 @@ body {
 #menu-welcome h1 {
   color: #FFFFFF;
   font-size: 150%;
+}
+
+#notice-board {
+  margin-left: 20%;
+  margin-right: 5%;
+  padding-top: 15px;
 }
 
 /* The following is to style the chamber member list table*/
@@ -203,12 +235,6 @@ body {
   float: left;
   margin-left: 22%;
   margin-right: 20%;
-}
-
-#notice-board {
-  margin-left: 280px;
-  margin-right: 150px;
-  padding-top: 15px;
 }
 
 @media (max-width: 720px) {

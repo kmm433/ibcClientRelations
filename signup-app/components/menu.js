@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import {NavLink} from 'react-router-dom';
 
 var optionsArray = []
@@ -9,7 +8,7 @@ class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {chamber: 'shit'};
-    
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -36,11 +35,12 @@ class List extends React.Component {
 
   render() {
     return (
-      <div>
+      <div >
         <form>
           <label>
             Which Chamber would you like to join?
             <select value={this.state.value} onChange={this.handleChange}>
+                <option key = "select" value="nothing">Select your Chamber</option>)
               {Object.keys(optionsArray).map((item,index) =>
                   <option key = {index} value={item}>{optionsArray[item]}</option>)}
             </select>

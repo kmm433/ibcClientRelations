@@ -20,7 +20,7 @@
     "babel": "^6.23.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-loader": "^7.1.1",
+    "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.4",
@@ -28,10 +28,14 @@
     "grunt-phpunit": "^0.3.6"
   },
   "dependencies": {
+    "@srph/react-infinite-scroll": "^0.1.0",
     "jquery": "^3.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.2",
-    "reactstrap": "^4.8.0"
+    "react-slick": "^0.14.11",
+    "reactstrap": "^4.8.0",
+    "validator": "^8.1.0",
+    "validator-js": "^0.2.1"
   }
 }

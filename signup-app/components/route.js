@@ -2,7 +2,7 @@ import React from 'react';
 import {BrowserRouter, Route} from 'react-router-dom';
 import Link from 'react-router-dom';
 import List from './menu.js';
-import Page from './page.js';
+import Page from './RetrieveFields.js';
 import $ from 'jquery';
 
 class Main extends React.Component {
@@ -29,7 +29,6 @@ class Main extends React.Component {
   /*function to send to child to get the chamber id of page to load*/
   myCallback (dataFromChild) {
        this.setState({ chamber_id: dataFromChild });
-       console.log("chamberID", this.state.chamber_id)
    }
 
 
