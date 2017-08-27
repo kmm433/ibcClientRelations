@@ -4,7 +4,7 @@
   "description": "A web based client relations management system for the Illawarra Business Chamber",
   "main": "index.php",
   "scripts": {
-    "go": "webpack-dev-server --hot --inline --colors --progress"
+    "start": "webpack-dev-server --hot --inline --colors --progress"
   },
   "repository": {
     "type": "git",
@@ -28,11 +28,16 @@
     "grunt-phpunit": "^0.3.6"
   },
   "dependencies": {
+    "@srph/react-infinite-scroll": "^0.1.0",
     "jquery": "^3.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.6.1",
     "react-dynamic-form": "^1.0.1",
+    "react-radio-buttons": "^1.1.1",
     "react-router-dom": "^4.1.2",
-    "reactstrap": "^4.8.0"
+    "react-slick": "^0.14.11",
+    "reactstrap": "^4.8.0",
+    "validator": "^8.1.0",
+    "validator-js": "^0.2.1"
   }
 }

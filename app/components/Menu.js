@@ -32,26 +32,25 @@ class Menu extends React.Component {
       <MenuLogo />
       <MenuWelcome first_name={this.props.first_name}/>
       <ul>
-        <li>
-          <NavLink exact activeClassName='active-route' to='/'>
-            Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink activeClassName='active-route' to='/profile'>
-            My Profile
-          </NavLink>
-        </li>
-        <li>
-          <NavLink activeClassName='active-route' to='/calendar'>
-            Calendar
-          </NavLink>
-        </li>
-        <li>
-          <NavLink activeClassName='active-route' to='/upcoming_events'>
-            Upcoming Events
-          </NavLink>
-        </li>
+        <li><NavLink exact activeClassName='active-route' to='/'>
+          Home
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='/profile'>
+          My Profile
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='/calendar'>
+          Calendar
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='/member_information'>
+          Member Information
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='/upcoming_events'>
+          Upcoming Events
+        </NavLink></li>
+    <li><NavLink activeClassName='active-route' to='/edit_signup'>
+          Edit Signup Form
+        </NavLink></li>
+
         {/*The exec_menu will only by created if the user is type 1*/}
         {this.state.exec_menu}
       </ul>

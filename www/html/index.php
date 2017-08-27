@@ -1,6 +1,6 @@
 <?php
   session_start();
-  // Verify that the user has signed in and enfore if they have not
+  // Verify that the user has signed in and enforce if they have not
   if(!$_SESSION['user'])
     header('Location: signin.php');
 ?>
@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
   </head>
   <body>
     <div id="app"></div>

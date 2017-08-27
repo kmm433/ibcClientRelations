@@ -4,6 +4,7 @@ import ReactRouter from 'react-router-dom';
 import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
+import Form from './Signup/form';
 import MemberInfo from './MemberInfo';
 
 //This component is responsibe for displaying the menu and the main item component.
@@ -17,15 +18,16 @@ class Layout extends React.Component {
           first_name={this.props.first_name}
         />
         {/*This list defines all possible location that can be navigated to*/}
-        <div>
-          <Route exact={true} path='/' component={NoticeBoard} />
-          <Route exact={true} path='/index.php' component={NoticeBoard} />
-          <Route path='/calendar' component={Calendar} />
-          <Route path='/profile' component={Calendar} />
-          <Route path='/member_information' component={MemberInfo} />
-          <Route path='/upcoming_events' component={Calendar} />
-          <Route path='/help' component={Calendar} />
-        </div>
+          <div>
+            <Route exact={true} path='/' component={NoticeBoard} />
+            <Route exact={true} path='/index.php' component={NoticeBoard} />
+            <Route path='/calendar' component={Calendar} />
+            <Route path='/profile' component={Calendar} />
+            <Route path='/member_information' component={MemberInfo} />
+            <Route path='/upcoming_events' component={Calendar} />
+            <Route path='/edit_signup' component={Form} />
+            <Route path='/help' component={Calendar} />
+          </div>
       </div>
     );
   }
