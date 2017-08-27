@@ -32,11 +32,8 @@
     "jquery": "^3.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.6.1",
-<<<<<<< HEAD
-=======
     "react-dynamic-form": "^1.0.1",
     "react-radio-buttons": "^1.1.1",
->>>>>>> master
     "react-router-dom": "^4.1.2",
     "react-slick": "^0.14.11",
     "reactstrap": "^4.8.0",

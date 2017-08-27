@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import $ from 'jquery';   /*For ajax query */
-import Slider from 'react-slick';   //https://github.com/akiran/react-slick
-
-
-/*
-key={survey[i].SurveyID}
-SurveyID={survey[i].SurveyID}
-title={survey[i].SurveyTitle + survey[i].SurveyID}
-DatePosted={survey[i].DatePosted}
-noQuestions={survey[i].noQuestions}
-*/
-
-var questions = [];
-var answers = [];
-=======
 /*
 Todo:
 - Get different answer types, start determining which question holds which type
@@ -43,27 +26,20 @@ const Loader = () =>
     <div />
     <div />
   </div>
->>>>>>> master
 
 class NoticeSurvey extends React.Component {
     constructor(props) {
       super(props);
-<<<<<<< HEAD
-=======
       this.state = {
           items: []
       };
->>>>>>> master
     }
 
     componentWillMount(){
         /* get all Questions and Answers */
         this.get_SurveyQuestions();
         this.get_SurveyAnswers();
-<<<<<<< HEAD
-=======
         this.setData();
->>>>>>> master
     }
 
     get_SurveyQuestions(){
@@ -104,8 +80,6 @@ class NoticeSurvey extends React.Component {
             });
         }
 
-<<<<<<< HEAD
-=======
         setData(){
             var FormattedOutput = [];
             // Cycle through questions and each set of answers
@@ -146,7 +120,6 @@ class NoticeSurvey extends React.Component {
             });
         }
 
->>>>>>> master
 
   render(){
       var settings = {
@@ -161,31 +134,6 @@ class NoticeSurvey extends React.Component {
       <div className="notice">
         <div className="notice-title">
           <h2>{this.props.title}</h2>
-<<<<<<< HEAD
-        </div>
-        <div className="survey-content">
-            <p>{this.props.DatePosted}</p>
-            <div className="surveyQuestion">
-                <Slider {...settings}>
-                    <div>
-                        <h3>{questions[0].question}</h3>
-                        <p>{answers[0].answer}</p>
-                        <p>{answers[1].answer}</p>
-                    </div>
-                    <div>
-                        <h3>{questions[1].question}</h3>
-                        <p>{answers[2].answer}</p>
-                        <p>{answers[3].answer}</p>
-                        <p>{answers[3].answer}</p>
-                        <p>{answers[3].answer}</p>
-                    </div>
-                    <div><h3>3</h3></div>
-                    <div><h3>4</h3></div>
-                    <div><h3>5</h3></div>
-                    <div><h3>6</h3></div>
-                </Slider>
-            </div>
-=======
           <h2>{this.props.DatePosted}</h2>
         </div>
         <div className="survey-content">
@@ -196,7 +144,6 @@ class NoticeSurvey extends React.Component {
                </div>
                )}
             </Slider>
->>>>>>> master
         </div>
       </div>
     );
@@ -204,8 +151,6 @@ class NoticeSurvey extends React.Component {
 };
 
 export default NoticeSurvey;
-<<<<<<< HEAD
-=======
 
 class Survey extends React.Component {
     constructor(props) {
@@ -276,4 +221,3 @@ class SubmitPage extends React.Component {
     }
 
 };
->>>>>>> master
