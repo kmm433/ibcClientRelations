@@ -1,4 +1,5 @@
 import React from 'react';
+import MemberDetailsEditor from './MemberDetailsEditor';
 
 class MemberActionPanel extends React.Component {
 
@@ -19,12 +20,14 @@ class MemberActionPanel extends React.Component {
     // If edit mode is entered render editable user details
     if (this.props.action_type === 'edit') {
       return (
-        <div className='alter alert-warning'>
-          <button className='btn btn-warning confirmation-button'>Confirm</button>
-          <button className='btn confirmation-button' onClick={this.handleCancel}>Cancel</button>
-        </div>
+        <MemberDetailsEditor
+          selected_user={this.props.selected_user}
+          mode='ed'
+          handleCancel={this.handleCancel}
+        />
       );
     }
+
     // If delete mode is entered render delete confirmation
     else if (this.props.action_type === 'delete') {
       return (
