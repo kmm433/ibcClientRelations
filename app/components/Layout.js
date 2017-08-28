@@ -5,6 +5,7 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Help from './Help';
 import Calendar from './Calendar';
+import Profile from './Profile';
 
 class Layout extends React.Component {
   render() {
@@ -19,6 +20,7 @@ class Layout extends React.Component {
             <Route exact={true} path='/index.php' component={NoticeBoard} />
             <Route path='/calendar' component={Calendar} />
             <Route path='/profile' component={Calendar} />
+            <Route path='/profile' component={Profile} />
             <Route path='/member_information' component={Calendar} />
             <Route path='/upcoming_events' component={Calendar} />
             <Route path='/help' component={Help} />

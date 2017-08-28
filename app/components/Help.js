@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Help extends React.Component {
+class help extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -8,19 +8,45 @@ class Help extends React.Component {
   render(){
     console.log("HELLO STEF");
     return(
-      <div className="notice">
-        <div  className="notice-title">
       <div className="HelpPage">
+        <div>
         <h1> Frequently Asked Questions </h1>
-
-<p>1. A question goes here</p>
-<p>An answer goes in here</p>
-
         </div>
+          <br /> <br />
+        <div>
+          Question: How do i create a survey?
+        </div>
+          <br />
+        <div>
+          Answer: Only Illawarra Business chamber is able to create a survey. These are then approved by the chambers for their members to answer
+        </div>
+          <br /> <br />
+        <div>
+          Question:
+        </div>
+          <br />
+        <div>
+          Answer:
+        </div>
+          <br /> <br />
+        <div>
+          Question:
+        </div>
+          <br />
+        <div>
+          Answer:
+        </div>
+          <br /> <br />
+        <div>
+          Question: How do i create a survey?
+        </div>
+        <br />
+        <div>
+          Answer:
       </div>
     </div>
     );
 
 }
 };
-export default Help;
+export default help;

@@ -80,9 +80,26 @@ body {
 }
 
 .HelpPage {
-  float: right;
+  margin-left: 25%;
 }
 
+.ProfilePage {
+  float:right;
+}
+
+.question {
+  cursor: pointer;
+	text-transform: uppercase;
+}
+
+.answer.true {
+	color: crimson;
+	font-size: 0.875rem;
+}
+
+.answer.false {
+	display: none;
+}
 
 #bottom-options {
   position: fixed;
