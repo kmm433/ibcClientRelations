@@ -1,8 +1,6 @@
 import React from 'react';
 
 class ProfileHeading extends React.Component {
-
-
   render(){
     return(
       <div>

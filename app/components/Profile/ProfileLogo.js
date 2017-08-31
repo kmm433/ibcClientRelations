@@ -4,7 +4,10 @@ class ProfileLogo extends React.Component {
   render(){
     return(
       <div>
-        <p>PROFILE LOGO</p>
+        <button onClick={ () => location.href = this.props.profileImg }>
+          Profile Logo
+        </button>
+
       </div>
     );
   }

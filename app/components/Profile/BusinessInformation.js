@@ -4,9 +4,11 @@ class BusinessInformation extends React.Component {
   render(){
     return(
       <table>
-        <tr>
-          <td>Business Owner:</td>
-          <td>{this.props.business.owner}</td>
+        <tbody>
+          <tr>
+            <td>Business Owner:</td>
+            <td>{this.props.business.owner}</td>
+          </tr>
           <tr>
             <td>Contact Number:</td>
             <td>{this.props.business.phone}</td>
@@ -27,7 +29,7 @@ class BusinessInformation extends React.Component {
             <td>Description:</td>
             <td>{this.props.business.description}</td>
           </tr>
-        </tr>
+        </tbody>
       </table>
     );
   }
