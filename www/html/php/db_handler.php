@@ -59,7 +59,18 @@ class DB_Handler
   }
 
   function getBusinessProfile($businessId) {
-    $sql = $this->db->prepare("SELECT * FROM BUSINESS WHERE businessID = ?");
+    $sql = $this->db->prepare(
+<<<SQL
+    SELECT
+      *
+    FROM
+      BUSINESS JOIN
+      CHAMBER ON BUSINESS.chamberID = CHAMBER.chamberID JOIN
+      ADDRESS ON BUSINESS.addressid = ADDRESS.addressID JOIN
+      USER ON BUSINESS.businessID = USER.businessID
+    WHERE BUSINESS.businessID = ?
+SQL
+    );
     $sql->execute(array($businessId));
     $result = $sql->fetch(PDO::FETCH_ASSOC);
     return $result;

@@ -5,7 +5,7 @@ class ProfileActions extends React.Component {
   render(){
     return(
       <div>
-            { this.renderButton() }
+          { this.renderButton() }
       </div>
     );
   }

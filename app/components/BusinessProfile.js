@@ -35,11 +35,11 @@ class BusinessProfile extends React.Component {
 
     return(
       <div>
-        <ProfileHeading text={business.name} messageURL={"/message"} />
+        <ProfileHeading text={business.businessname} messageURL={"/message"} />
         <BusinessInformation business={business} />
         <div>
           <ProfileLogo profileImage={""}/>
-          <SocialLinks facebookURL={"http://facebook.com/blah"} twitterURL={""} linkedinURL={""}/>
+          <SocialLinks facebookURL={""} twitterURL={""} linkedinURL={""}/>
         </div>
         <ProfileActions editDetails={"/editprofile"} />
       </div>

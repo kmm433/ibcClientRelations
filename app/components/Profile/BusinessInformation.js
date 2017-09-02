@@ -7,7 +7,7 @@ class BusinessInformation extends React.Component {
         <tbody>
           <tr>
             <td>Business Owner:</td>
-            <td>{this.props.business.owner}</td>
+            <td>{this.props.business.firstname} {this.props.business.lastname}</td>
           </tr>
           <tr>
             <td>Contact Number:</td>
@@ -15,7 +15,13 @@ class BusinessInformation extends React.Component {
           </tr>
           <tr>
             <td>Business address:</td>
-            <td>{this.props.business.address}</td>
+            <td>
+              {this.props.business.line1}&nbsp;
+              {this.props.business.city}&nbsp;
+              {this.props.business.postcode}&nbsp;
+              {this.props.business.state}&nbsp;
+              {this.props.business.country}
+            </td>
           </tr>
           <tr>
             <td>Website:</td>
@@ -23,7 +29,7 @@ class BusinessInformation extends React.Component {
           </tr>
           <tr>
             <td>Member Of:</td>
-            <td>{this.props.business.chamber}</td>
+            <td>{this.props.business.name}</td>
           </tr>
           <tr>
             <td>Description:</td>
