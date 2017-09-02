@@ -35,7 +35,7 @@ class Menu extends React.Component {
         <li><NavLink exact activeClassName='active-route' to='/'>
           Home
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/business'>
+        <li><NavLink activeClassName='active-route' to='/my_business'>
           My Profile
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/calendar'>

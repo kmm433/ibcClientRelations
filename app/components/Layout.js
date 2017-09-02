@@ -23,7 +23,7 @@ class Layout extends React.Component {
             <Route exact={true} path='/' component={NoticeBoard} />
             <Route exact={true} path='/index.php' component={NoticeBoard} />
             <Route path='/calendar' component={Calendar} />
-            <Route path='/business' component={BusinessProfile} />
+            <Route path='/my_business' component={BusinessProfile} />
             <Route path='/business/:businessId' component={BusinessProfile} />
             <Route path='/member_information' component={MemberInfo} />
             <Route path='/upcoming_events' component={Calendar} />
