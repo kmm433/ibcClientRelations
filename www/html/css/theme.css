@@ -17,7 +17,6 @@ body {
   background-color: red;
 }
 
-
 .signup-fields label, .signup-fields input {
     float: none; /* if you had floats before? otherwise inline-block will behave differently */
     display: inline-block;
@@ -243,7 +242,7 @@ body {
   margin-right: 20%;
 }
 
-#notice-board {
+#content {
   margin-left: 20%;
   margin-right: 5%;
   padding-top: 15px;

@@ -48,7 +48,7 @@ class NoticeBoard extends React.Component {
 
   render(){
     return(
-        <div id="notice-board">
+        <div>
           <Infinite callback={this.request} disabled={this.state.loading}>
             {this.state.items.map((item, i) =>
              <row key={i}>

@@ -48,6 +48,34 @@ class DB_Handler
     return false;
   }
 
+  // Returns the user's businessID
+  function getBusiness($email_addr) {
+    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE email='$email_addr'");
+    if ($sql->execute()) {
+      $result = $sql->fetch(PDO::FETCH_ASSOC);
+      return $result['businessID'];
+    }
+    return false;
+  }
+
+  function getBusinessProfile($businessId) {
+    $sql = $this->db->prepare(
+<<<SQL
+    SELECT
+      *
+    FROM
+      BUSINESS JOIN
+      CHAMBER ON BUSINESS.chamberID = CHAMBER.chamberID JOIN
+      ADDRESS ON BUSINESS.addressid = ADDRESS.addressID JOIN
+      USER ON BUSINESS.businessID = USER.businessID
+    WHERE BUSINESS.businessID = ?
+SQL
+    );
+    $sql->execute(array($businessId));
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    return $result;
+  }
+
   // Get the user's metadata
   function getUserData($email_addr) {
     $sql = $this->db->prepare("SELECT firstname, lastname, type, chamberID, businessID FROM USER WHERE email='$email_addr'");
