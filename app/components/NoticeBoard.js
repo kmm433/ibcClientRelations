@@ -169,8 +169,8 @@ class NoticeBoard extends React.Component {
                 title={events[i].EventTitle}
                 message={events[i].Event}
                 eventdate={events[i].EventDate}
-                startTime={events[i].startTime}
                 endTime={events[i].endTime}
+                location={events[i].Location}
                 EventURL={events[i].EventURL}
                 DatePosted={events[i].DatePosted}
             />)
