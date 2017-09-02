@@ -15,6 +15,8 @@ import React from 'react';
 import $ from 'jquery';                                         /* For ajax query */
 import Slider from 'react-slick';                               /* https://github.com/akiran/react-slick */
 import { RadioGroup, RadioButton } from 'react-radio-buttons';  /* https://www.npmjs.com/package/react-radio-buttons */
+import {Input, TextArea, GenericInput} from 'react-text-input'; /* https://github.com/smikhalevski/react-text-input */
+import moment from "moment";                                    /* https://momentjs.com/ */
 
 var questions = [];
 var answers = [];
@@ -53,7 +55,7 @@ class NoticeSurvey extends React.Component {
               },
               success : function(response){
                   questions = response;
-                  console.log('get_SurveyQuestions Success')
+                  //console.log('get_SurveyQuestions Success')
               }.bind(this),
               error: function(xhr, status, err){
                   console.log('get_SurveyQuestions Error')
@@ -72,41 +74,53 @@ class NoticeSurvey extends React.Component {
                 },
                 success : function(response){
                     answers = response;
-                    console.log('get_SurveyAnswers Success')
+                    //console.log('get_SurveyAnswers Success')
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('get_SurveyAnswers Error')
                 }.bind(this)
             });
         }
-
+        /* Format the Questions and Answers properly, push into list that will
+        be used by the slider                                               */
         setData(){
             var FormattedOutput = [];
             // Cycle through questions and each set of answers
             for(var i = 0; i < questions.length; i++){
 
-                //Prepare results array
-                userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: answers[0].AnswerID, Answer: answers[0].answer});
-
-                //Add all potential answers
                 var tmpA = [];
-                for(var b = 0; b < answers.length; b++){
-                    if (answers[b].questionNo == questions[i].questionNo){
-                        tmpA.push(
-                            <RadioButton key={answers[b].AnswerID + answers[b].answer}
-                                rootColor="#4d4c4c"
-                                value={questions[i].questionNo + ";" + answers[b].AnswerID + ";" + answers[b].answer}>
-                                {answers[b].answer}
-                            </RadioButton>);
+                if (questions[i].answerType == 0){ // Type is RadioButton
+                    //Prepare results array
+                    userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: answers[0].AnswerID, Answer: answers[0].answer});
+                    //Add all potential answers
+                    for(var b = 0; b < answers.length; b++){
+                        if (answers[b].questionNo == questions[i].questionNo){
+                            tmpA.push(
+                                <RadioButton key={answers[b].AnswerID + answers[b].answer}
+                                    rootColor="#4d4c4c"
+                                    value={questions[i].questionNo + ";" + answers[b].AnswerID + ";" + answers[b].answer}>
+                                    {answers[b].answer}
+                                </RadioButton>);
+                        }
                     }
+                    // Add final question / answer pairs
+                    FormattedOutput.push(<SurveyRadio
+                            key={questions[i].questionNo}
+                            question={questions[i].question}
+                            answers={tmpA}
+                    />)
                 }
-
-                // Add final question / answer pairs
-                FormattedOutput.push(<Survey
-                        key={questions[i].questionNo}
-                        question={questions[i].question}
-                        answers={tmpA}
-                />)
+                else if (questions[i].answerType == 1){ // Type is TextBox
+                    //Prepare results array
+                    userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: -1, Answer: ""});
+                    // Add final question / answer pairs
+                    FormattedOutput.push(<SurveyText
+                            key={questions[i].questionNo}
+                            qID={questions[i].questionNo}
+                            question={questions[i].question}
+                            answers={tmpA}
+                    />)
+                }
             }
 
             // Add the submit page
@@ -130,11 +144,12 @@ class NoticeSurvey extends React.Component {
           slidesToScroll: 1
         };
 
+
     return(
       <div className="notice">
         <div className="notice-title">
-          <h2>{this.props.title}</h2>
-          <h2>{this.props.DatePosted}</h2>
+          <h2>{"New Survey: " + this.props.title}</h2>
+          <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
         </div>
         <div className="survey-content">
             <Slider {...settings}>
@@ -152,7 +167,7 @@ class NoticeSurvey extends React.Component {
 
 export default NoticeSurvey;
 
-class Survey extends React.Component {
+class SurveyRadio extends React.Component {
     constructor(props) {
       super(props);
       this.getIndex = this.getIndex.bind(this);
@@ -190,31 +205,78 @@ class Survey extends React.Component {
     }
 };
 
+class SurveyText extends React.Component {
+    constructor(props) {
+      super(props);
+      this.getIndex = this.getIndex.bind(this);
+      this.onChange = this.onChange.bind(this);
+  }
+    getIndex(id) {
+        for(var i = 0; i < userAnswers.length; i++) {
+            if(userAnswers[i].questionNo == id) {
+                return i;
+            }
+        }
+    }
+    onChange(value) {
+        //console.log(value);
+        // Set result
+        var index = this.getIndex(this.props.qID);
+        userAnswers[index].Answer = value;
+    }
+    render(){
+        return(
+            <div>
+                <h3>{this.props.question}</h3>
+                <div>
+                    <TextArea fitLineLength={true}
+                        onChange={e => this.onChange(e.target.value)}
+                    />
+                </div>
+            </div>
+        );
+    }
+};
+
 class SubmitPage extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+          btnDisabled: false,
+          label: "Would you like to submit?"
+      };
+      this.insert_SurveyAnswers = this.insert_SurveyAnswers.bind(this);
+    }
+
     insert_SurveyAnswers(){
-          $.ajax({
-              url: '/php/insert_SurveyAnswers.php',
-              type:'POST',
-              dataType: "json",
-              data: {
-                  'data': userAnswers
-              },
-              success : function(response){
-                  console.log(response)
-                  console.log('insert_SurveyAnswers Success')
-              }.bind(this),
-              error: function(xhr, status, err){
-                  //console.log('insert_SurveyAnswers Error')
-                  console.log(status)
-              }.bind(this)
-          });
+        this.setState({
+            btnDisabled: true,
+            label: "Thank you for taking the time to complete this survey"
+        });
+        console.log(userAnswers);
+      $.ajax({
+          url: '/php/insert_SurveyAnswers.php',
+          type:'POST',
+          dataType: "json",
+          data: {
+              'data': userAnswers
+          },
+          success : function(response){
+              //console.log(response)
+              //console.log('insert_SurveyAnswers Success')
+          }.bind(this),
+          error: function(xhr, status, err){
+              console.log('insert_SurveyAnswers Error')
+              //console.log(status)
+          }.bind(this)
+      });
     }
     render(){
     return(
         <div>
-            <h3>Would you like to submit?</h3>
+            <h3><label htmlFor="title">{this.state.label}</label></h3>
             <div>
-                {<button type="button" className="btn btn-primary" id="btnSubmitSurvey" onClick={this.insert_SurveyAnswers}>Submit</button>}
+                {<button type="button" className="btn btn-primary" id="btnSubmitSurvey" disabled={this.state.btnDisabled} onClick={this.insert_SurveyAnswers}>Submit</button>}
             </div>
         </div>
         );

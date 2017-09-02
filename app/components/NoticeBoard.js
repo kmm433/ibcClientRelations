@@ -51,9 +51,9 @@ class NoticeBoard extends React.Component {
         <div id="notice-board">
           <Infinite callback={this.request} disabled={this.state.loading}>
             {this.state.items.map((item, i) =>
-             <row key={i}>
+             <div key={i}>
                {item}
-             </row>
+           </div>
            )}
           </Infinite>
 
@@ -102,7 +102,7 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              console.log('get_Notifications Success')
+              //console.log('get_Notifications Success')
           }.bind(this),
           error: function(xhr, status, err){
               console.log('get_Notifications Error')
@@ -121,7 +121,7 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 events = response;
-                console.log('get_Events Success')
+                //console.log('get_Events Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_Events Error')
@@ -140,7 +140,7 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 surveys = response;
-                console.log('get_Surveys Success')
+                //console.log('get_Surveys Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_Surveys Error')
@@ -158,7 +158,7 @@ class NoticeBoard extends React.Component {
         for(var i = 0; i < notifs.length; i++){
             messages.push(<Notice
                 key={notifs[i].NotificationID}
-                title={notifs[i].NoticeTitle + notifs[i].NotificationID}
+                title={notifs[i].NoticeTitle}
                 message={notifs[i].Notice}
                 DatePosted={notifs[i].DatePosted}
             />)
@@ -166,7 +166,7 @@ class NoticeBoard extends React.Component {
         for(var i = 0; i < events.length; i++){
             messages.push(<NoticeEvent
                 key={events[i].EventID}
-                title={events[i].EventTitle + events[i].EventID}
+                title={events[i].EventTitle}
                 message={events[i].Event}
                 eventdate={events[i].EventDate}
                 startTime={events[i].startTime}
@@ -179,9 +179,8 @@ class NoticeBoard extends React.Component {
             messages.push(<NoticeSurvey
                 key={survey[i].SurveyID}
                 SurveyID={survey[i].SurveyID}
-                title={survey[i].SurveyTitle + survey[i].SurveyID}
+                title={survey[i].SurveyTitle}
                 DatePosted={survey[i].DatePosted}
-                noQuestions={survey[i].noQuestions}
             />)
         }
 
