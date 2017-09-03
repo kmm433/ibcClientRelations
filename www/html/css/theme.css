@@ -208,6 +208,10 @@ body {
   background-color: #DCA7A7;
 }
 
+#member-group-control ul li{
+  list-style: none;
+}
+
 .confirmation-button {
   margin: 10px 5px;
 }

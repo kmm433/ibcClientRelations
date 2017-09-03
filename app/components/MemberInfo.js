@@ -28,8 +28,9 @@ class MemberInfo extends React.Component {
   // Fetch this chamber's members
   componentWillMount(props) {
     $.ajax({url: "/php/get_chamber_members.php", success: result => {
-      var members = JSON.parse(result);
-      this.setState({member_list: members});
+        var members = JSON.parse(result);
+        this.setState({member_list: members});
+        console.log(members);
     }})
   }
 

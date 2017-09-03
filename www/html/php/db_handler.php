@@ -164,9 +164,38 @@ class DB_Handler
 
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $groupName) {
-    $sql = $this->db->prepare("INSERT INTO CHAMBER_GROUPS_$chamberId (groupName) VALUES ('$groupName')");
-    if ($sql->execute()) {
+    $sql = $this->db->prepare("SELECT * FROM CHAMBER_GROUPS_$chamberId WHERE groupName='$groupName'");
+    if ($sql->execute()){
+      if (!($sql->rowCount() == 0))
+        return false;
+      $sql = $this->db->prepare("INSERT INTO CHAMBER_GROUPS_$chamberId (groupName) VALUES ('$groupName')");
+      if ($sql->execute()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Deletes a specified list of groups from a chamber
+  function deleteGroups($chamberId, $groupNames) {
+    $successCounter = 0;
+    foreach($groupNames as $group) {
+      $sql = $this->db->prepare("DELETE FROM CHAMBER_GROUPS_$chamberId WHERE groupName='$group'");
+      if($sql->execute())
+        $successCounter++;
+    }
+    if ($successCounter == count($groupNames))
       return true;
+    else
+      return false;
+  }
+
+  // Find all of the groups that exist within a chamber
+  function getGroups($chamberId) {
+    $sql = $this->db->prepare("SELECT groupName FROM CHAMBER_GROUPS_$chamberId ORDER BY groupName");
+    if ($sql->execute()) {
+      $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+      return $row;
     }
     return false;
   }

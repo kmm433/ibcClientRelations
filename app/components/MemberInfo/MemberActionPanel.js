@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import MemberDetailsEditor from './MemberDetailsEditor';
 import MemberGroupControl from './MemberGroupControl';
 
@@ -6,7 +7,29 @@ class MemberActionPanel extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      groups: null
+    };
+    super(props);
     this.handleCancel = this.handleCancel.bind(this);
+    this.updateChamberGroups = this.updateChamberGroups.bind(this);
+  }
+
+  componentWillMount(props) {
+    this.updateChamberGroups();
+  }
+
+  updateChamberGroups() {
+    $.ajax({url: "/php/get_chamber_groups.php", success: result => {
+      if (result !== '') {
+        var results = JSON.parse(result);
+        var groupNames = [];
+        results.forEach((item) => {
+          groupNames.push(item['groupName']);
+        });
+        this.setState({groups: groupNames});
+      }
+    }});
   }
 
   // Unselect the previously chosen user and hide the confirmation menu.
@@ -53,7 +76,10 @@ class MemberActionPanel extends React.Component {
     // If group mode is entered display the group selection menu
     else if (this.props.action_type === 'group') {
       return (
-        <MemberGroupControl />
+        <MemberGroupControl
+          groups={this.state.groups}
+          updateGroups={this.updateChamberGroups}
+        />
       );
     }
   }
