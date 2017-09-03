@@ -10,7 +10,7 @@ class BusinessProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = { business: {
-      name: "Loading..."
+      businessname: "Loading..."
     }};
     this.saveData = this.saveData.bind(this);
   }

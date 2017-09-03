@@ -7,6 +7,7 @@ import Calendar from './Calendar';
 import BusinessProfile from './BusinessProfile';
 import Form from './Signup/form';
 import MemberInfo from './MemberInfo';
+import Help from './Help';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -28,7 +29,7 @@ class Layout extends React.Component {
             <Route path='/member_information' component={MemberInfo} />
             <Route path='/upcoming_events' component={Calendar} />
             <Route path='/edit_signup' component={Form} />
-            <Route path='/help' component={Calendar} />
+            <Route path='/help' component={Help} />
           </div>
       </div>
     );

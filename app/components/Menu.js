@@ -58,7 +58,7 @@ class Menu extends React.Component {
         <ul>
           <MenuItem text="Sign Out" link="php/process_signout.php" />
           <li>
-            <NavLink activeClassName='active-route' to='/help'>
+            <NavLink activeClassName='active-route' to='/Help'>
               Help
             </NavLink>
           </li>
