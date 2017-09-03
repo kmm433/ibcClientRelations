@@ -38,15 +38,36 @@ class DB_Handler
     return false;
   }
 
-  // Returns the user's chamberID
-  function getChamber($email_addr) {
-    $sql = $this->db->prepare("SELECT chamberID FROM USER WHERE email='$email_addr'");
+  // Session Set: Returns the user's chamberID
+  function getChamber($user) {
+    $sql = $this->db->prepare("SELECT chamberID FROM USER WHERE email='$user'");
     if ($sql->execute()) {
       $result = $sql->fetch(PDO::FETCH_ASSOC);
       return $result['chamberID'];
     }
     return false;
   }
+
+  // Session Set: Returns the user's userID
+  function getUserID($user) {
+      $sql = $this->db->prepare("SELECT UserID FROM USER WHERE email='$user'");
+      if ($sql->execute()) {
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+        return $result['UserID'];
+      }
+      return false;
+    }
+
+  // Session Set: Returns the user's Business ID
+  function getBusinessID($user) {
+    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE email='$user'");
+    if ($sql->execute()) {
+      $result = $sql->fetch(PDO::FETCH_ASSOC);
+      return $result['businessID'];
+    }
+    return false;
+  }
+
 
   // Get the user's metadata
   function getUserData($email_addr) {
@@ -70,19 +91,24 @@ class DB_Handler
     return $chamberID;
   }
 
-  // return messages
-  function get_messages(){ /*todo: pass group ID, select * where groupID matches*/
-    $sql = $this->db->prepare("SELECT * FROM NOTIFICATION");
-    if($sql->execute()) {
-        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-        //$results = array ('NotificationID'=>$row['NotificationID'],'NoticeTitle'=>$row['NoticeTitle'], 'Notice'=>$row['Notice'], 'GroupID'=>$row['GroupID'], 'DatePosted'=>$row['DatePosted']);
-        return $row;
-    }
-  }
-
     // NoticeBoard: Return Notifications
    function get_Notifications(){
-     $sql = $this->db->prepare("CALL SPgetNotifications(0,-1,-1,-1);");
+     $userid =  $_SESSION['userid'];
+     $chamberID = $_SESSION['chamber'];
+     $businessID = $_SESSION['businessid'];
+     $sql = $this->db->prepare("CALL SPgetNotifications($userid,$chamberID,$businessID);");
+     if($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+         return $row;
+     }
+   }
+
+   // Event Page: Return Events
+   function get_Events(){
+     $userid =  $_SESSION['userid'];
+     $chamberID = $_SESSION['chamber'];
+     $businessID = $_SESSION['businessid'];
+     $sql = $this->db->prepare("CALL SPgetEvents($userid,$chamberID,$businessID);");
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
@@ -90,17 +116,73 @@ class DB_Handler
    }
 
    // NoticeBoard: Return Events
-   function get_Events(){
-     $sql = $this->db->prepare("CALL SPgetEvents(0,-1,-1,-1);");
+   function get_EventsNoticeBoard(){
+     $userid =  $_SESSION['userid'];
+     $chamberID = $_SESSION['chamber'];
+     $businessID = $_SESSION['businessid'];
+     $sql = $this->db->prepare("CALL SPgetEventsNoticeBoard($userid,$chamberID,$businessID);");
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
      }
    }
 
+   // NoticeBoard: Hide Events (from the noticeboard)
+   function hide_Events($EventID) {
+     $userid =  $_SESSION['userid'];
+     $sql = $this->db->prepare("INSERT INTO MYEVENTHIDDEN (`EventID`, `UserID`) VALUES ('$EventID','$userid')");
+     if ($sql->execute()) {
+       return true;
+     }
+     return false;
+   }
+
+   // Events: Mark Event as Going
+   function set_EventGoing($EventID) {
+     $userid =  $_SESSION['userid'];
+     $sql = $this->db->prepare("CALL SPsetEventGoing('$EventID', '$userid');");
+     if ($sql->execute()) {
+       return true;
+     }
+     return false;
+   }
+
+   // Events: Mark Event as Cant Go
+   function set_EventCantgo($EventID) {
+     $userid =  $_SESSION['userid'];
+     $sql = $this->db->prepare("CALL SPsetEventCantgo('$EventID', '$userid');");
+     if ($sql->execute()) {
+       return true;
+     }
+     return false;
+   }
+
+   function get_EventStatusGoing($EventID){
+     $userid =  $_SESSION['userid'];
+     $sql = $this->db->prepare("SELECT GoingID FROM MYEVENTGOING WHERE EventID = $EventID and UserID = $userid;");
+     if ($sql->execute()) {
+        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+     }
+     return false;
+   }
+
+   function get_EventStatusCantGo($EventID){
+       $userid =  $_SESSION['userid'];
+       $sql = $this->db->prepare("SELECT CantgoID FROM MYEVENTCANTGO WHERE EventID = $EventID and UserID = $userid;");
+       if ($sql->execute()) {
+          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+          return $row;
+       }
+       return false;
+   }
+
     // NoticeBoard: Return Surveys (only ID's and titles)
    function get_Surveys(){
-     $sql = $this->db->prepare("CALL SPgetSurvey(0,-1,-1,-1);");
+     $userid =  $_SESSION['userid'];
+     $chamberID = $_SESSION['chamber'];
+     $businessID = $_SESSION['businessid'];
+     $sql = $this->db->prepare("CALL SPgetSurvey($userid,$chamberID,$businessID);");
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
@@ -127,7 +209,8 @@ class DB_Handler
 
    // NoticeBoard Surveys: submit Survey Answers
   function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
-    $sql = $this->db->prepare("CALL SPinsertSurveyAnswers(0,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
+    $userid =  $_SESSION['userid'];
+    $sql = $this->db->prepare("CALL SPinsertSurveyAnswers($userid,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
     $sql->execute();
   }
 

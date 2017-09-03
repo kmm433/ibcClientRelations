@@ -97,7 +97,7 @@ class NoticeBoard extends React.Component {
       var notifications = [];
       $.ajax({
           url: '/php/get_Notifications.php',
-          type:'GET',
+          type:'POST',
           async: false,
           dataType: "json",
           success : function(response){
@@ -115,16 +115,17 @@ class NoticeBoard extends React.Component {
   get_events(){
       var events = [];
       $.ajax({
-            url: '/php/get_Events.php',
-            type:'GET',
+            url: '/php/get_EventsNoticeBoard.php',
+            type:'POST',
             async: false,
             dataType: "json",
             success : function(response){
                 events = response;
                 //console.log('get_Events Success')
             }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_Events Error')
+            error: function(xhr, status, err, response){
+                console.log('get_Events Error' + xhr + status + err + response)
+
             }.bind(this)
         });
         return events;
@@ -135,7 +136,7 @@ class NoticeBoard extends React.Component {
         var surveys = [];
         $.ajax({
             url: '/php/get_Surveys.php',
-            type:'GET',
+            type:'POST',
             async: false,
             dataType: "json",
             success : function(response){
@@ -166,6 +167,7 @@ class NoticeBoard extends React.Component {
         for(var i = 0; i < events.length; i++){
             messages.push(<NoticeEvent
                 key={events[i].EventID}
+                eventID={events[i].EventID}
                 title={events[i].EventTitle}
                 message={events[i].Event}
                 eventdate={events[i].EventDate}
