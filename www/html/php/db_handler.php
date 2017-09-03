@@ -157,9 +157,11 @@ class DB_Handler
   }
   function countUser($query){
       $sql = $this->db->prepare($query);
-      $count = $sql->rowCount();
-      return $count;
-
+      if ($sql->execute()) {
+        $row = $sql->fetchColumn(0);
+        return $row;
+      }
+      return false;
   }
 
   // Creates a group for a specified chamber using a specified name

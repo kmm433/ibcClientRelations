@@ -17,13 +17,6 @@ body {
   background-color: red;
 }
 
-
-.signup-fields label, .signup-fields input {
-    float: none; /* if you had floats before? otherwise inline-block will behave differently */
-    display: inline-block;
-    vertical-align: middle;
-}
-
 .side-menu {
   height: 100%;
   position: fixed;
@@ -363,4 +356,111 @@ body {
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
+}
+
+/* The following is to style the edit sign up fields table */
+
+#edit-fields-table {
+    float: left;
+    margin-left: 22%;
+    margin-right: 20%;
+    margin-top:2%;
+
+}
+
+#signup-checkbox {
+    display: block;
+    margin: auto;
+}
+
+#editsignup-value{
+    text-align: center;
+}
+
+#addfield-button{
+    float: left;
+    margin-left: 22%;
+    margin-right: 20%;
+    background-color: #2462AB;
+    color: white;
+}
+
+.signup-fields label{
+    margin-left: 27%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 10px;
+     text-align: left;
+}
+
+.signup-fields input{
+    max-width: 250px;
+    min-width: 30%;
+}
+
+.signup-fields select{
+    max-width: 20%;
+    min-width: 20%;
+}
+
+.signup-fields h1, h4{
+    margin-left: 27%;
+}
+
+.signup input {
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 1px 1px 1px #8c8c8c;
+    border: 0.5px solid #BCBCBC;
+}
+
+.signup label {
+    color: #595959;
+}
+
+#length-button {
+    max-width: 175px;
+    min-width: 30%;
+}
+
+#addfields-label {
+
+    margin-left: 22%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 20px;
+     text-align: left;
+}
+
+#submitform-button {
+
+    margin-left: 22%;
+    max-width: 175px;
+    min-width: 30%;
+}
+
+/* The following is to style to admin page*/
+
+.admin-side-menu {
+    height: 100%;
+    position: fixed;
+    background-color: gray;
+    padding-bottom: 20px;
+    width: 20%;
+}
+
+.admin-side-menu a {
+  display: block;
+  color: black;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+
+hr.admin-divider{
+margin-left: 20%;
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
 }

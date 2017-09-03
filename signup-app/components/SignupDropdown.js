@@ -45,7 +45,7 @@ class List extends React.Component {
                   <option key = {index} value={item}>{optionsArray[item]}</option>)}
             </select>
           </label>
-          <button onClick={this.handleSubmit}>
+          <button className = "btn" onClick={this.handleSubmit}>
           <NavLink activeClassName='active-route' to='/page'>Submit</NavLink>
         </button>
         </form>
