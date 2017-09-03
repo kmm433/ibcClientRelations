@@ -52,8 +52,8 @@ body {
 
 .notice {
   position: relative;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
   margin-right: 10px;
   background-color: #FFFFFF;
   border: 1px solid #BCBCBC;
@@ -66,11 +66,11 @@ body {
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
-  padding: 5px 10px;
+  padding: 10px 20px;
 }
 
 .notice-content {
-  padding: 5px 10px;
+  padding: 10px 10px;
 }
 
 .survey-content {
@@ -363,4 +363,26 @@ body {
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
+}
+
+/* Overriding default displaying of textarea content below the textbox
+see NoticeSurvey.js */
+.text-input__content{
+    display: none
+}
+.text-input{
+    width: 85%;
+    margin-left: 8%;
+}
+.text-input__control{
+    min-height: 130px;
+}
+
+.eventDiv{
+    margin-bottom: 5px;
+}
+
+.event-buttons{
+    text-align: center;
+    margin-bottom: 10px;
 }
