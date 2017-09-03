@@ -75,10 +75,12 @@ class MemberActionPanel extends React.Component {
 
     // If group mode is entered display the group selection menu
     else if (this.props.action_type === 'group') {
+      this.props.toggleMode('group');
       return (
         <MemberGroupControl
           groups={this.state.groups}
           updateGroups={this.updateChamberGroups}
+          updateSelectedGroups={this.props.updateSelectedGroups}
         />
       );
     }

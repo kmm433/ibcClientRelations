@@ -44,6 +44,7 @@ class MemberGroupControl extends React.Component {
           selectedGroups.splice(i, 1);
     }
     this.setState({groups: selectedGroups});
+    //this.props.updateSelectedGroups(selectedGroups);
   }
 
   renderGroups() {

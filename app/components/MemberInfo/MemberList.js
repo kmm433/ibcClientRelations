@@ -94,8 +94,28 @@ class MemberList extends React.Component {
     }
   }
 
+  // Render an empty cell for the top of the column
+  renderGroupsColumn() {
+    if (this.props.group_display) {
+      return (
+        <th className='member-group-button'></th>
+      );
+    }
+  }
+
+  // Determines whether the delete buttons should be displayed next to members
+  renderGroupsButtons() {
+    if (this.props.group_display) {
+      return (
+        <td className='member-group-button'>
+        <button className='btn btn-success'>Add to Group</button>
+      </td>
+      );
+    }
+  }
+
   // Determines whether a member should be displayed based on the search criteriawe
-  searchDisplay(search_criteria, member) {
+  searchDisplay(search_criteria, selected_groups, member) {
     console.log(search_criteria);
     if (this.props.search_criteria === '') {
       return true;
@@ -121,11 +141,12 @@ class MemberList extends React.Component {
       var today = new Date();
       var result =  this.state.member_list.map((x) => {
         var expDate = new Date(x['expiry']);
-        if(this.searchDisplay(this.props.search_criteria, x)) {
+        if(this.searchDisplay(this.props.search_criteria, this.props.selected_groups, x)) {
           return (
             <tr key={x['email']} id={x['email']} onClick={(event) => this.handleRowClick(event)}>
               {this.renderEditButtons()}
               {this.renderDeleteButtons()}
+              {this.renderGroupsButtons()}
               <td className='member-profile-picture'><img src='img/default_profile_pic_small.png' /></td>
               <td className='member-first-name'>{x['firstname']}</td>
               <td className='member-last-name'>{x['lastname']}</td>
@@ -150,6 +171,7 @@ class MemberList extends React.Component {
         <table id='member-list' className='rounded-table'>
           <thead>
             <tr>
+              {this.renderGroupsColumn()}
               {this.renderEditColumn()}
               {this.renderDeleteColumn()}
               <th className='member-profile-picture'>Profile Picture</th>

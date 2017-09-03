@@ -12,6 +12,7 @@ class MemberInfo extends React.Component {
     this.state = {
       member_list: null,
       search_criteria: '',
+      selected_groups: null,
       edit_display: false,
       delete_display: false,
       group_display: false,
@@ -23,6 +24,7 @@ class MemberInfo extends React.Component {
     this.toggleMode = this.toggleMode.bind(this);
     this.setSelectedUser = this.setSelectedUser.bind(this);
     this.setActionType = this.setActionType.bind(this);
+    this.updateSelectedGroups = this.updateSelectedGroups.bind(this);
   }
 
   // Fetch this chamber's members
@@ -30,13 +32,18 @@ class MemberInfo extends React.Component {
     $.ajax({url: "/php/get_chamber_members.php", success: result => {
         var members = JSON.parse(result);
         this.setState({member_list: members});
-        console.log(members);
     }})
   }
 
   // Alows the control panel to update the list's search criteria
   updateSearchCriteria(criteria) {
     this.setState({search_criteria: criteria});
+  }
+
+  // Allows the action panel to update the selected groups
+  updateSelectedGroups(groups) {
+    this.setState({selected_groups: groups});
+    console.log('Updated the groups: ' + groups);
   }
 
   // Diables all modes that might be active
@@ -50,6 +57,8 @@ class MemberInfo extends React.Component {
       this.setState({edit_display: true});
     if (mode === 'delete')
       this.setState({delete_display: true});
+    if (mode === 'group')
+      this.setState({group_display: true});
   }
 
   // Selects a user for further action
@@ -76,12 +85,16 @@ class MemberInfo extends React.Component {
           selected_user={this.state.selected_user}
           setActionType={this.setActionType}
           setSelectedUser={this.setSelectedUser}
+          updateSelectedGroups={this.updateSelectedGroups}
+          toggleMode={this.toggleMode}
         />
         <MemberList
           member_list={this.state.member_list}
           search_criteria={this.state.search_criteria}
+          selected_groups={this.state.selected_groups}
           edit_display={this.state.edit_display}
           delete_display={this.state.delete_display}
+          group_display={this.state.group_display}
           setActionType={this.setActionType}
           setSelectedUser={this.setSelectedUser}
         />

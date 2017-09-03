@@ -192,7 +192,7 @@ class DB_Handler
 
   // Find all of the groups that exist within a chamber
   function getGroups($chamberId) {
-    $sql = $this->db->prepare("SELECT groupName FROM CHAMBER_GROUPS_$chamberId ORDER BY groupName");
+    $sql = $this->db->prepare("SELECT groupID, groupName FROM CHAMBER_GROUPS_$chamberId ORDER BY groupName");
     if ($sql->execute()) {
       $row = $sql->fetchAll(PDO::FETCH_ASSOC);
       return $row;
