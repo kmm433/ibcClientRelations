@@ -233,6 +233,7 @@ class DB_Handler
       return false;
   }
 
+
   function insertUser($query){
       $sql = $this->db->prepare($query);
       $sql->execute();

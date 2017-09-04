@@ -24,6 +24,7 @@ class Layout extends React.Component {
     renderNormalUser(){
         return(
             <div>
+                {console.log("THE FUCKING USER IF IS: ", this.props.user_type)}
               <Menu
                 user_type={this.props.user_type}
                 first_name={this.props.first_name}
@@ -56,7 +57,7 @@ class Layout extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="establish-fonts">
           {console.log("The user is: ", this.props.user_type)}
           {(this.props.user_type != 0) ? this.renderNormalUser() : this.renderAdmin()}
       </div>

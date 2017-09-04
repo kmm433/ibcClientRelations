@@ -35,7 +35,6 @@ class Menu extends React.Component {
   render() {
     return(
     <div className='side-menu'>
-      <MenuLogo />
       <MenuWelcome first_name={this.props.first_name}/>
       <ul>
         <li><NavLink exact activeClassName='active-route' to='/'>

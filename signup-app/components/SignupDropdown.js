@@ -16,6 +16,7 @@ class List extends React.Component {
   //
   componentWillReceiveProps(nextProps) {
     optionsArray=nextProps.chamber_list;
+    console.log("The array here",optionsArray)
   }
 
   //when the user changes the selected option from the drop down menu update the state

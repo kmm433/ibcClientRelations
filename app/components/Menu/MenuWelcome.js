@@ -13,6 +13,7 @@ class MenuWelcome extends React.Component {
   render(){
     return(
       <div id="menu-welcome">
+          <h1>NSW BUSINESS CHAMBER</h1>
         {this.state.greeting}
       </div>
     );
