@@ -17,7 +17,7 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    $.ajax({url: "/php/get_user_details.php", async: false, success: result => {
+    $.ajax({url: "/php/get_user_details.php",async:false, success: result => {
       var user_data = JSON.parse(result);
       this.setState({
         user_type: user_data.type,
