@@ -40,7 +40,9 @@ class BusinessProfile extends React.Component {
         <div>
           <ProfileLogo profileImage={""}/>
           <SocialLinks facebookURL={""} twitterURL={""} linkedinURL={""}/>
+          <p />
         </div>
+      <p />
         <ProfileActions editDetails={"/editprofile"} />
       </div>
     );

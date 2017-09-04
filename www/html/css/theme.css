@@ -363,3 +363,26 @@ body {
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
 }
+
+/* Profile */
+.businessTable{
+  width: 100%;
+  height: 50px;
+  vertical-align: bottom;
+  td.height: 50px;
+
+}
+
+.socialTable{
+  width: auto;
+  margin-right: 0px;
+  margin-left: auto;
+}
+
+.buttonRender{
+  width: auto;
+  height: auto;
+  border-top: 3px solid #000000;
+}
+
+/* FAQ */

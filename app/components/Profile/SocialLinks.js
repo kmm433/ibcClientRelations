@@ -3,7 +3,7 @@ import React from 'react';
 class SocialLinks extends React.Component {
   render(){
     return(
-      <table>
+      <table className="socialTable">
         <tbody>
           <tr>
             <td>

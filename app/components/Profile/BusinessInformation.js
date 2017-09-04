@@ -3,11 +3,14 @@ import React from 'react';
 class BusinessInformation extends React.Component {
   render(){
     return(
-      <table>
+      <table className="businessTable">
         <tbody>
           <tr>
             <td>Business Owner:</td>
             <td>{this.props.business.firstname} {this.props.business.lastname}</td>
+            <td rowSpan='9'><button onClick={ () => location.href = this.props.profileImg }>
+              Profile Logo
+            </button></td>
           </tr>
           <tr>
             <td>Contact Number:</td>
