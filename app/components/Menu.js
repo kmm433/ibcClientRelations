@@ -16,11 +16,18 @@ class Menu extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.user_type == 1) {
       var menu_items = (
-        <li>
-          <NavLink activeClassName='active-route' to='/member_information'>
-            Member Information
-          </NavLink>
-        </li>
+          <div>
+              <li>
+                <NavLink activeClassName='active-route' to='/member_information'>
+                  Member Information
+                </NavLink>
+              </li>
+              <li>
+                <NavLink activeClassName='active-route' to='/edit_signup'>
+                    Edit Signup Form
+                </NavLink>
+              </li>
+          </div>
       );
       this.setState({exec_menu: menu_items});
     }
@@ -29,7 +36,6 @@ class Menu extends React.Component {
   render() {
     return(
     <div className='side-menu'>
-      <MenuLogo />
       <MenuWelcome first_name={this.props.first_name}/>
       <ul>
         <li><NavLink exact activeClassName='active-route' to='/'>
@@ -43,9 +49,6 @@ class Menu extends React.Component {
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/upcoming_events'>
           Upcoming Events
-        </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/edit_signup'>
-          Edit Signup Form
         </NavLink></li>
 
         {/*The exec_menu will only by created if the user is type 1*/}

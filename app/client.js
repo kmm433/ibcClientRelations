@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
 import Layout from './components/Layout.js';
+import Admin from './components/Admin.js'
 import $ from 'jquery';
 
 class App extends React.Component {
@@ -10,12 +11,11 @@ class App extends React.Component {
     super(props);
     // Set the default user details
     this.state = {
-      user_type: 0,
+      user_type: "",
       first_name: ""
     };
   }
 
-  // When the component is mounting query the database for any user information
   componentWillMount() {
     $.ajax({url: "/php/get_user_details.php", success: result => {
       var user_data = JSON.parse(result);
@@ -29,10 +29,7 @@ class App extends React.Component {
   render(){
     return(
         <BrowserRouter>
-            <Layout
-              user_type={this.state.user_type}
-              first_name={this.state.first_name}
-            />
+            <Layout user_type={this.state.user_type} first_name={this.state.first_name}/>
         </BrowserRouter>
     );
   }
