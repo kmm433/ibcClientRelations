@@ -7,8 +7,6 @@ $db = new DB_Handler();
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-//$user = $db->validateUser($email, $password);
-
 $user = $db->validateUser($email, $password);
 
 if($user) {

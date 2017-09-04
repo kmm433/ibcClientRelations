@@ -16,6 +16,7 @@ class List extends React.Component {
   //
   componentWillReceiveProps(nextProps) {
     optionsArray=nextProps.chamber_list;
+    console.log("The array here",optionsArray)
   }
 
   //when the user changes the selected option from the drop down menu update the state
@@ -45,7 +46,7 @@ class List extends React.Component {
                   <option key = {index} value={item}>{optionsArray[item]}</option>)}
             </select>
           </label>
-          <button onClick={this.handleSubmit}>
+          <button className = "btn" onClick={this.handleSubmit}>
           <NavLink activeClassName='active-route' to='/page'>Submit</NavLink>
         </button>
         </form>
