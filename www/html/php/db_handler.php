@@ -80,6 +80,49 @@ class DB_Handler
     return false;
   }
 
+  // Retrieves the groups that a member is in
+  function getMembersGroups($member) {
+    $sql = $this->db->prepare("SELECT GROUPS.name FROM GROUPMEMBERS LEFT JOIN GROUPS ON GROUPMEMBERS.groupID=GROUPS.groupID WHERE GROUPMEMBERS.email='$member'");
+    if($sql->execute()) {
+      return $sql->fetchall();
+    }
+    return false;
+  }
+
+  // Gets all variable information about a user
+  function getCompleteMemberDetails($member) {
+    $sql = $this->db->prepare("CALL SPgetCompleteMemberDetails('$member')");
+    $sql->execute();
+    $result = $sql->fetchall();
+    return $result;
+  }
+
+  // Checks to see if a group already exists
+  function checkIfExistingGroup($chamber, $group) {
+    $sql = $this->db->prepare("SELECT groupID FROM GROUPS WHERE name='$group' AND chamberID=$chamber");
+    if ($sql->execute()){
+      if (!($sql->rowCount() == 0))
+        return $sql->fetch(PDO::FETCH_ASSOC);
+      else
+        return false;
+    }
+  }
+
+  // Inserts a member into a group
+  function addMemberToGroup($member, $groupID) {
+    $sql = $this->db->prepare("INSERT INTO GROUPMEMBERS (groupID, email) VALUES ($groupID, '$member')");
+    if ($sql->execute())
+      return true;
+    return false;
+  }
+
+  // Removes a member from a group
+  function deleteMemberFromGroup($member, $groupID) {
+    $sql = $this->db->prepare("DELETE FROM GROUPMEMBERS WHERE groupID=$groupID AND email='$member'");
+    $result = $sql->execute();
+    return $groupID;
+  }
+
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
       $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry
@@ -249,10 +292,34 @@ class DB_Handler
   }
 
   // Creates a group for a specified chamber using a specified name
-  function createGroup($chamberId, $groupName) {
-    $sql = $this->db->prepare("INSERT INTO CHAMBER_GROUPS_$chamberId (groupName) VALUES ('$groupName')");
+  function createGroup($chamberId, $name) {
+    $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES ('$name', $chamberId)");
     if ($sql->execute()) {
+      return $this->checkIfExistingGroup($chamberId, $name);
+    }
+    return false;
+  }
+
+  // Deletes a specified list of groups from a chamber
+  function deleteGroups($chamberId, $groupNames) {
+    $successCounter = 0;
+    foreach($groupNames as $group) {
+      $sql = $this->db->prepare("DELETE FROM CHAMBER_GROUPS_$chamberId WHERE groupName='$group'");
+      if($sql->execute())
+        $successCounter++;
+    }
+    if ($successCounter == count($groupNames))
       return true;
+    else
+      return false;
+  }
+
+  // Find all of the groups that exist within a chamber
+  function getGroups($chamberId) {
+    $sql = $this->db->prepare("SELECT groupID, name FROM GROUPS WHERE chamberID=$chamberId ORDER BY name");
+    if ($sql->execute()) {
+      $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+      return $row;
     }
     return false;
   }

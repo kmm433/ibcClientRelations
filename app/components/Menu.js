@@ -22,10 +22,11 @@ class Menu extends React.Component {
                   Member Information
                 </NavLink>
               </li>
-              <li><NavLink activeClassName='active-route' to='/edit_signup'>
+              <li>
+                <NavLink activeClassName='active-route' to='/edit_signup'>
                     Edit Signup Form
-                  </NavLink></li>
-
+                </NavLink>
+              </li>
           </div>
       );
       this.setState({exec_menu: menu_items});
