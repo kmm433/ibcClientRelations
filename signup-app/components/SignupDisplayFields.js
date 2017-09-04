@@ -11,6 +11,7 @@ var variable = "test";
  const getAnswers = (i) => (event) =>{
     inputArray[i] = event.target.value
 }
+
 const checkDuplicate = (e) => {
     console.log("sending", e)
     $.ajax({url: '/php/user_duplicate.php', type: 'POST', dataType: 'json',
@@ -20,7 +21,16 @@ const checkDuplicate = (e) => {
     success: response => {
             console.log("exists: ", response)
             return(response);
-    }});
+    },
+    error: response => {
+        console.log(response)
+    }
+});
+}
+
+const callDuplicate = (e) => {
+    return checkDuplicate(e);
+    console.log("password error", this.state.errorPassword)
 }
 
 
@@ -71,15 +81,19 @@ class Fields extends React.Component {
     validateEmail(event) {
         var temp = event.target.value;
         this.setState({ email: event.target.value})
+
         if(!(isEmail(temp)))
             this.setState({errorEmail: "Invalid Email"});
-        else {
-            if((checkDuplicate(temp))==false)
+
+        if((callDuplicate(temp)==0)){
                 this.setState({ errorEmail: "That email is already assigned to a user"})
+                console.log("getting here")
+            }
+            console.log("but here")
 
         }
-    }
     validatePassword(event) {
+        console.log("password error", this.state.errorEmail)
         var temp = event.target.name;
         console.log("great", event.target.name)
         var options = {min:8, max: 16};
@@ -95,10 +109,11 @@ class Fields extends React.Component {
     }
 
     render(){
+        console.log("password error", this.state.errorEmail)
         return(
             <div>
             <label>
-                <div>
+                <div className="signup">
                     <label> {this.state.errorEmail} </label>
                         <label className= "signup-fields">
                             Email:

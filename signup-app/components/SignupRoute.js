@@ -1,8 +1,8 @@
 import React from 'react';
 import {BrowserRouter, Route} from 'react-router-dom';
 import Link from 'react-router-dom';
-import List from './menu.js';
-import Page from './RetrieveFields.js';
+import List from './SignupDropdown.js';
+import Page from './SignupRetrieveFields.js';
 import $ from 'jquery';
 
 class Main extends React.Component {

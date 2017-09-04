@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 /*
  *  Key Colour Definitions
  *  Business Chamber Colours
@@ -12,16 +13,13 @@ body {
   background-color: #F5F5F5;
 }
 
+.establish-fonts {
+    font-family: "Roboto Condensed";
+}
+
 .test {
   width:100%;
   background-color: red;
-}
-
-
-.signup-fields label, .signup-fields input {
-    float: none; /* if you had floats before? otherwise inline-block will behave differently */
-    display: inline-block;
-    vertical-align: middle;
 }
 
 .side-menu {
@@ -46,14 +44,17 @@ body {
 .side-menu a {
   display: block;
   color: #FFFFFF;
-  padding: 8px 10px;
+  padding: 12px 15px;
   text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Roboto Condensed";
 }
 
 .notice {
   position: relative;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
   margin-right: 10px;
   background-color: #FFFFFF;
   border: 1px solid #BCBCBC;
@@ -66,11 +67,11 @@ body {
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
-  padding: 5px 10px;
+  padding: 10px 20px;
 }
 
 .notice-content {
-  padding: 5px 10px;
+  padding: 10px 10px;
 }
 
 .survey-content {
@@ -124,8 +125,7 @@ body {
 
 #menu-logo {
   width: 50%;
-  margin-right: auto;
-  margin-left: auto;
+  margin: 0 auto;
 }
 
 #menu-logo img {
@@ -135,15 +135,17 @@ body {
 }
 
 #menu-welcome {
+    padding-top: 20px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-  border-bottom: 2px solid #BCBCBC;
 }
 
 #menu-welcome h1 {
+text-align: center;
+text-transform: uppercase;
   color: #FFFFFF;
-  font-size: 150%;
+  font-size: 120%;
 }
 
 /* The following is to style the chamber member list table*/
@@ -367,4 +369,142 @@ body {
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
   border-top-left-radius: 10px;
+}
+
+/* The following is to style the edit sign up fields table */
+
+#edit-fields-table {
+    float: left;
+    margin-left: 22%;
+    margin-right: 20%;
+    margin-top:2%;
+
+}
+
+#signup-checkbox {
+    display: block;
+    margin: auto;
+}
+
+#editsignup-value{
+    text-align: center;
+}
+
+#addfield-button{
+    float: left;
+    margin-left: 22%;
+    margin-right: 20%;
+    background-color: #2462AB;
+    color: white;
+}
+
+.signup-fields label{
+    margin-left: 27%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 10px;
+     text-align: left;
+}
+
+.signup-fields input{
+    max-width: 250px;
+    min-width: 30%;
+}
+
+.signup-fields select{
+    max-width: 20%;
+    min-width: 20%;
+}
+
+.signup-fields h1, h4{
+    margin-left: 27%;
+}
+
+.signup input {
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 1px 1px 1px #8c8c8c;
+    border: 0.5px solid #BCBCBC;
+}
+
+.signup label {
+    color: #595959;
+}
+
+#length-button {
+    max-width: 175px;
+    min-width: 30%;
+}
+
+#addfields-label {
+
+    margin-left: 22%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 20px;
+     text-align: left;
+}
+
+#submitform-button {
+
+    margin-left: 27%;
+    max-width: 175px;
+    min-width: 30%;
+}
+
+/* The following is to style to admin page*/
+
+#admin-menu{
+    margin-left: 27%;
+}
+
+.admin-side-menu {
+    height: 100%;
+    position: fixed;
+    background-color: gray;
+    padding-bottom: 20px;
+    width: 20%;
+}
+
+.admin-side-menu a {
+  display: block;
+  color: black;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+
+hr.admin-divider{
+margin-left: 20%;
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+
+  }
+
+  #chamberadmin-btn{
+      width:20%;
+  }
+
+/* Overriding default displaying of textarea content below the textbox
+see NoticeSurvey.js */
+.text-input__content{
+    display: none
+}
+.text-input{
+    width: 85%;
+    margin-left: 8%;
+}
+.text-input__control{
+    min-height: 130px;
+}
+
+.eventDiv{
+    margin-bottom: 5px;
+}
+
+.event-buttons{
+    text-align: center;
+    margin-bottom: 10px;
 }
