@@ -344,10 +344,106 @@ body {
   border-radius: 4px;
   border: 1px solid #BCBCBC;
 }
+
+/* Regarding the member list view available to executives*/
+#member-list {
+  width: 100%;
+  word-wrap: break-word;
+}
+
+#member-list-headers {
+  width: 100%;
+  background-color: #2462AB;
+  overflow: auto;
+}
+
+#member-list .table-header {
+  background-color: #2462AB;
+  border: none;
+  color: #FFFFFF;
+  font-weight: bold;
+  float: left;
+  padding: 10px;
+  width: 20%;
+}
+
+.member-list-item {
+  width: 100%;
+  overflow: auto;
+}
+
+.member-list-item-field {
+  border: none;
+  float: left;
+  padding: 10px;
+  width: 20%;
+}
+
+#member-list .member-list-item:nth-child(odd) {
+  background-color: #E5E5E5;
+}
+
+#member-list .member-list-item:nth-child(even) {
+  background-color: #F5F5F5;
+}
+
+.member-details {
+  width: 100%;
+  min-height: 300px;
+  float: none;
+  padding: 10px;
+  display: inline-block;
+}
+
+.member-details-right {
+  width: 66%;
+  float: left;
+}
+
+.member-details-left {
+  width: 33%;
+  float: left;
+  padding: 10px;
+}
+
+.member-details-left img {
+  width: 50%;
+  margin-left: 5%;
+  margin-right: 25%;
+}
+
+.member-details-groups {
+  width: 100%;
+  display: inline-block;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border-left: 1px solid #BCBCBC;
+  border-right: 1px solid #BCBCBC;
+}
+
+.member-details-complete-block {
+  float: left;
+  padding: 5px;
+  margin: 10px;
+}
+
+.ReactTags__tag {
+  background-color: #5bc0de;
+}
+
+div.ReactTags__selected span.ReactTags__tag {
+    background: #2462ab;
+    color: #FFFFFF;
+    border-radius: 5px;
+}
+
+/* Used to allocate screenspace to the main component */
 .main-component {
   float: left;
+  width: 75%;
   margin-left: 22%;
-  margin-right: 20%;
+  margin-right: 3%;
 }
 
 @media (max-width: 720px) {

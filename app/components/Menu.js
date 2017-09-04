@@ -41,13 +41,10 @@ class Menu extends React.Component {
         <li><NavLink activeClassName='active-route' to='/calendar'>
           Calendar
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/member_information'>
-          Member Information
-        </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/upcoming_events'>
           Upcoming Events
         </NavLink></li>
-    <li><NavLink activeClassName='active-route' to='/edit_signup'>
+        <li><NavLink activeClassName='active-route' to='/edit_signup'>
           Edit Signup Form
         </NavLink></li>
 
