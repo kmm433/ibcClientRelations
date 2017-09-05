@@ -173,7 +173,7 @@ class NoticeEvent extends React.Component {
                   <h2>{"Upcoming event: " + this.props.title}</h2>
                 </div>
                 <div className="notice-content">
-                  <div className="eventDiv"> <i>When: </i> <span>{moment(this.props.eventdate).format("dddd")} at {moment(this.props.eventdate).format('LT')} - {moment(this.props.endTime).format('LT')} </span></div>
+                  <div className="eventDiv"> <i>When: </i> <span>{moment(this.props.eventdate).format("dddd")} {moment(this.props.eventdate).format("MMMM Do YYYY")} at {moment(this.props.eventdate).format('LT')} - {moment(this.props.endTime).format('LT')} </span></div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
                   <div><p>{this.props.message}</p></div>
                 </div>
