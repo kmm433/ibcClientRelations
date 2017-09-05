@@ -183,21 +183,27 @@ class DB_Handler
    // Events: Mark Event as Going
    function set_EventGoing($EventID) {
      $userid =  $_SESSION['userid'];
-     $sql = $this->db->prepare("CALL SPsetEventGoing('$EventID', '$userid');");
-     if ($sql->execute()) {
-       return true;
+     $going = $this->get_EventStatusGoing($EventID);
+     if (count($going) == 0) {
+         $sql = $this->db->prepare("CALL SPsetEventGoing('$EventID', '$userid');");
+         if ($sql->execute()) {
+             return true;
+         }
+         return false;
      }
-     return false;
    }
 
    // Events: Mark Event as Cant Go
    function set_EventCantgo($EventID) {
      $userid =  $_SESSION['userid'];
-     $sql = $this->db->prepare("CALL SPsetEventCantgo('$EventID', '$userid');");
-     if ($sql->execute()) {
-       return true;
-     }
-     return false;
+     $notGoing = $this->get_EventStatusCantGo($EventID);
+     if (count($notGoing) == 0) {
+        $sql = $this->db->prepare("CALL SPsetEventCantgo('$EventID', '$userid');");
+        if ($sql->execute()) {
+        return true;
+        }
+        return false;
+      }
    }
 
    function get_EventStatusGoing($EventID){
