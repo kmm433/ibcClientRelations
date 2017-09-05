@@ -98,7 +98,7 @@ class NoticeEvent extends React.Component {
         this.setState({
             hidden: false
         });
-        /*$.ajax({
+        /*$.ajax({      // READY, UNCOMMENT WHEN RELEASE
             url: '/php/hide_Event.php',
             type:'POST',
             async: false,

@@ -261,7 +261,7 @@ class SubmitPage extends React.Component {
             label: "Thank you for taking the time to complete this survey"
         });
         console.log(userAnswers);
-      $.ajax({
+      /*$.ajax({    //READY, UNCOMMENT WHEN RELEASE
           url: '/php/insert_SurveyAnswers.php',
           type:'POST',
           dataType: "json",
@@ -277,7 +277,7 @@ class SubmitPage extends React.Component {
               //console.log(status)
           }.bind(this)
       });
-
+      */
         this.timeoutHandle = setTimeout(()=>{
               this.props.collapseSurvey();  // Add your logic for the transition
           }, 3000);
