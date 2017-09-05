@@ -13,11 +13,14 @@ import NewChamber from './Admin/CreateChamber'
 class Layout extends React.Component {
     constructor(props){
         super(props);
+
+        console.log("The user is: ", this.props.user_type)
         this.renderNormalUser = this.renderNormalUser.bind(this);
         this.renderAdmin = this.renderAdmin.bind(this);
     }
 
     renderNormalUser(){
+        console.log("Rendering user: ", this.props.user_type)
         return(
             <div>
               <Menu
@@ -33,6 +36,7 @@ class Layout extends React.Component {
                 <Route path='/member_information' component={MemberInformation} />
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' component={Form} />
+                <Route path='/create_notice' component={Calendar} />
                 <Route path='/help' component={Calendar} />
               </div>
             </div>
@@ -55,7 +59,7 @@ class Layout extends React.Component {
     console.log('User type is: ', this.props.user_type)
     return (
       <div className="establish-fonts">
-          {(this.props.user_type !== 0) ? this.renderNormalUser() : this.renderAdmin()}
+          {(this.props.user_type !== '0') ? this.renderNormalUser() : this.renderAdmin()}
       </div>
     );
   }
