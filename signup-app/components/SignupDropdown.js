@@ -37,10 +37,10 @@ class List extends React.Component {
   render() {
     return (
       <div >
-        <form>
+        <form className="dropdown-line">
           <label>
             Which Chamber would you like to join?
-            <select value={this.state.value} onChange={this.handleChange}>
+            <select id="select-signup" value={this.state.value} onChange={this.handleChange}>
                 <option key = "select" value="nothing">Select your Chamber</option>)
               {Object.keys(optionsArray).map((item,index) =>
                   <option key = {index} value={item}>{optionsArray[item]}</option>)}

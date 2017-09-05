@@ -36,6 +36,7 @@ class Layout extends React.Component {
                 <Route path='/member_information' component={MemberInformation} />
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' component={Form} />
+                <Route path='/create_notice' component={Calendar} />
                 <Route path='/help' component={Calendar} />
               </div>
             </div>
@@ -58,7 +59,7 @@ class Layout extends React.Component {
     console.log('User type is: ', this.props.user_type)
     return (
       <div className="establish-fonts">
-          {(this.props.user_type !== 0) ? this.renderNormalUser() : this.renderAdmin()}
+          {(this.props.user_type !== '0') ? this.renderNormalUser() : this.renderAdmin()}
       </div>
     );
   }

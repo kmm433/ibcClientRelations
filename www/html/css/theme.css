@@ -125,10 +125,12 @@ body {
 
 #menu-logo {
   width: 50%;
-  margin: 0 auto;
+  margin-left: auto;
+   margin-right: auto;
 }
 
 #menu-logo img {
+margin-left: 8px;
   padding-top: 20px;
   max-width: 105px;
   width: 100%;
@@ -487,11 +489,19 @@ div.ReactTags__selected span.ReactTags__tag {
 }
 
 #addfield-button{
-    float: left;
-    margin-left: 22%;
-    margin-right: 20%;
+    width: 20%;
     background-color: #2462AB;
     color: white;
+}
+
+
+.dropdown-line{
+    padding: 30px;
+}
+
+#select-signup{
+    padding: 30px;
+    height: 30%;
 }
 
 .signup-fields label{

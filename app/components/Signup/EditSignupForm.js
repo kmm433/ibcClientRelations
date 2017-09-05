@@ -120,10 +120,6 @@ class Form extends React.Component {
                   </tbody>
                 </table>
 
-                <label id = "addfields-label">
-                    Would you like to add a new field?
-                    <button id="addfield-button" className = "btn" onClick={() => this.handleClick()}>Yes</button>
-                </label>
             </div>
 
 
@@ -143,6 +139,10 @@ class Form extends React.Component {
               <div className="container">
                   {this.renderTable()}
               </div>
+              <label id = "addfields-label">
+                  Would you like to add a new field?
+                  <button id="addfield-button" className = "btn" onClick={() => this.handleClick()}>Yes</button>
+              </label>
               <div>
                   {this.state.showAddField ? <Inputs /> : null}
               </div>
@@ -152,8 +152,3 @@ class Form extends React.Component {
   }
 }
 export default Form;
-
-/*
-{this.state.displayname.map((item) =>
-    <td>{item}</td>
-)}*/
