@@ -8,6 +8,7 @@ import MemberInformation from './MemberInformation';
 import Form from './Signup/EditSignupForm';
 import AdminMenu from './AdminMenu'
 import NewChamber from './Admin/CreateChamber'
+import create_notice from './CreateNotice';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -36,7 +37,7 @@ class Layout extends React.Component {
                 <Route path='/member_information' component={MemberInformation} />
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' component={Form} />
-                <Route path='/create_notice' component={Calendar} />
+                <Route path='/create_notice' component={create_notice} />
                 <Route path='/help' component={Calendar} />
               </div>
             </div>

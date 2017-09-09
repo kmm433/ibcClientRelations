@@ -162,7 +162,7 @@ class NoticeSurvey extends React.Component {
                             {this.state.items.map((item, i) =>
                              <div key={i}>
                                {item}
-                           </div>
+                            </div>
                            )}
                         </Slider>
                     </div>
