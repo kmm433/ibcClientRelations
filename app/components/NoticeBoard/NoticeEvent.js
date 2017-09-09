@@ -23,7 +23,8 @@ class NoticeEvent extends React.Component {
           going: "btn btn-default",
           goingText: "RSVP Going",
           cantgo: "btn btn-default",
-          cantgoText: "RSVP Can't go"
+          cantgoText: "RSVP Can't go",
+          Disabled: false
       };
       this.hide = this.hide.bind(this);
       this.going = this.going.bind(this);
@@ -32,6 +33,12 @@ class NoticeEvent extends React.Component {
 
     componentWillMount(){
         this.setEventStatus(); // Set the buttons to pre-fill attending or not
+        if (this.props.Disabled == true){
+            this.setState({
+                Disabled: true
+            });
+        }
+
     }
 
     setEventStatus(){
@@ -178,9 +185,9 @@ class NoticeEvent extends React.Component {
                   <div><p>{this.props.message}</p></div>
                 </div>
                 <div className="event-buttons">
-                    {<button type="button" className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
-                    {<button type="button" className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
-                    {<button type="button" className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button>}
+                    {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
+                    {<button type="button" disabled={this.state.Disabled} className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
+                    {<button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button>}
                 </div>
               </div>
           </Collapse>

@@ -752,3 +752,14 @@ input:checked + .slider:before {
 #CreateNoticeEmailSwitch{
     text-align: Left;
 }
+
+.surveyAddQuestions{
+    margin-top: 15px;
+}
+
+.questionSwitch{
+    padding-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 5px;
+}
