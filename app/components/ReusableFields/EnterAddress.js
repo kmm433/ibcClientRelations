@@ -44,7 +44,7 @@ render(){
             </label>
             <label>
                 State/Territory:
-                <select name="state" value={this.state.state} onChange={this.handleChange}>
+                <select id="admin-dropdown" name="state" value={this.state.state} onChange={this.handleChange}>
                     <option value="NSW" >NSW</option>
                     <option value ="VIC" >VIC</option>
                     <option value="QLD">QLD</option>

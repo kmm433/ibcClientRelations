@@ -103,7 +103,7 @@ renderMenu(){
 
 handleAddParent(){
     update = (update + 1)%2;
-    update ? display="Cancel" : display="Yes"
+    update ? display = "Cancel" : display="Yes"
 
     console.log("testing", display)
     this.setState({

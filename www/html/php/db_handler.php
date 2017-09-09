@@ -144,6 +144,9 @@ class DB_Handler
         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
      }
+     else{
+         return array();
+     }
    }
 
    // Event Page: Return Events
@@ -156,6 +159,9 @@ class DB_Handler
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
      }
+     else{
+         return array();
+     }
    }
 
    // NoticeBoard: Return Events
@@ -167,6 +173,9 @@ class DB_Handler
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
+     }
+     else{
+         return array();
      }
    }
 
@@ -235,6 +244,9 @@ class DB_Handler
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
+     }
+     else{
+         return array();
      }
    }
 

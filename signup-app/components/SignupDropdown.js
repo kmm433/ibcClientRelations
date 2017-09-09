@@ -1,59 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {NavLink} from 'react-router-dom';
+import {ButtonGroup, DropdownButton, Button, MenuItem} from 'react-bootstrap';
+import Middle from './SignupRetrieveFields.js';
 
 var optionsArray = []
 
-class List extends React.Component {
+class ChamberDropdown extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {chamber: 'shit'};
+    this.state = {
+        chamber: "",
+        selected: 'Please Select a Chamber',
+        renderForm: false
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    };
+
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
-  //
+
   componentWillReceiveProps(nextProps) {
     optionsArray=nextProps.chamber_list;
-    console.log("The array here",optionsArray)
   }
 
-  //when the user changes the selected option from the drop down menu update the state
-  handleChange(event) {
-    var temp = event.target.value;
-    this.setState({
-      chamber: temp
-    });
-  }
+  handleSelect(evt){
+      this.setState({
+          selected: optionsArray[evt],
+          chamber: evt,
+          renderForm: true
+      });
 
-  /*On submit call the function in the parent component and give it the selected chamber*/
-  handleSubmit(event) {
-    var temp = this.state.chamber;
-    this.props.callbackFromParent(temp);
-    event.preventDefault();
   }
 
   render() {
     return (
-      <div >
-        <form className="dropdown-line">
-          <label>
-            Which Chamber would you like to join?
-            <select id="select-signup" value={this.state.value} onChange={this.handleChange}>
-                <option key = "select" value="nothing">Select your Chamber</option>)
-              {Object.keys(optionsArray).map((item,index) =>
-                  <option key = {index} value={item}>{optionsArray[item]}</option>)}
-            </select>
-          </label>
-          <button className = "btn" onClick={this.handleSubmit}>
-          <NavLink activeClassName='active-route' to='/page'>Submit</NavLink>
-        </button>
-        </form>
-      </div>
-
+        <div>
+            <ButtonGroup className="signup-dropdown">
+                <DropdownButton id="dropdown-btn-menu" bsStyle="success" title={this.state.selected} onSelect={this.handleSelect}>
+                    {Object.keys(optionsArray).map((item,index) =>
+                        <MenuItem key = {index} eventKey={item}>{optionsArray[item]}</MenuItem>)}
+                </DropdownButton>
+              </ButtonGroup>
+              {console.log("The chamber selected from the dropdown",this.state.chamber)}
+              {this.state.renderForm ? <Middle chamberID={this.state.chamber}/> : null}
+        </div>
     );
   }
 }
 
-export default List;
+export default ChamberDropdown;

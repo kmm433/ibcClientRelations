@@ -20,7 +20,6 @@ constructor(props){
 }
 
 handleChange(event){
-    console.log("testing")
     const name = event.target.name;
     const value = event.target.value;
     this.setState({[name]: value});

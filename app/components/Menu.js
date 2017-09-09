@@ -9,9 +9,10 @@ class Menu extends React.Component {
   // By default set the executive menu to null so none is displayed.
   constructor(props) {
       super(props);
-      this.state = {exec_menu: null};
-  }
 
+      this.renderExecMenu = this.renderExecMenu.bind(this);
+  }
+/*
   // If the user is an executive update the menu such that it includes member options.
   componentWillReceiveProps(nextProps) {
     if (nextProps.user_type == 1) {
@@ -36,12 +37,41 @@ class Menu extends React.Component {
       );
       this.setState({exec_menu: menu_items});
     }
+}*/
+
+  renderExecMenu(){
+      console.log("The user is: ", this.props.user_type)
+      if (this.props.user_type === '1') {
+          return(
+              <div>
+                  <li>
+                    <NavLink activeClassName='active-route' to='/create_notice'>
+                        Create New Notice
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink activeClassName='active-route' to='/member_information'>
+                      Member Information
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink activeClassName='active-route' to='/edit_signup'>
+                        Edit Signup Form
+                    </NavLink>
+                  </li>
+              </div>
+          )
+      }
+          else {
+              return null;
+          }
   }
 
   render() {
     return(
     <div className='side-menu'>
       <MenuLogo/>
+      <hr className = "welcome-divider" />
       <MenuWelcome first_name={this.props.first_name}/>
       <ul>
         <li><NavLink exact activeClassName='active-route' to='/'>
@@ -58,7 +88,7 @@ class Menu extends React.Component {
         </NavLink></li>
 
         {/*The exec_menu will only by created if the user is type 1*/}
-        {this.state.exec_menu}
+        {this.renderExecMenu()}
       </ul>
       <div id="bottom-options">
         <ul>
