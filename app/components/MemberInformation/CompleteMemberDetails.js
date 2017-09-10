@@ -5,7 +5,7 @@ class CompleteMemberDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      static_details: {},
+      details: {},
     };
     this.updateStaticField = this.updateStaticField.bind(this);
     this.applyChanges = this.applyChanges.bind(this);
@@ -15,28 +15,28 @@ class CompleteMemberDetails extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    var static_details = nextProps.static_details;
-    for (var property in static_details) {
-      if(static_details.hasOwnProperty(property)){
-        if(static_details[property] === null)
-          static_details[property] = '';
+    var details = nextProps.details;
+    for (var property in details) {
+      if(details.hasOwnProperty(property)){
+        if(details[property] === null)
+          details[property] = '';
       }
     }
-    this.setState({static_details: static_details});
+    this.setState({details: details});
   }
 
   // Allowes the member's details to be live edited.
   updateStaticField(event, property) {
-    var staticDetails = this.state.static_details;
+    var staticDetails = this.state.details;
     staticDetails[property] = event.target.value;
     this.setState({
-      static_details: staticDetails
+      details: staticDetails
     });
   }
 
   // Submits any cahnges made to the member's details
   applyChanges(event) {
-    const staticDetails = this.state.static_details;
+    const staticDetails = this.state.details;
     for (var property in staticDetails) {
       if (staticDetails[property] === ''){
         console.log('Converting ', property, 'to null.');
@@ -90,8 +90,8 @@ class CompleteMemberDetails extends React.Component {
 // Renders the view of a member's details
   renderDetails() {
     // Constructs a list of properties that are valid
-    const details = this.state.static_details;
-    if (this.props.static_details) {
+    const details = this.state.details;
+    if (this.props.details) {
       var properties=[];
       for (var property in details) {
         if(details.hasOwnProperty(property)){
