@@ -19,6 +19,8 @@
     }
   }
 
+  # This matches the displaynames provided by the input to the query result,
+  # ignoring blank columns and the password column
   $result = $db->getDetail($_POST['member'], $query);
   $index = 0;
   $matchedResults = array();
@@ -29,8 +31,9 @@
       $index += 1;
     }
   }
+
+  #
+  $matchedResults['chamberSpecific'] = 'CHAMBER SPECIFIED STUFF!';
+
   echo json_encode($matchedResults);
-  #$result = $db->getDetail($member, $_POST['member']);
-  #if($result)
-  #  echo json_encode($result['0']);
 ?>

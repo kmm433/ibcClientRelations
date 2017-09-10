@@ -9,8 +9,9 @@ class CompleteMemberDetails extends React.Component {
     };
     this.updateStaticField = this.updateStaticField.bind(this);
     this.applyChanges = this.applyChanges.bind(this);
-    this.renderStaticDetails = this.renderStaticDetails.bind(this);
-    this.renderEditableStaticDetails = this.renderEditableStaticDetails.bind(this);
+    this.renderDetails = this.renderDetails.bind(this);
+    this.viewMapping = this.viewMapping.bind(this);
+    this.editMapping = this.editMapping.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -45,121 +46,109 @@ class CompleteMemberDetails extends React.Component {
     event.stopPropagation();
   }
 
-  renderStaticDetails() {
-    const staticDetails = this.state.static_details;
-    if (this.props.static_details) {
-      var properties=[];
-      for (var property in staticDetails) {
-        if(staticDetails.hasOwnProperty(property)){
-          properties.push(property);
-        }
-      }
-      var display = properties.map((i) => {
-          if (!(properties === 'User Type')) {
-            return (
-              <div key={i}>
-                <h5>{i}</h5>
-                <p>{this.state.static_details[i] ? this.state.static_details[i] : <i>No Record</i>}</p>
-              </div>
-            );
-          } else if (this.state.static_details[i] == 2){
-            <div key={i}></div>
-          } else {
-            return (
-              <div key={i}>
-                <h5>{i}</h5>
-                <p>{this.state.static_details[i] === 1? 'Chamber Executive' : 'Admin'}</p>
-              </div>
-            );
-          }
-        }
-      );
-      var memberDetails = display.splice(0, 7);
-      var businessDetails = display.splice(0, 5);
-      var businessContact = display.splice(0, 9);
+  // Returns ordinary display elements for each property
+  viewMapping(property, details) {
+    // There is specidic instructions for rendering the correct name for the user type.
+    // Otherwise it may continue to render everything else
+    if (property !== 'User Type') {
       return (
-        <div>
-          <div className='member-details-complete-block'>
-            {memberDetails}
-          </div>
-          <div className='member-details-complete-block'>
-            {businessDetails}
-          </div>
-          <div className='member-details-complete-block'>
-            {businessContact}
-          </div>
+        <div key={property}>
+          <h5>{property}</h5>
+          <p>{details[property] ? details[property] : <i>No Record</i>}</p>
         </div>
       );
     }
-    else
+    // If this is an ordinary user, there is no need to display anything here
+    else if (details[property] === 2){
+      <div key={property}></div>
+    }
+    // In any other case the user is either an admin or a chamber exec
+    else {
       return (
-        <p>No details found.</p>
+        <div key={property}>
+          <h5>{property}</h5>
+          <p>{details[property] === 1? 'Chamber Executive' : 'Admin'}</p>
+        </div>
       );
+    }
   }
 
-  renderEditableStaticDetails() {
-    const staticDetails = this.state.static_details;
+  // Returns editable display elements
+  editMapping(property, details) {
+    return (
+      <div key={property}>
+        <h5>{property}</h5>
+        <input
+          type='input'
+          value={details[property]}
+          onChange={(e) => this.updateStaticField(e, property)}
+        />
+      </div>
+    );
+  }
+
+// Renders the view of a member's details
+  renderDetails() {
+    // Constructs a list of properties that are valid
+    const details = this.state.static_details;
     if (this.props.static_details) {
       var properties=[];
-      for (var property in staticDetails) {
-        if(staticDetails.hasOwnProperty(property)){
+      for (var property in details) {
+        if(details.hasOwnProperty(property)){
           properties.push(property);
         }
       }
-      var display = properties.map((i) =>
-        <div key={i}>
-          <h5>{i}</h5>
-          <input
-            type='input'
-            value={this.state.static_details[i]}
-            onChange={(e) => this.updateStaticField(e, i)}
-          />
-        </div>
-      );
-      var memberDetails = display.splice(0, 7);
-      var businessDetails = display.splice(0, 5);
-      var businessContact = display.splice(0, 9);
+      // This defines the mapping from a paramter to a display item
+      // Visual changes can be made here
+      var display;
+      if(this.props.editable)
+        display = properties.map((i) => this.editMapping(i, details));
+      else
+        display = properties.map((i) => this.viewMapping(i, details));
+      // Now break the display sections into chunks of 7 to help with mobile display
+      var blocks = [];
+      var index = 0;
+      while(display.length) {
+        blocks[index] = display.splice(0, 7);
+        index += 1;
+      }
+      // Apply a class to the blocks to float them correctly
+      var completeDetails = blocks.map((elements, i) => {
+        return (
+          <div key={i} className='member-details-complete-block'>
+            {elements}
+          </div>
+        );
+      });
       return (
         <div>
-          <div className='member-details-complete-block'>
-            {memberDetails}
-          </div>
-          <div className='member-details-complete-block'>
-            {businessDetails}
-          </div>
-          <div className='member-details-complete-block'>
-            {businessContact}
-          </div>
+          {completeDetails}
         </div>
       );
     }
-    else
+    // If for some reason there is no user detials
+    else {
       return (
         <p>No details found.</p>
       );
+    }
   }
 
   render() {
-    if (!this.props.editable) {
-      return(
-        <div className={this.props.class_name}>
-          {this.renderStaticDetails()}
-        </div>
-      );
-    }
-    else {
-      return (
-        <div className={this.props.class_name}>
-          <div>{this.renderEditableStaticDetails()}</div>
+    return (
+      <div className={this.props.class_name}>
+        {this.renderDetails()}
+        {this.props.editable ?
           <input
             type='button'
             className='btn btn-warning'
             value='Apply Changes'
             onClick={(e) => this.applyChanges(e)}
           />
-        </div>
-      );
-    }
+          : null }
+      </div>
+
+    );
   }
 };
 
