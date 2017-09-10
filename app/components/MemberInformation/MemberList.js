@@ -22,6 +22,7 @@ class MemberList extends React.Component {
             email={x['email']}
             business={x['businessname']}
             expiry={x['expiry']}
+            chamber_id={this.props.chamber_id}
           />
         );
       })

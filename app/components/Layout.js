@@ -34,7 +34,7 @@ class Layout extends React.Component {
                 <Route exact={true} path='/index.php' render={()=> <NoticeBoard user_type={this.props.user_type} />}/>
                 <Route path='/calendar' component={Calendar} />
                 <Route path='/profile' component={Calendar} />
-                <Route path='/member_information' component={MemberInformation} />
+                <Route path='/member_information' render={()=> <MemberInformation chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' component={Form} />
                 <Route path='/create_notice' component={Calendar} />

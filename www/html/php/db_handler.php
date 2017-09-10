@@ -90,11 +90,12 @@ class DB_Handler
   }
 
   // Gets all variable information about a user
-  function getCompleteMemberDetails($member) {
-    $sql = $this->db->prepare("CALL SPgetCompleteMemberDetails('$member')");
-    $sql->execute();
-    $result = $sql->fetchall();
-    return $result;
+  function getDetail($member, $query) {
+    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.email='$member'";
+    $sql = $this->db->prepare($completeQuery);
+    if($sql->execute());
+      return  $sql->fetchall();
+    return false;
   }
 
   // Checks to see if a group already exists

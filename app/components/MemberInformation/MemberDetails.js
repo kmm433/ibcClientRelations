@@ -10,7 +10,9 @@ class MemberDetails extends React.Component {
     this.state = {
       tags: [],
       suggestions: [],
+      static_details: {},
       complete_details: null,
+      fields: null,
       editable: false
     }
     this.getCompleteDetails = this.getCompleteDetails.bind(this);
@@ -30,17 +32,78 @@ class MemberDetails extends React.Component {
 
   // Finds all the variable information pertaining to a user for display
   getCompleteDetails() {
+    // Fetch the required fields for this chamber
     $.ajax({
+      url: '/php/chamber_form.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {'chamber': this.props.chamber_id},
+      success: response => {
+        var fields = response;
+        var ignoredResults = [];
+        fields.forEach((field, i)=> {
+          if(field['columnname'] === 'ignore')
+            ignoredResults.push(i);
+        });
+        ignoredResults.forEach(field => {
+          delete fields[field];
+        });
+        this.setState({fields: fields});
+        console.log(fields);
+        // Request each fields value from the appropriate table
+        var queryParameters = [];
+        fields.forEach((field) => {
+          queryParameters.push([field['columnname'], field['tablename']]);
+        });
+        $.ajax({
+          url: "/php/get_complete_details.php",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            'fields': JSON.stringify(fields),
+            'member': this.props.member
+          }, success: response => {
+            this.setState({static_details: response});
+          }, error: response => {
+            console.log('ERROR:', response);
+          }
+        });
+      }
+    });
+
+    /*$.ajax({
       url: "/php/get_complete_details.php",
       type: 'POST',
       dataType: 'json',
       data: {
         'member': this.props.member
       }, success: result => {
-        console.log(result);
-        this.setState({complete_details: result});
+        var details = {
+          'First Name': result[0],
+          'Last Name': result[1],
+          'Email': result[2],
+          'Position': result[3],
+          'User Type': result[4],
+          'Member Since': result[5],
+          'Membership Expires': result[6],
+          'Business Name': result[7],
+          'ABN': result[20],
+          'ANZIC Code': result[17],
+          'Number of Employees': result[18],
+          'Company Established': result[19],
+          'Address Line 1' : result[8],
+          'Address Line 2' : result[9],
+          'City' : result[10],
+          'Postcode' : result[11],
+          'State' : result[12],
+          'Country' : result[13],
+          'Business Phone' : result[14],
+          'Phone' : result[15],
+          'Mobile Phone' : result[16]
+        };
+        this.setState({static_details: details, complete_details: result});
       }
-    });
+    });*/
   }
 
   // Fetches the groups that a member is in from the database
@@ -132,7 +195,6 @@ class MemberDetails extends React.Component {
 
   setEditMode(event) {
     this.setState({editable: !this.state.editable});
-    console.log('entering edit mode');
     event.stopPropagation();
   }
 
@@ -146,6 +208,7 @@ class MemberDetails extends React.Component {
         <CompleteMemberDetails
           class_name='member-details-right'
           details={this.state.complete_details}
+          static_details={this.state.static_details}
           editable={this.state.editable}
         />
         <div className='member-details-controls'>

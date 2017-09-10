@@ -21,7 +21,10 @@ class MemberInformation extends React.Component {
     return (
       <div className='main-component'>
         <SettingsMenu />
-        <MemberList member_list={this.state.member_list} />
+        <MemberList
+          member_list={this.state.member_list}
+          chamber_id={this.props.chamber_id}
+        />
       </div>
     );
   }
