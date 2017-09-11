@@ -74,7 +74,7 @@ class MemberInformation extends React.Component {
       if (expiryString) {
         var date = expiryString.split(' ');
         expiryDateComponents = date[0].split('-');
-        expiryDate = new Date(expiryDateComponents[0], expiryDateComponents[1], expiryDateComponents[2]);
+        expiryDate = new Date(expiryDateComponents[0], parseInt(expiryDateComponents[1]) - 1, expiryDateComponents[2]);
       }
 
       // Add the member to their respective group

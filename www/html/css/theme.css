@@ -149,99 +149,11 @@ text-transform: uppercase;
   font-size: 120%;
 }
 
-/* The following is to style the chamber member list table*/
-
-.rounded-table {
-  border: none;
-}
-
-.rounded-table th, .rounded-table td {
-  padding: 1px 5px;
-}
-
-.rounded-table thead th {
-  background-color: #2462AB;
-  border: none;
-  color: #FFFFFF;
-  font-weight: bold;
-}
-
-.rounded-table thead th:first-child {
-  border-radius: 10px 0 0 0;
-}
-
-.rounded-table tbody td {
-  border: none;
-  border-top: 1px solid #BCBCBC;
-}
-
-.rounded-table tbody tr:nth-child(odd) {
-  background-color: #E5E5E5;
-}
-
-.rounded-table tbody tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-.rounded-table td {
-  background-color: inherit;
-}
-
-.member-first-name, .member-last-name {
-  max-width: 100px;
-  min-width: 10%;
-}
-
-.member-email {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.member-business-name {
-  max-width: 300px;
-  min-width: 30%;
-}
-
-.member-expiry {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.rounded-table .expiry-alert {
-  background-color: #DCA7A7;
-}
-
-#member-group-control ul li{
-  list-style: none;
-}
-
 .confirmation-button {
   margin: 10px 5px;
 }
 .btn {
   margin: 5px;
-}
-
-.member-control-panel {
-  margin-top: 10px;
-  border-top-left-radius: 10px;
-}
-
-.member-control-panel ul, .member-control-panel .search {
-  display: inline-block;
-}
-.member-control-panel ul {
-  margin-top: 10px;
-}
-
-.member-control-panel .search {
-  float: right;
-  margin: 7px;
-}
-
-.member-control-panel .search input {
-  border-radius: 4px;
-  border: 1px solid #BCBCBC;
 }
 
 .main-component {
@@ -304,6 +216,10 @@ text-transform: uppercase;
 .member-list-item {
   width: 100%;
   overflow: auto;
+}
+
+.member-list-item .alert {
+  margin-bottom: 0px;
 }
 
 .member-list-item-field {
