@@ -43,6 +43,10 @@ class MemberListItem extends React.Component {
             selected={this.state.selected}
             unselect={this.unselect}
             chamber_id={this.props.chamber_id}
+            all={this.props.all}
+            renewals={this.props.renewals}
+            archived={this.props.archived}
+            getChamberMembers={this.props.getChamberMembers}
           />
           : null
         }

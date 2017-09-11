@@ -22,6 +22,7 @@ class MemberDetails extends React.Component {
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.setEditMode = this.setEditMode.bind(this);
+    this.toggleArchive = this.toggleArchive.bind(this);
   }
 
   componentWillMount() {
@@ -164,6 +165,33 @@ class MemberDetails extends React.Component {
     event.stopPropagation();
   }
 
+  // This function will allow a chamber members archive status to be changed and
+  // then refresh the list of members.
+  toggleArchive() {
+    var archived = 1;
+    if (this.props.archived) {
+      archived = 0;
+    }
+    $.ajax({
+      url: '/php/set_archive_member.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'member': this.props.member,
+        'archive_status': archived
+      },
+      success: response => {
+        console.log('Successfully updated archive status.');
+        this.props.getChamberMembers();
+      },
+      error: response => {
+        console.log(response);
+      }
+    });
+
+
+  }
+
   render() {
     const {tags, suggestions} = this.state
     return (
@@ -181,7 +209,14 @@ class MemberDetails extends React.Component {
           <input type='button' className='btn btn-success' value='Email User' />
           <input type='button' className='btn btn-success' value='Leave a Note'/>
           <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          <input type='button' className='btn btn-danger' value='Delete Member'/>
+          { this.props.all || this.props.renewals ?
+            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
+          { this.props.archived ?
+            <input type='button' className='btn btn-danger' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
         </div>
         <div className='member-details-groups'>
           <p>Manage groups:</p>

@@ -124,9 +124,16 @@ class DB_Handler
     return $groupID;
   }
 
+  // Changes whether a member is archived or not.
+  function setArchiveMember($member, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE email='$member'");
+    $result = $sql->execute();
+    return $result;
+  }
+
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry
+      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry, archived
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
           ORDER BY lastname;");
     if ($sql->execute()) {
