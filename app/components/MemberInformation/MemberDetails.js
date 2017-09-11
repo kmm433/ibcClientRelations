@@ -10,7 +10,9 @@ class MemberDetails extends React.Component {
     this.state = {
       tags: [],
       suggestions: [],
+      details: {},
       complete_details: null,
+      fields: null,
       editable: false
     }
     this.getCompleteDetails = this.getCompleteDetails.bind(this);
@@ -20,6 +22,7 @@ class MemberDetails extends React.Component {
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.setEditMode = this.setEditMode.bind(this);
+    this.toggleArchive = this.toggleArchive.bind(this);
   }
 
   componentWillMount() {
@@ -30,15 +33,42 @@ class MemberDetails extends React.Component {
 
   // Finds all the variable information pertaining to a user for display
   getCompleteDetails() {
+    // Fetch the required fields for this chamber
     $.ajax({
-      url: "/php/get_complete_details.php",
+      url: '/php/chamber_form.php',
       type: 'POST',
       dataType: 'json',
-      data: {
-        'member': this.props.member
-      }, success: result => {
-        console.log(result);
-        this.setState({complete_details: result});
+      data: {'chamber': this.props.chamber_id},
+      success: response => {
+        var fields = response;
+        var ignoredResults = [];
+        fields.forEach((field, i)=> {
+          if(field['columnname'] === 'ignore')
+            ignoredResults.push(i);
+        });
+        ignoredResults.forEach(field => {
+          delete fields[field];
+        });
+        this.setState({fields: fields});
+        console.log(fields);
+        // Request each fields value from the appropriate table
+        var queryParameters = [];
+        fields.forEach((field) => {
+          queryParameters.push([field['columnname'], field['tablename']]);
+        });
+        $.ajax({
+          url: "/php/get_complete_details.php",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            'fields': JSON.stringify(fields),
+            'member': this.props.member
+          }, success: response => {
+            this.setState({details: response});
+          }, error: response => {
+            console.log('ERROR:', response);
+          }
+        });
       }
     });
   }
@@ -132,8 +162,34 @@ class MemberDetails extends React.Component {
 
   setEditMode(event) {
     this.setState({editable: !this.state.editable});
-    console.log('entering edit mode');
     event.stopPropagation();
+  }
+
+  // This function will allow a chamber members archive status to be changed and
+  // then refresh the list of members.
+  toggleArchive() {
+    var archived = 1;
+    if (this.props.archived) {
+      archived = 0;
+    }
+    $.ajax({
+      url: '/php/set_archive_member.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'member': this.props.member,
+        'archive_status': archived
+      },
+      success: response => {
+        console.log('Successfully updated archive status.');
+        this.props.getChamberMembers();
+      },
+      error: response => {
+        console.log(response);
+      }
+    });
+
+
   }
 
   render() {
@@ -145,7 +201,7 @@ class MemberDetails extends React.Component {
         </div>
         <CompleteMemberDetails
           class_name='member-details-right'
-          details={this.state.complete_details}
+          details={this.state.details}
           editable={this.state.editable}
         />
         <div className='member-details-controls'>
@@ -153,7 +209,14 @@ class MemberDetails extends React.Component {
           <input type='button' className='btn btn-success' value='Email User' />
           <input type='button' className='btn btn-success' value='Leave a Note'/>
           <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          <input type='button' className='btn btn-danger' value='Delete Member'/>
+          { this.props.all || this.props.renewals ?
+            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
+          { this.props.archived ?
+            <input type='button' className='btn btn-danger' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
         </div>
         <div className='member-details-groups'>
           <p>Manage groups:</p>

@@ -90,11 +90,12 @@ class DB_Handler
   }
 
   // Gets all variable information about a user
-  function getCompleteMemberDetails($member) {
-    $sql = $this->db->prepare("CALL SPgetCompleteMemberDetails('$member')");
-    $sql->execute();
-    $result = $sql->fetchall();
-    return $result;
+  function getDetail($member, $query) {
+    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.email='$member'";
+    $sql = $this->db->prepare($completeQuery);
+    if($sql->execute());
+      return  $sql->fetchall();
+    return false;
   }
 
   // Checks to see if a group already exists
@@ -123,9 +124,16 @@ class DB_Handler
     return $groupID;
   }
 
+  // Changes whether a member is archived or not.
+  function setArchiveMember($member, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE email='$member'");
+    $result = $sql->execute();
+    return $result;
+  }
+
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry
+      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry, archived
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
           ORDER BY lastname;");
     if ($sql->execute()) {
@@ -144,6 +152,9 @@ class DB_Handler
         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
      }
+     else{
+         return array();
+     }
    }
 
    // Event Page: Return Events
@@ -156,6 +167,9 @@ class DB_Handler
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
      }
+     else{
+         return array();
+     }
    }
 
    // NoticeBoard: Return Events
@@ -167,6 +181,9 @@ class DB_Handler
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
+     }
+     else{
+         return array();
      }
    }
 
@@ -235,6 +252,9 @@ class DB_Handler
      if($sql->execute()) {
          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
          return $row;
+     }
+     else{
+         return array();
      }
    }
 
