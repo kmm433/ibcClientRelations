@@ -109,36 +109,23 @@ class Fields extends React.Component {
     }
 
     render(){
-        console.log("password error", this.state.errorEmail)
+        console.log("password error", this.props.fieldInfo)
         return(
             <div>
-            <label>
-                <div className="signup">
-                    <label> {this.state.errorEmail} </label>
-                        <label className= "signup-fields">
-                            Email:
-                            <input key ="username" type="email" name="email" onBlur={this.validateEmail}/>
-                        </label>
-                        <label> {this.state.errorPassword} </label>
-                        <label className= "signup-fields">
-                            Password:
-                            <input key ="pass" type="password" name="password" onBlur={this.validatePassword} />
-                        </label>
-                        <label className= "signup-fields">
-                            Confirm Password:
-                            <input key ="passconfirm" type="password" name="confirmpassword" onBlur={this.validatePassword} />
-                        </label>
+                <label>
+                    <div className="signup">
 
-                        {this.props.displayname.map((item, i) =>
+                        {this.props.signupFields.map((item, i) =>
                             <label className= "signup-fields" key ={item}>
                                 {item}:
                                 <input key ={item} type={this.props.inputype} name={this.props.displayname} onChange={getAnswers(i)} />
                             </label>
                         )}
+
                     <input type="submit" value="Submit" onClick={this.handleSubmit}/>
-                </div>
-              </label>
-      </div>
+                    </div>
+                </label>
+            </div>
 
         )
     }
