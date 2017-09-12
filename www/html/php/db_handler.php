@@ -98,6 +98,37 @@ class DB_Handler
     return false;
   }
 
+  // Allows a standard detail to be updated for a user
+  function setDetail($member, $value, $column, $table) {
+    $sql = $this->db->prepare("UPDATE BUSINESS JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.email='$member'");
+    if($sql->execute())
+      return true;
+    else
+      return false;
+  }
+
+  // Allows a chamber specific detail to be updated for a user
+  function setChamberSpecificDetail($member, $dataID, $value, $column, $table) {
+    $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.email='$member' AND $table.DataID=$dataID";
+    $sql = $this->db->prepare($queryString);
+    if($sql->execute())
+      return true;
+    else
+      return false;
+  }
+
+  // Gets chamber specific information about a user
+  function getChamberSpecificDetail($member, $dataID, $column, $table) {
+    $queryString = "SELECT $table.answer FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.email='$member' AND $table.DataID=$dataID";
+    $sql = $this->db->prepare($queryString);
+    if ($sql->execute()) {
+      return $sql->fetch();
+    }
+    else {
+      return false;
+    }
+  }
+
   // Checks to see if a group already exists
   function checkIfExistingGroup($chamber, $group) {
     $sql = $this->db->prepare("SELECT groupID FROM GROUPS WHERE name='$group' AND chamberID=$chamber");

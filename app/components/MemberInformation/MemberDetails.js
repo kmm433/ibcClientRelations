@@ -201,7 +201,6 @@ class MemberDetails extends React.Component {
 
   setEditMode(event) {
     this.setState({editable: !this.state.editable});
-    event.stopPropagation();
   }
 
   // This function will allow a chamber members archive status to be changed and
@@ -253,8 +252,12 @@ class MemberDetails extends React.Component {
           </div>
           <CompleteMemberDetails
             class_name='member-details-right'
+            member={this.props.member}
             details={this.state.details}
             editable={this.state.editable}
+            getCompleteDetails={this.getCompleteDetails}
+            setEditMode={this.setEditMode}
+            getNotes={this.getNotes}
           />
         </div>
         <div className='member-details-groups'>
