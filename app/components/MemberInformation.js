@@ -46,12 +46,9 @@ class MemberInformation extends React.Component {
     var filteredMembers = [];
     if(searchPhrase !== '') {
       members.forEach((member) => {
-        console.log(member);
         var foundSearchPhrase = false;
         for(var property in member) {
-          console.log('Checking: ', property);
           if(member[property] && member[property].indexOf(searchPhrase) !== -1){
-            console.log('Found a match');
             foundSearchPhrase = true;
           }
         }
