@@ -41,6 +41,8 @@ class SettingsMenu extends React.Component {
               Show all {this.props.num_archived} archived members
             </label></li>
           </ul>
+          <input type='button' className='btn btn-primary' value='Add New User'/>
+          <input type='button' className='btn btn-primary' value='Export List as CSV'/>
         </div>
       </div>
     );

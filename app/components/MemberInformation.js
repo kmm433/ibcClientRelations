@@ -45,9 +45,17 @@ class MemberInformation extends React.Component {
   filterMembers(members, searchPhrase){
     var filteredMembers = [];
     if(searchPhrase !== '') {
-      var foundSearchPhrase = false;
       members.forEach((member) => {
-        if (member['firstname'].indexOf(searchPhrase) !== -1)
+        console.log(member);
+        var foundSearchPhrase = false;
+        for(var property in member) {
+          console.log('Checking: ', property);
+          if(member[property] && member[property].indexOf(searchPhrase) !== -1){
+            console.log('Found a match');
+            foundSearchPhrase = true;
+          }
+        }
+        if (foundSearchPhrase)
           filteredMembers.push(member);
       });
     }

@@ -181,7 +181,6 @@ class MemberDetails extends React.Component {
         'archive_status': archived
       },
       success: response => {
-        console.log('Successfully updated archive status.');
         this.props.getChamberMembers();
       },
       error: response => {

@@ -201,6 +201,7 @@ text-transform: uppercase;
   width: 100%;
   background-color: #2462AB;
   overflow: auto;
+  border-top-left-radius: 15px;
 }
 
 #member-list .table-header {
@@ -229,11 +230,11 @@ text-transform: uppercase;
   width: 20%;
 }
 
-#member-list .member-list-item:nth-child(odd) {
+#member-list .member-details-block:nth-child(odd) {
   background-color: #E5E5E5;
 }
 
-#member-list .member-list-item:nth-child(even) {
+#member-list .member-details-block:nth-child(even) {
   background-color: #F5F5F5;
 }
 
@@ -243,6 +244,11 @@ text-transform: uppercase;
   float: none;
   padding: 10px;
   display: inline-block;
+  border-top: 1px solid #BCBCBC;
+}
+
+.member-details h5 {
+  font-weight: bold;
 }
 
 .member-details-right {
