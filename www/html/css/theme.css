@@ -13,6 +13,13 @@ body {
   background-color: #F5F5F5;
 }
 
+/* Overriding some boostrap colors for a custom color scheme.*/
+.panel-primary .panel-heading{
+  background-color: #2462AB;
+  border-bottom: 1px solid #BCBCBC;
+  border-top-left-radius: 10px;
+}
+
 .establish-fonts {
     font-family: "Roboto Condensed";
 }
@@ -175,7 +182,22 @@ text-transform: uppercase;
 }
 
 #member-info-settings {
-  margin-top: 10px;
+  margin: 10px 10px 10px 10px;
+}
+
+#member-info-settings {
+  background-color: #F5F5F5;
+  border: 0px;
+}
+
+#member-info-settings {
+  background-color: #F5F5F5;
+  border: 0px;
+}
+
+#member-info-settings .panel-body {
+  background-color: #F5F5F5;
+  border: 0px;
 }
 
 #member-info-settings ul {
@@ -195,6 +217,8 @@ text-transform: uppercase;
 #member-list {
   width: 100%;
   word-wrap: break-word;
+  border: 1px solid #BCBCBC;
+  border-top-left-radius: 15px;
 }
 
 #member-list-headers {
@@ -217,10 +241,12 @@ text-transform: uppercase;
 .member-list-item {
   width: 100%;
   overflow: auto;
+  border-top: 1px solid #BCBCBC;
 }
 
 .member-list-item .alert {
   margin-bottom: 0px;
+  border-radius: 0px;
 }
 
 .member-list-item-field {
@@ -231,11 +257,11 @@ text-transform: uppercase;
 }
 
 #member-list .member-details-block:nth-child(odd) {
-  background-color: #E5E5E5;
+  background-color: #FBFBFB;
 }
 
 #member-list .member-details-block:nth-child(even) {
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
 }
 
 .member-details {
@@ -244,11 +270,15 @@ text-transform: uppercase;
   float: none;
   padding: 10px;
   display: inline-block;
-  border-top: 1px solid #BCBCBC;
+  padding-top: 20px;
 }
 
 .member-details h5 {
   font-weight: bold;
+}
+
+.member-details-text {
+  border-top: 1px solid #BCBCBC;
 }
 
 .member-details-right {
@@ -272,10 +302,9 @@ text-transform: uppercase;
   width: 100%;
   display: inline-block;
   padding: 15px;
-  border-radius: 10px;
-  margin-top: 10px;
-  border-left: 1px solid #BCBCBC;
-  border-right: 1px solid #BCBCBC;
+  margin: 10px 0px 20px 0px;
+  border-top: 1px solid #BCBCBC;
+  border-bottom: 1px solid #BCBCBC;
 }
 
 .member-details-complete-block {
@@ -286,6 +315,10 @@ text-transform: uppercase;
 
 .ReactTags__tag {
   background-color: #5bc0de;
+}
+
+.ReactTags__tagInput {
+  margin: 5px;
 }
 
 div.ReactTags__selected span.ReactTags__tag {
@@ -312,13 +345,6 @@ div.ReactTags__selected span.ReactTags__tag {
   .small-side-menu {
     display: block;
   }
-}
-
-/* Overriding some boostrap colors for a custom color scheme.*/
-.panel-primary .panel-heading{
-  background-color: #2462AB;
-  border-bottom: 1px solid #BCBCBC;
-  border-top-left-radius: 10px;
 }
 
 /* The following is to style the edit sign up fields table */

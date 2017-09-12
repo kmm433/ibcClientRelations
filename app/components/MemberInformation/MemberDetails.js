@@ -195,27 +195,15 @@ class MemberDetails extends React.Component {
     const {tags, suggestions} = this.state
     return (
       <div className='member-details'>
-        <div className='member-details-left'>
-          <img src='img/default_profile_pic_small.png' />
-        </div>
-        <CompleteMemberDetails
-          class_name='member-details-right'
-          details={this.state.details}
-          editable={this.state.editable}
-        />
-        <div className='member-details-controls'>
-          <input type='button' className='btn btn-success' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
-          <input type='button' className='btn btn-success' value='Email User' />
-          <input type='button' className='btn btn-success' value='Leave a Note'/>
-          <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          { this.props.all || this.props.renewals ?
-            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
-          { this.props.archived ?
-            <input type='button' className='btn btn-danger' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
+        <div className='member-details-text'>
+          <div className='member-details-left'>
+            <img src='img/default_profile_pic_small.png' />
+          </div>
+          <CompleteMemberDetails
+            class_name='member-details-right'
+            details={this.state.details}
+            editable={this.state.editable}
+          />
         </div>
         <div className='member-details-groups'>
           <p>Manage groups:</p>
@@ -229,6 +217,20 @@ class MemberDetails extends React.Component {
             allowDeleteFromEmptyInput={false}
             placeholder={'Add to group'}
           />
+        </div>
+        <div className='member-details-controls'>
+          <input type='button' className='btn btn-success' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
+          <input type='button' className='btn btn-success' value='Email User' />
+          <input type='button' className='btn btn-success' value='Leave a Note'/>
+          <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
+          { this.props.all || this.props.renewals ?
+            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
+          { this.props.archived ?
+            <input type='button' className='btn btn-danger' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
         </div>
       </div>
     );

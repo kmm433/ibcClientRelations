@@ -131,6 +131,7 @@ class MemberInformation extends React.Component {
   render() {
     return (
       <div className='main-component'>
+        <h2>Member Information</h2>
         <SettingsMenu
           search_phrase={this.state.search_phrase}
           all={this.state.all}
