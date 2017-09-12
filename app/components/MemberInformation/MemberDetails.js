@@ -47,19 +47,26 @@ class MemberDetails extends React.Component {
         var fields = response;
         var ignoredResults = [];
         fields.forEach((field, i)=> {
-          if(field['columnname'] === 'ignore')
+          if(field['columnname'] === 'ignore' || field['displayname'] === 'Password')
             ignoredResults.push(i);
         });
         ignoredResults.forEach(field => {
           delete fields[field];
         });
+        var expiryField = {
+          DataID:"1",
+          columnname:"expiry",
+          displayname:"Membership Expiry Date",
+          inputtype:"date",
+          mandatory:"1",
+          maximum:"",
+          minimum:"",
+          ordering:"1000000",
+          tablename:"USER",
+          value:this.props.expiry
+        };
+        fields.push(expiryField);
         this.setState({fields: fields});
-        console.log(fields);
-        // Request each fields value from the appropriate table
-        var queryParameters = [];
-        fields.forEach((field) => {
-          queryParameters.push([field['columnname'], field['tablename']]);
-        });
         $.ajax({
           url: "/php/get_complete_details.php",
           type: 'POST',
@@ -68,7 +75,19 @@ class MemberDetails extends React.Component {
             'fields': JSON.stringify(fields),
             'member': this.props.member
           }, success: response => {
-            this.setState({details: response});
+            // Match the values to their fields
+            for (var value in response) {
+              fields.forEach((field) => {
+                if(field['displayname'] === value) {
+                  field['value'] = response[value];
+                }
+              });
+            }
+            // Sort the fields by their ordering value
+            fields.sort((a, b) => {
+              return(a['ordering'] - b['ordering']);
+            });
+            this.setState({details: fields});
           }, error: response => {
             console.log('ERROR:', response);
           }
@@ -122,7 +141,6 @@ class MemberDetails extends React.Component {
         'member': this.props.member
       }, success: response => {
         this.setState({notes: response});
-        console.log(response);
       }, error: response => {
         console.log('Failed to retrieve notes.', response);
       }

@@ -73,6 +73,7 @@ class MemberListItem extends React.Component {
           {this.state.selected ?
             <MemberDetails
               member={this.props.email}
+              expiry={this.props.expiry}
               selected={this.state.selected}
               unselect={this.unselect}
               chamber_id={this.props.chamber_id}

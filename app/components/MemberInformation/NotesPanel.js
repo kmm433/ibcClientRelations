@@ -41,7 +41,6 @@ class NotesPanel extends React.Component {
   // Renders each individaul note that is passed in via props.
   renderNotes() {
     const notes = this.props.notes;
-    console.log('notes is: ', notes);
     if (notes) {
       var noteElements = notes.map((note, i) => {
         return (

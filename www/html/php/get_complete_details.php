@@ -33,7 +33,7 @@
   }
 
   #
-  $matchedResults['chamberSpecific'] = 'CHAMBER SPECIFIED STUFF!';
+  //$matchedResults['chamberSpecific'] = array('CHAMBER SPECIFIED STUFF!', 'some column', 'some table');
 
   echo json_encode($matchedResults);
 ?>
