@@ -273,12 +273,22 @@ text-transform: uppercase;
   padding-top: 20px;
 }
 
+.member-details h4 {
+  margin-left: 0%;
+}
+
 .member-details h5 {
   font-weight: bold;
 }
 
 .member-details-text {
   border-top: 1px solid #BCBCBC;
+  padding-top: 10px;
+}
+
+.member-details-controls {
+  border-top: 1px solid #BCBCBC;
+  padding-bottom: 20px;
 }
 
 .member-details-right {
@@ -301,16 +311,46 @@ text-transform: uppercase;
 .member-details-groups {
   width: 100%;
   display: inline-block;
-  padding: 15px;
   margin: 10px 0px 20px 0px;
   border-top: 1px solid #BCBCBC;
-  border-bottom: 1px solid #BCBCBC;
+  padding-top: 10px;
 }
 
 .member-details-complete-block {
   float: left;
   padding: 5px;
   margin: 10px;
+}
+
+.notes-panel {
+  border-top: 1px solid #BCBCBC;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.notes-panel textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #BCBCBC;
+  border-radius: 5px;
+  resize: none;
+  padding: 5px;
+}
+
+.member-details input {
+  margin-left: 0px;
+}
+
+.member-details-controls input {
+  margin-right: 10px;
+  padding-top: 10px;
+}
+
+.note h5 {
+  margin-left: 0%;
 }
 
 .ReactTags__tag {
@@ -325,6 +365,8 @@ div.ReactTags__selected span.ReactTags__tag {
     background: #2462ab;
     color: #FFFFFF;
     border-radius: 5px;
+    margin-left: 0px;
+    margin-right: 10px;
 }
 
 /* Used to allocate screenspace to the main component */

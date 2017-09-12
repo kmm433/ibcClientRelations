@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { WithContext as ReactTags } from 'react-tag-input';
 import CompleteMemberDetails from './CompleteMemberDetails.js';
+import NotesPanel from './NotesPanel.js'
 
 class MemberDetails extends React.Component {
 
@@ -13,11 +14,13 @@ class MemberDetails extends React.Component {
       details: {},
       complete_details: null,
       fields: null,
-      editable: false
+      editable: false,
+      notes: []
     }
     this.getCompleteDetails = this.getCompleteDetails.bind(this);
     this.getMembersGroups = this.getMembersGroups.bind(this);
     this.getAvailableGroups = this.getAvailableGroups.bind(this);
+    this.getNotes = this.getNotes.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
@@ -29,6 +32,7 @@ class MemberDetails extends React.Component {
     this.getMembersGroups();
     this.getAvailableGroups();
     this.getCompleteDetails();
+    this.getNotes()
   }
 
   // Finds all the variable information pertaining to a user for display
@@ -106,6 +110,23 @@ class MemberDetails extends React.Component {
         this.setState({suggestions: groupNames});
       }
     }});
+  }
+
+  // Fetches any notes left about a member
+  getNotes() {
+    $.ajax({
+      url: "/php/get_notes.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'member': this.props.member
+      }, success: response => {
+        this.setState({notes: response});
+        console.log(response);
+      }, error: response => {
+        console.log('Failed to retrieve notes.', response);
+      }
+    });
   }
 
   handleDelete(i) {
@@ -187,15 +208,28 @@ class MemberDetails extends React.Component {
         console.log(response);
       }
     });
-
-
   }
 
   render() {
     const {tags, suggestions} = this.state
     return (
       <div className='member-details'>
+        <div className='member-details-controls'>
+          <h4>Options</h4>
+          <input type='button' className='btn btn-primary' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
+          <input type='button' className='btn btn-primary' value='Email User' />
+          <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
+          { this.props.all || this.props.renewals ?
+            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
+          { this.props.archived ?
+            <input type='button' className='btn btn-success' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+            : null
+          }
+        </div>
         <div className='member-details-text'>
+          <h4>Complete Details</h4>
           <div className='member-details-left'>
             <img src='img/default_profile_pic_small.png' />
           </div>
@@ -206,7 +240,7 @@ class MemberDetails extends React.Component {
           />
         </div>
         <div className='member-details-groups'>
-          <p>Manage groups:</p>
+          <h4>Manage Groups</h4>
           <ReactTags
             tags={tags}
             suggestions={suggestions}
@@ -218,20 +252,11 @@ class MemberDetails extends React.Component {
             placeholder={'Add to group'}
           />
         </div>
-        <div className='member-details-controls'>
-          <input type='button' className='btn btn-success' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
-          <input type='button' className='btn btn-success' value='Email User' />
-          <input type='button' className='btn btn-success' value='Leave a Note'/>
-          <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          { this.props.all || this.props.renewals ?
-            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
-          { this.props.archived ?
-            <input type='button' className='btn btn-danger' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
-        </div>
+        <NotesPanel
+          member={this.props.member}
+          notes={this.state.notes}
+          getNotes={this.getNotes}
+        />
       </div>
     );
   }

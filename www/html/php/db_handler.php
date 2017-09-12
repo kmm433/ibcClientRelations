@@ -349,5 +349,31 @@ class DB_Handler
     }
     return false;
   }
+
+  // Adds a note about a member to the notes table
+  function addNote($user, $member, $note) {
+    $sql = $this->db->prepare("INSERT INTO NOTES (about, leftBy, note) VALUES (:about, :leftBy, :note)");
+    $result = $sql->execute(array(
+      "about" => $member,
+      "leftBy" => $user,
+      "note" => $note
+    ));
+    if ($result)
+      return true;
+    else
+      return false;
+  }
+
+  // Retrieves all notes about a member from the database
+  function getNotes($member) {
+    $sql = $this->db->prepare("SELECT NOTES.ts, USER.firstname, USER.lastname, note FROM NOTES JOIN USER ON NOTES.leftBy=USER.email WHERE about=:member ORDER BY ts ASC");
+    $result = $sql->execute(array(
+      "member" => $member
+    ));
+    if ($result)
+      return $sql->fetchall(PDO::FETCH_ASSOC);
+    else
+      return false;
+  }
 }
 ?>
