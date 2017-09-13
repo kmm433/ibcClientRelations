@@ -16,7 +16,7 @@ foreach ($details as $detail) {
 }
 
 if($results) {
-  $db->addNote($_SESSION['user'], $_POST['member'], 'Modified member\'s details');
+  $db->addNote($_SESSION['user'], $_POST['member'], 'Modified member\'s details.');
 }
 
 echo json_encode($results);

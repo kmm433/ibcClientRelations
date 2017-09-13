@@ -86,7 +86,7 @@ class CompleteMemberDetails extends React.Component {
           />
         );
       });
-      return (<div>{renderDetails}</div>);
+      return (<div className='complete-member-details'>{renderDetails}</div>);
     }
     else
       return null;
@@ -94,7 +94,7 @@ class CompleteMemberDetails extends React.Component {
 
   render() {
     return (
-      <div className={this.props.class_name}>
+      <div>
         {this.renderDetails()}
         {this.props.editable ?
           <input

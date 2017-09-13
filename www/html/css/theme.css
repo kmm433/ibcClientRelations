@@ -20,6 +20,10 @@ body {
   border-top-left-radius: 10px;
 }
 
+.btn-primary {
+  background-color: #2462AB;
+}
+
 .establish-fonts {
     font-family: "Roboto Condensed";
 }
@@ -270,7 +274,7 @@ text-transform: uppercase;
   float: none;
   padding: 10px;
   display: inline-block;
-  padding-top: 20px;
+  padding-top: 5px;
 }
 
 .member-details h4 {
@@ -288,24 +292,17 @@ text-transform: uppercase;
 
 .member-details-controls {
   border-top: 1px solid #BCBCBC;
-  padding-bottom: 20px;
+  padding: 30px 0px 20px 0px;
+  display: inline-block;
+  width: 100%;
 }
 
-.member-details-right {
-  width: 66%;
-  float: left;
-}
-
-.member-details-left {
-  width: 33%;
-  float: left;
-  padding: 10px;
-}
-
-.member-details-left img {
-  width: 50%;
-  margin-left: 5%;
-  margin-right: 25%;
+.member-details-controls-buttons {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .member-details-groups {
@@ -314,12 +311,6 @@ text-transform: uppercase;
   margin: 10px 0px 20px 0px;
   border-top: 1px solid #BCBCBC;
   padding-top: 10px;
-}
-
-.member-details-complete-block {
-  float: left;
-  padding: 5px;
-  margin: 10px;
 }
 
 .notes-panel {
@@ -340,13 +331,52 @@ text-transform: uppercase;
   padding: 5px;
 }
 
-.member-details input {
+.member-details input, .member-details a {
   margin-left: 0px;
 }
 
-.member-details-controls input {
+.member-details-controls input, .member-details-controls a {
   margin-right: 10px;
   padding-top: 10px;
+}
+
+.complete-member-details {
+  border-top: 1px solid #BCBCBC;
+  width: 100%;
+  display: table;
+  margin-bottom: 20px;
+  padding: 20px 5% 10px 5%;
+}
+
+#member-list .detail {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: grey;
+  display: table-row;
+}
+
+#member-list .detail:nth-child(odd) {
+  background-color: #FBFBFB;
+}
+
+#member-list .detail:nth-child(even) {
+  background-color: #FFFFFF;
+}
+
+.detail .member-detail {
+  padding: 0px 20px 0px 10px;
+  background-color: inherit;
+  word-wrap: break-word;
+  display: table-cell;
+  vertical-align: top;
+}
+.detail .member-detail-value {
+  padding: 0px 0px 0px 10px;
+  background-color: inherit;
+  word-wrap: break-word;
+  display: table-cell;
+  vertical-align: top;
 }
 
 .note h5 {

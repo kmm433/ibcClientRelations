@@ -231,34 +231,28 @@ class MemberDetails extends React.Component {
     const {tags, suggestions} = this.state
     return (
       <div className='member-details'>
+        <CompleteMemberDetails
+          member={this.props.member}
+          details={this.state.details}
+          editable={this.state.editable}
+          getCompleteDetails={this.getCompleteDetails}
+          setEditMode={this.setEditMode}
+          getNotes={this.getNotes}
+        />
         <div className='member-details-controls'>
-          <h4>Options</h4>
-          <input type='button' className='btn btn-primary' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
-          <input type='button' className='btn btn-primary' value='Email User' />
-          <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          { this.props.all || this.props.renewals ?
-            <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
-          { this.props.archived ?
-            <input type='button' className='btn btn-success' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
-            : null
-          }
-        </div>
-        <div className='member-details-text'>
-          <h4>Complete Details</h4>
-          <div className='member-details-left'>
-            <img src='img/default_profile_pic_small.png' />
+          <div className='member-details-controls-buttons'>
+            <input type='button' className='btn btn-primary' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
+            <a className='btn btn-primary' href={'mailto:'+this.props.member}>Email User</a>
+            <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
+            { this.props.all || this.props.renewals ?
+              <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+              : null
+            }
+            { this.props.archived ?
+              <input type='button' className='btn btn-success' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+              : null
+            }
           </div>
-          <CompleteMemberDetails
-            class_name='member-details-right'
-            member={this.props.member}
-            details={this.state.details}
-            editable={this.state.editable}
-            getCompleteDetails={this.getCompleteDetails}
-            setEditMode={this.setEditMode}
-            getNotes={this.getNotes}
-          />
         </div>
         <div className='member-details-groups'>
           <h4>Manage Groups</h4>

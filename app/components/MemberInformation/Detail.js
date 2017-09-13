@@ -10,22 +10,18 @@ class Detail extends React.Component {
   // Render's either a view of the data or an editable field
   renderValue() {
     if (!this.props.editable) {
-      return (
-        <p>
-          {this.props.details['value'] ?
-            this.props.details['value'] :
-            <i>No Record</i>
-          }
-        </p>
-      );
+      if (this.props.details['value'])
+        return this.props.details['value'];
+      else
+        return (<i>No Record</i>);
     }
     else {
       return (
-        <input
-          type='text'
-          value={this.props.details['value']}
-          onChange={(e) => this.props.updateDetail(e, this.props.displayname)}
-        />
+          <input
+            type='text'
+            value={this.props.details['value']}
+            onChange={(e) => this.props.updateDetail(e, this.props.displayname)}
+          />
       );
     }
   }
@@ -33,8 +29,12 @@ class Detail extends React.Component {
   render() {
     return (
       <div className='detail'>
-        <h5>{this.props.displayname}</h5>
-        {this.renderValue()}
+        <div className='member-detail'>
+          {this.props.displayname}:
+        </div>
+        <div className='member-detail-value'>
+          {this.renderValue()}
+        </div>
       </div>
 
     );
