@@ -1,60 +1,60 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import Fields from './SignupDisplayFields.js'
+import Fields from './AdditionalFields.js';
+import {Form, Col} from 'react-bootstrap';
+import SignupForm from './SignupMiddle.js'
 
+var signupFields: [{
+     displayname: [],
+     columnname: [],
+     inputtype: [],
+     tablename: []
+ }];
 
-class Page extends React.Component {
+class Middle extends React.Component {
 
   constructor(props) {
       super(props);
 
       //get the chamberID of the selected chamber from parent
       this.state = {
-          chamber: props.listNameFromParent,
-          displayname: [],
-          columnname: [],
-          inputtype: [],
-          tablename: []
-        };
-
-    }
+          chamber: props.chamberID,
+          testing: ""
+        }
+        console.log("chamber id", props.chamberID)
+}
 
     //ajax request to retrieve the fields on the sign up form that correspond to the chamber selected
     componentWillMount() {
+        console.log("Making anothe ")
         this.getFields();
     }
 
-    getFields(){
-
-      $.ajax({url: '/php/chamber_form.php', type: 'POST',
-          dataType: 'json',
-          data: {
-              'test': this.state.chamber
-          },
-      success: response => {
-        var temp1=[], temp2=[], temp3=[], temp4=[];
-
-        for(var i=0; i<response.length; i++){
-            temp1[i] = response[i].displayname;
-            temp2[i] = response[i].columnname;
-            temp3[i] = response[i].inputtype;
-            temp4[i] = response[i].tablename;
-        }
-        console.log("testing", temp4)
+    componentWillReceiveProps(nextProps){
         this.setState({
-            displayname: temp1, columnname: temp2, inputtype: temp3, tablename: temp4
+            chamber: nextProps.chamberID
         })
-      }});
+        this.getFields();
+    }
+
+
+    getFields(){
+      $.ajax({url: '/php/chamber_form.php', async: false, type: 'POST',
+          dataType: 'json',
+          data: {'chamber': this.state.chamber},
+          success: response => {
+              signupFields = response;
+              console.log("the chamber searching for: ", response)
+          }
+      });
     }
 
   render() {
+      console.log("signupfields", signupFields)
     return (
-        <div>
-            <Fields chamber= {this.props.listNameFromParent} displayname={this.state.displayname} columnname={this.state.columnname} inputtype={this.state.inputtype} tablename={this.state.tablename} />
-        </div>
+        <SignupForm list={signupFields} chamberName={this.state.chamber}/>
 
     );
   }
 }
-export default Page;
+export default Middle;

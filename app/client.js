@@ -12,7 +12,8 @@ class App extends React.Component {
     // Set the default user details
     this.state = {
       user_type: "",
-      first_name: ""
+      first_name: "",
+      chamber_id: ""
     };
   }
 
@@ -22,7 +23,8 @@ class App extends React.Component {
       var user_data = JSON.parse(result);
       this.setState({
         user_type: user_data.type,
-        first_name: user_data.firstname
+        first_name: user_data.firstname,
+        chamber_id: user_data.chamberID
       });
     }});
   }
@@ -30,7 +32,11 @@ class App extends React.Component {
   render(){
     return(
         <BrowserRouter>
-            <Layout user_type={this.state.user_type} first_name={this.state.first_name}/>
+            <Layout
+              user_type={this.state.user_type}
+              first_name={this.state.first_name}
+              chamber_id={this.state.chamber_id}
+            />
         </BrowserRouter>
     );
   }
