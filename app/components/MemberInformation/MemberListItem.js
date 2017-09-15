@@ -16,10 +16,10 @@ class MemberListItem extends React.Component {
 
   // Handles the selection of a member
   handleSelect(event) {
-    if (!this.state.selected)
-      this.setState({
-        selected: true,
-      });
+    const currentSelected = this.state.selected;
+    this.setState({
+      selected: !currentSelected
+    });
   }
 
   // Allows a list item to be unselected
@@ -44,7 +44,6 @@ class MemberListItem extends React.Component {
       expiryDate = new Date(expiryDateComponents[0], parseInt(expiryDateComponents[1]) - 1, expiryDateComponents[2]);
     }
     // Check if in warning phase or already expired
-    console.log('comparing: ', expiryDate, ', to: ', warningWindow);
     if(expiryDate && (expiryDate < warningWindow))
       warning='danger';
     else{
@@ -52,7 +51,6 @@ class MemberListItem extends React.Component {
       if (expiryDate && (expiryDate < warningWindow))
         warning='warning';
     }
-    console.log(warning);
     if (warning) {
       return (<div className={'alert alert-'+warning+' member-list-item-field'}>{this.props.expiry}</div>);
     }
@@ -63,25 +61,30 @@ class MemberListItem extends React.Component {
 
   render() {
     return (
-      <div className='member-list-item' onClick={(e) => this.handleSelect(e)}>
-        <div className='member-list-item-field'>{this.props.first_name}</div>
-        <div className='member-list-item-field'>{this.props.last_name}</div>
-        <div className='member-list-item-field'>{this.props.email}</div>
-        <div className='member-list-item-field'>{this.props.business}</div>
-        {this.renderExpiry()}
-        {this.state.selected ?
-          <MemberDetails
-            member={this.props.email}
-            selected={this.state.selected}
-            unselect={this.unselect}
-            chamber_id={this.props.chamber_id}
-            all={this.props.all}
-            renewals={this.props.renewals}
-            archived={this.props.archived}
-            getChamberMembers={this.props.getChamberMembers}
-          />
-          : null
-        }
+      <div className='member-details-block'>
+        <div className='member-list-item' onClick={(e) => this.handleSelect(e)}>
+          <div className='member-list-item-field'>{this.props.first_name}</div>
+          <div className='member-list-item-field'>{this.props.last_name}</div>
+          <div className='member-list-item-field'>{this.props.email}</div>
+          <div className='member-list-item-field'>{this.props.business}</div>
+          {this.renderExpiry()}
+        </div>
+        <div className='details-full'>
+          {this.state.selected ?
+            <MemberDetails
+              member={this.props.email}
+              expiry={this.props.expiry}
+              selected={this.state.selected}
+              unselect={this.unselect}
+              chamber_id={this.props.chamber_id}
+              all={this.props.all}
+              renewals={this.props.renewals}
+              archived={this.props.archived}
+              getChamberMembers={this.props.getChamberMembers}
+            />
+            : null
+          }
+        </div>
       </div>
     );
   }
