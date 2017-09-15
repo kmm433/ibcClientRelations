@@ -45,9 +45,14 @@ class MemberInformation extends React.Component {
   filterMembers(members, searchPhrase){
     var filteredMembers = [];
     if(searchPhrase !== '') {
-      var foundSearchPhrase = false;
       members.forEach((member) => {
-        if (member['firstname'].indexOf(searchPhrase) !== -1)
+        var foundSearchPhrase = false;
+        for(var property in member) {
+          if(member[property] && member[property].indexOf(searchPhrase) !== -1){
+            foundSearchPhrase = true;
+          }
+        }
+        if (foundSearchPhrase)
           filteredMembers.push(member);
       });
     }
@@ -126,6 +131,7 @@ class MemberInformation extends React.Component {
   render() {
     return (
       <div className='main-component'>
+        <h2>Member Information</h2>
         <SettingsMenu
           search_phrase={this.state.search_phrase}
           all={this.state.all}

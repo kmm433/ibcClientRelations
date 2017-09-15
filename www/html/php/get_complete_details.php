@@ -32,8 +32,22 @@
     }
   }
 
-  #
-  $matchedResults['chamberSpecific'] = 'CHAMBER SPECIFIED STUFF!';
+  # Find the first chamber specific field
+  $indexOfFirst = 0;
+  foreach ($fields as $index => $field) {
+    if (preg_match('/BUSINESS_/', $field['tablename'])){
+      $indexOfFirst = $index;
+      break;
+    }
+  }
+
+  # Now fetch all of the chamber specific information
+  foreach ($fields as $index => $field) {
+    if (preg_match('/BUSINESS_/', $field['tablename'])) {
+      $result = $db->getChamberSpecificDetail($_POST['member'], $field['DataID'], $field['columnname'], $field['tablename']);
+      $matchedResults[strval($field['displayname'])] = $result[0];
+    }
+  }
 
   echo json_encode($matchedResults);
 ?>
