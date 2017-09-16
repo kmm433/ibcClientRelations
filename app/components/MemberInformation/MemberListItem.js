@@ -1,33 +1,19 @@
 import React from 'react';
-import MemberDetails from './MemberDetails.js'
 
 class MemberListItem extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      selected: false,
-      complete_details: null
+      hover: false
     };
-    this.handleSelect = this.handleSelect.bind(this);
-    this.unselect = this.unselect.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
     this.renderExpiry = this.renderExpiry.bind(this);
   }
 
-  // Handles the selection of a member
-  handleSelect(event) {
-    const currentSelected = this.state.selected;
-    this.setState({
-      selected: !currentSelected
-    });
-  }
-
-  // Allows a list item to be unselected
-  unselect(event) {
-    this.setState({
-      selected: false
-    });
-    event.stopPropagation();
+  // Toggles the hover indicator
+  toggleHover() {
+    this.setState({hover: !this.state.hover});
   }
 
   renderExpiry() {
@@ -60,30 +46,21 @@ class MemberListItem extends React.Component {
   }
 
   render() {
+    var hoverState;
+    if (this.state.hover) {
+      hoverState = {backgroundColor: '#E5E5E5'};
+    } else {
+      hoverState = {backgroundColor: '#FFFFFF'};
+    }
     return (
-      <div className='member-details-block'>
-        <div className='member-list-item' onClick={(e) => this.handleSelect(e)}>
+      <div className='member-details-block' style={hoverState}
+        onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
+        <div className='member-list-item' onClick={() => {this.props.setMemberView(this.props.email, this.props.expiry), this.toggleHover()}}>
           <div className='member-list-item-field'>{this.props.first_name}</div>
           <div className='member-list-item-field'>{this.props.last_name}</div>
           <div className='member-list-item-field'>{this.props.email}</div>
           <div className='member-list-item-field'>{this.props.business}</div>
           {this.renderExpiry()}
-        </div>
-        <div className='details-full'>
-          {this.state.selected ?
-            <MemberDetails
-              member={this.props.email}
-              expiry={this.props.expiry}
-              selected={this.state.selected}
-              unselect={this.unselect}
-              chamber_id={this.props.chamber_id}
-              all={this.props.all}
-              renewals={this.props.renewals}
-              archived={this.props.archived}
-              getChamberMembers={this.props.getChamberMembers}
-            />
-            : null
-          }
         </div>
       </div>
     );

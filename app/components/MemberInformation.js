@@ -2,12 +2,16 @@ import React from 'react';
 import $ from 'jquery';
 import SettingsMenu from './MemberInformation/SettingsMenu.js';
 import MemberList from './MemberInformation/MemberList.js';
+import MemberDetails from './MemberInformation/MemberDetails.js';
 
 class MemberInformation extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      display_user_details: false,
+      displayed_user: null,
+      displayed_user_expiry: null,
       unfiltered_members: null,
       member_list: null,
       member_list_renewals: null,
@@ -25,6 +29,8 @@ class MemberInformation extends React.Component {
     this.sortMemberViewGroups = this.sortMemberViewGroups.bind(this);
     this.changeSearchPhrase = this.changeSearchPhrase.bind(this);
     this.changeViewGroup = this.changeViewGroup.bind(this);
+    this.setMemberView = this.setMemberView.bind(this);
+    this.resetMemberView = this.resetMemberView.bind(this);
   }
 
   componentWillMount(props) {
@@ -127,59 +133,100 @@ class MemberInformation extends React.Component {
     this.filterMembers(this.state.unfiltered_members, event.target.value);
   }
 
+  // Allows for the view to be switched to rendering a single member
+  setMemberView(member, expiry) {
+    this.setState({
+      display_user_details: true,
+      displayed_user: member,
+      displayed_user_expiry: expiry
+    });
+  }
+
+  // Returns the view to the full member list
+  resetMemberView() {
+    this.setState({
+      display_user_details: false,
+      displayed_user: null
+    });
+  }
 
   render() {
     return (
-      <div className='main-component'>
-        <h2>Member Information</h2>
-        <SettingsMenu
-          search_phrase={this.state.search_phrase}
-          all={this.state.all}
-          renewals={this.state.renewals}
-          archived={this.state.archived}
-          num_all={this.state.num_all}
-          num_renewals={this.state.num_renewals}
-          num_archived={this.state.num_archived}
-          changeSearchPhrase={this.changeSearchPhrase}
-          changeViewGroup={this.changeViewGroup}
-        />
-        <p>{this.props.search_phrase}</p>
-        {this.state.all ?
-          <MemberList
-            member_list={this.state.member_list}
-            chamber_id={this.props.chamber_id}
-            all={this.state.all}
-            renewals={this.state.renewals}
-            archived={this.state.archived}
-            getChamberMembers={this.getChamberMembers}
-          />
-          : null
-        }
+      <div className='main-component w3-row' id='member-information'>
+        {!this.state.display_user_details ?
+          <div className='w3-col s12'>
+            <div className='w3-container w3-card-4 w3-light-grey'>
+              <h2>Member Information</h2>
+              <SettingsMenu
+                search_phrase={this.state.search_phrase}
+                all={this.state.all}
+                renewals={this.state.renewals}
+                archived={this.state.archived}
+                num_all={this.state.num_all}
+                num_renewals={this.state.num_renewals}
+                num_archived={this.state.num_archived}
+                changeSearchPhrase={this.changeSearchPhrase}
+                changeViewGroup={this.changeViewGroup}
+              />
+              <p>{this.props.search_phrase}</p>
+              {this.state.all ?
+                <MemberList
+                  member_list={this.state.member_list}
+                  chamber_id={this.props.chamber_id}
+                  all={this.state.all}
+                  renewals={this.state.renewals}
+                  archived={this.state.archived}
+                  getChamberMembers={this.getChamberMembers}
+                  setMemberView={this.setMemberView}
+                />
+                : null
+              }
 
-        {this.state.renewals ?
-          <MemberList
-            member_list={this.state.member_list_renewals}
-            chamber_id={this.props.chamber_id}
-            all={this.state.all}
-            renewals={this.state.renewals}
-            archived={this.state.archived}
-            getChamberMembers={this.getChamberMembers}
-          />
-          : null
-        }
+              {this.state.renewals ?
+                <MemberList
+                  member_list={this.state.member_list_renewals}
+                  chamber_id={this.props.chamber_id}
+                  all={this.state.all}
+                  renewals={this.state.renewals}
+                  archived={this.state.archived}
+                  getChamberMembers={this.getChamberMembers}
+                  setMemberView={this.setMemberView}
+                />
+                : null
+              }
 
-        {this.state.archived ?
-          <MemberList
-            member_list={this.state.member_list_archived}
-            chamber_id={this.props.chamber_id}
-            all={this.state.all}
-            renewals={this.state.renewals}
-            archived={this.state.archived}
-            getChamberMembers={this.getChamberMembers}
-          />
-          : null
+              {this.state.archived ?
+                <MemberList
+                  member_list={this.state.member_list_archived}
+                  chamber_id={this.props.chamber_id}
+                  all={this.state.all}
+                  renewals={this.state.renewals}
+                  archived={this.state.archived}
+                  getChamberMembers={this.getChamberMembers}
+                  setMemberView={this.setMemberView}
+                />
+                : null
+              }
+            </div>
+          </div>
+        :
+          <div className='w3-col s12'>
+            <div className='details-full w3-container w3-card-4 w3-light-grey'>
+              <h2>Complete Member Details</h2>
+              <MemberDetails
+                member={this.state.displayed_user}
+                expiry={this.state.expiry}
+                selected={true}
+                unselect={this.resetMemberView}
+                chamber_id={this.props.chamber_id}
+                all={this.state.all}
+                renewals={this.state.renewals}
+                archived={this.state.archived}
+                getChamberMembers={this.getChamberMembers}
+              />
+            </div>
+          </div>
         }
-
       </div>
     );
   }

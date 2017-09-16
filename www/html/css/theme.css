@@ -24,6 +24,10 @@ body {
   background-color: #2462AB;
 }
 
+.btn-primary:hover {
+  background-color: #2F7AD3;
+}
+
 .establish-fonts {
     font-family: "Roboto Condensed";
 }
@@ -186,16 +190,7 @@ text-transform: uppercase;
 }
 
 #member-info-settings {
-  margin: 10px 10px 10px 10px;
-}
-
-#member-info-settings {
-  background-color: #F5F5F5;
-  border: 0px;
-}
-
-#member-info-settings {
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
   border: 0px;
 }
 
@@ -210,26 +205,26 @@ text-transform: uppercase;
   margin-top: 5px;
 }
 
-#member-info-settings .search {
-  min-width: 200px;
-}
-
 #member-info-settings ul li label input {
   margin-right: 10px;
+  margin-left: 2px;
+}
+
+#member-info-settings input {
+  margin-left: 0px;
 }
 
 #member-list {
   width: 100%;
   word-wrap: break-word;
-  border: 1px solid #BCBCBC;
-  border-top-left-radius: 15px;
 }
 
 #member-list-headers {
   width: 100%;
   background-color: #2462AB;
   overflow: auto;
-  border-top-left-radius: 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 #member-list .table-header {
@@ -260,11 +255,7 @@ text-transform: uppercase;
   width: 20%;
 }
 
-#member-list .member-details-block:nth-child(odd) {
-  background-color: #FBFBFB;
-}
-
-#member-list .member-details-block:nth-child(even) {
+#member-list .member-details-block {
   background-color: #FFFFFF;
 }
 
@@ -272,7 +263,6 @@ text-transform: uppercase;
   width: 100%;
   min-height: 300px;
   float: none;
-  padding: 10px;
   display: inline-block;
   padding-top: 5px;
 }
@@ -291,18 +281,13 @@ text-transform: uppercase;
 }
 
 .member-details-controls {
-  border-top: 1px solid #BCBCBC;
-  padding: 30px 0px 20px 0px;
+  padding: 0px 0px 20px 0px;
   display: inline-block;
   width: 100%;
 }
 
 .member-details-controls-buttons {
   width: 100%;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .member-details-groups {
@@ -345,10 +330,10 @@ text-transform: uppercase;
   width: 100%;
   display: table;
   margin-bottom: 20px;
-  padding: 20px 5% 10px 5%;
+  padding: 20px 0px 10px 0px;
 }
 
-#member-list .detail {
+.detail {
   width: 100%;
   margin: 0px;
   padding: 0px;
@@ -356,11 +341,11 @@ text-transform: uppercase;
   display: table-row;
 }
 
-#member-list .detail:nth-child(odd) {
+.detail:nth-child(odd) {
   background-color: #FBFBFB;
 }
 
-#member-list .detail:nth-child(even) {
+.detail:nth-child(even) {
   background-color: #FFFFFF;
 }
 
@@ -791,6 +776,15 @@ margin-bottom: 2%;
     margin-left: 18%;
 }
 
+#member-information .w3-light-grey, #member-information .w3-hover-light-grey:hover, #member-information .w3-light-gray {
+  color: #000!important;
+  background-color: #FFFFFF!important;
+  margin-left: 0%;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+}
+
 #signup-headings {
         margin-top: 3%;
         margin-left: 3%;
@@ -807,4 +801,13 @@ margin-bottom: 2%;
 #signup-headings {
     font-size: xx-large;
     margin-bottom: 5%;
+}
+
+#member-info-settings .search {
+  min-width: 200px;
+  width: 100%;
+  border: 1px solid #BCBCBC;
+  box-shadow: none;
+  border-radius: 4px;
+  padding-left: 5px;
 }

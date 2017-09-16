@@ -27,6 +27,7 @@ class MemberList extends React.Component {
             renewals={this.props.renewals}
             archived={this.props.archived}
             getChamberMembers={this.props.getChamberMembers}
+            setMemberView={this.props.setMemberView}
           />
         );
       })
@@ -37,16 +38,18 @@ class MemberList extends React.Component {
   render() {
     return (
       <div id='member-list'>
-        {/* Headings for the Member List Table*/}
-        <div id='member-list-headers'>
-          <div className='table-header'>First Name</div>
-          <div className='table-header'>Last Name</div>
-          <div className='table-header'>Email</div>
-          <div className='table-header'>Business</div>
-          <div className='table-header'>Membership Expiry</div>
+          {/* Headings for the Member List Table*/}
+          <div id='member-list-headers'>
+            <div className='table-header'>First Name</div>
+            <div className='table-header'>Last Name</div>
+            <div className='table-header'>Email</div>
+            <div className='table-header'>Business</div>
+            <div className='table-header'>Membership Expiry</div>
+          </div>
+          <div>
+            {this.generateMemberList()}
+          </div>
         </div>
-        {this.generateMemberList()}
-      </div>
     );
   }
 };
