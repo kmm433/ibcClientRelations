@@ -1,12 +1,12 @@
 <?php
   include 'db_handler.php';
   $db = new DB_Handler();
-  $result = $db->setArchiveMember($_POST['member'], $_POST['archive_status']);
+  $result = $db->setArchiveMember($_POST['memberID'], $_POST['archive_status']);
   if ($result){
     if ($_POST['archive_status'] == '0')
-      $db->addNote($_SESSION['user'], $_POST['member'], 'Unarchived Member.');
+      $db->addNote($_SESSION['user'], $_POST['memberID'], 'Unarchived Member.');
     else
-      $db->addNote($_SESSION['user'], $_POST['member'], 'Archived Member.');
+      $db->addNote($_SESSION['user'], $_POST['memberID'], 'Archived Member.');
   }
   if($result)
     echo json_encode('Successfully changed archive status');

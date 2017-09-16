@@ -73,7 +73,7 @@ class MemberDetails extends React.Component {
           dataType: 'json',
           data: {
             'fields': JSON.stringify(fields),
-            'member': this.props.member
+            'memberID': this.props.memberID
           }, success: response => {
             // Match the values to their fields
             for (var value in response) {
@@ -103,7 +103,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member
+        'memberID': this.props.memberID
       },
       success: result => {
         if (result !== '') {
@@ -138,7 +138,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member
+        'memberID': this.props.memberID
       }, success: response => {
         this.setState({notes: response});
       }, error: response => {
@@ -157,7 +157,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'group': deleted
       },
       success: result => {
@@ -184,7 +184,7 @@ class MemberDetails extends React.Component {
         type: 'POST',
         dataType: 'json',
         data: {
-          'member': this.props.member,
+          'memberID': this.props.memberID,
           'group': tag
         },
         success: result => {
@@ -215,7 +215,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'archive_status': archived
       },
       success: response => {
@@ -247,7 +247,7 @@ class MemberDetails extends React.Component {
           </div>
         </div>
         <CompleteMemberDetails
-          member={this.props.member}
+          memberID={this.props.memberID}
           details={this.state.details}
           editable={this.state.editable}
           getCompleteDetails={this.getCompleteDetails}
@@ -268,7 +268,7 @@ class MemberDetails extends React.Component {
           />
         </div>
         <NotesPanel
-          member={this.props.member}
+          memberID={this.props.memberID}
           notes={this.state.notes}
           getNotes={this.getNotes}
         />

@@ -17,6 +17,7 @@ class MemberList extends React.Component {
         return(
           <MemberListItem
             key={x['email']}
+            memberID={x['UserID']}
             first_name={x['firstname']}
             last_name={x['lastname']}
             email={x['email']}

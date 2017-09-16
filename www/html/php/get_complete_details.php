@@ -21,7 +21,7 @@
 
   # This matches the displaynames provided by the input to the query result,
   # ignoring blank columns and the password column
-  $result = $db->getDetail($_POST['member'], $query);
+  $result = $db->getDetail($_POST['memberID'], $query);
   $index = 0;
   $matchedResults = array();
   foreach($fields as $field) {
@@ -44,7 +44,7 @@
   # Now fetch all of the chamber specific information
   foreach ($fields as $index => $field) {
     if (preg_match('/BUSINESS_/', $field['tablename'])) {
-      $result = $db->getChamberSpecificDetail($_POST['member'], $field['DataID'], $field['columnname'], $field['tablename']);
+      $result = $db->getChamberSpecificDetail($_POST['memberID'], $field['DataID'], $field['columnname'], $field['tablename']);
       $matchedResults[strval($field['displayname'])] = $result[0];
     }
   }

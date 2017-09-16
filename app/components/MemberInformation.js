@@ -134,10 +134,11 @@ class MemberInformation extends React.Component {
   }
 
   // Allows for the view to be switched to rendering a single member
-  setMemberView(member, expiry) {
+  setMemberView(member, memberID, expiry) {
     this.setState({
       display_user_details: true,
       displayed_user: member,
+      displayed_user_id: memberID,
       displayed_user_expiry: expiry
     });
   }
@@ -215,6 +216,7 @@ class MemberInformation extends React.Component {
               <h2>Complete Member Details</h2>
               <MemberDetails
                 member={this.state.displayed_user}
+                memberID={this.state.displayed_user_id}
                 expiry={this.state.expiry}
                 selected={true}
                 unselect={this.resetMemberView}

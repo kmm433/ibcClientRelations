@@ -54,7 +54,7 @@ class CompleteMemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'details': updatedDetails
       },
       success: response => {
