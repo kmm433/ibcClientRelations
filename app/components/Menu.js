@@ -80,9 +80,9 @@ class Menu extends React.Component {
         <li><NavLink activeClassName='active-route' to='/profile'>
           My Profile
         </NavLink></li>
-        <li><NavLink activeClassName='active-route' to='/calendar'>
+        {/*<li><NavLink activeClassName='active-route' to='/calendar'>
           Calendar
-        </NavLink></li>
+      </NavLink></li>*/}
         <li><NavLink activeClassName='active-route' to='/upcoming_events'>
           Upcoming Events
         </NavLink></li>

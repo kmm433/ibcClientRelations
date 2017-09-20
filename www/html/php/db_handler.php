@@ -406,5 +406,14 @@ class DB_Handler
     else
       return false;
   }
+
+  function insert_notification($title,$content){
+      $userid =  $_SESSION['userid'];
+      $sql = $this->db->prepare("CALL SPinsertNotification($userid,'$title','$content');");
+      if ($sql->execute()) {
+          return true;
+      }
+      return false;
+  }
 }
 ?>

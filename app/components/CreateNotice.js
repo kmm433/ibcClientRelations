@@ -1,59 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Notice from './NoticeBoard/Notice.js';
-import NoticeEvent from './NoticeBoard/NoticeEvent.js';
-import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';
+import Notice from './NoticeBoard/Notice.js';                       /* Notice Preview */
+import NoticeEvent from './NoticeBoard/NoticeEvent.js';             /* Event Preview */
+import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';           /* Survey Preview */
+import $ from 'jquery';                                             /* For ajax query */
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';          /* https://github.com/reactjs/react-tabs */
 import moment from "moment";                                        /* https://momentjs.com/ */
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+import DatePicker from 'react-datepicker';                          /* https://github.com/Hacker0x01/react-datepicker */
+import 'react-datepicker/dist/react-datepicker.css';
+import TimePicker from 'react-bootstrap-time-picker';               /* https://github.com/yury-dymov/react-bootstrap-time-picker */
 
 
-var mysurveyItems = [];
+var mysurveyItems = [];     // Array of Comonents
 var mysurveyCount = 0;
 var Questions = [];         //Questions.push({questionNo: qNumber, answerType: qType, question: value});
 var Answers = [];           //Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: answerID});
-
-
-// Called when user changes Survey Answer type to written
-function switchTypeText(qNumber){
-    RemoveAnswers(qNumber);
-    // Sets the questions type to textArea
-    for(var i = Questions.length-1; i > -1; i--) {
-        if(Questions[i]['answerType'] == 0 & Questions[i]['questionNo'] == qNumber) {
-            Questions[i]['answerType'] = 1; // TextArea
-        }
-    }
-}
-
-// Called when user changes Survey Answer type to Radio
-function switchTypeRadio(qNumber){
-    // Sets the questions type to radio
-    for(var i = Questions.length-1; i > -1; i--) {
-        if(Questions[i]['answerType'] == 1 & Questions[i]['questionNo'] == qNumber) {
-            Questions[i]['answerType'] = 0; // Radio
-        }
-    }
-}
-
-// Removes any answers they had already entered
-function RemoveAnswers(qNumber){
-    for(var i = Answers.length-1; i > -1; i--) {
-        if(Answers[i]['questionNo'] == qNumber) {
-            Answers.splice(i,1);
-        }
-    }
-}
-
-// Removes a particular answer
-function RemoveIndAnswers(qNumber, aNumber){
-    for(var i = 0; i < Answers.length; i++) {
-        if((Answers[i]['aNum'] == aNumber) & (Answers[i]['questionNo'] == qNumber)) {
-            Answers.splice(i,1);
-            return true;
-        }
-    }
-    return false;
-}
 
 class create_notice extends React.Component {
 
@@ -66,19 +27,18 @@ class create_notice extends React.Component {
 
             ETitle: "",
             EContent: "",
-            EDate: "",
-            EStart: "",
-            Eend: "",
+            EStartDate: "",
+            EendDate: "",
+            EStart: "61200",
+            Eend: "64800",
             Elocation: "",
             Elink: "",
             Eemail: "off",
-            selectedDay: new Date(),
 
             STitle: "",
             SItems: [],
             SChange: "",
-            Semail: ""
-
+            Semail: "off"
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeCheckbox = this.handleChangeCheckbox.bind(this);
@@ -92,19 +52,22 @@ class create_notice extends React.Component {
         this.getQuestionIndex = this.getQuestionIndex.bind(this);
         this.getAnswerIndex = this.getAnswerIndex.bind(this);
         this.updatePrev = this.updatePrev.bind(this);
-        this.handleDayClick = this.handleDayClick.bind(this);
+        this.handleDayStart = this.handleDayStart.bind(this);
+        this.handleDayEnd = this.handleDayEnd.bind(this);
+        this.handleTimeStart = this.handleTimeStart.bind(this);
+        this.handleTimeEnd = this.handleTimeEnd.bind(this);
 
         moment.locale("en-au");
     }
 
-    /* Generic function for all text areas */
+    /* Generic function for most text areas */
     handleChange(event){
         const name = event.target.name;
         const value = event.target.value;
         this.setState({[name]: value});
     }
 
-    handleChangeCheckbox(event){
+    handleChangeCheckbox(event){    // Checkboxes for emails across all tabs
         const name = event.target.name;
         const value = event.target.value;
 
@@ -116,28 +79,61 @@ class create_notice extends React.Component {
         }
     }
 
-    handleDayClick(day){
+    handleDayStart(date){           //Event Start Date (datePicker)
         this.setState({
-            selectedDay: day,
+            EStartDate: date
+        });
+    }
+    handleDayEnd(date){             //Event End Date  (datePicker)
+        this.setState({
+            EendDate: date
+        });
+    }
+    handleTimeStart(date){          //Event start Time (timePicker)
+        this.setState({
+            EStart: date
+        });
+    }
+    handleTimeEnd(date){            //Event end Time (timePicker)
+        this.setState({
+            Eend: date
         });
     }
 
+
     submitNotice(){
         // Post the notice to the DB
-        console.log(this.state.NTitle)
-        console.log(this.state.NContent)
-        console.log(this.state.Nemail)
+        console.log(this.state.NTitle);
+        console.log(this.state.NContent);
+        console.log(this.state.Nemail);
+        $.ajax({
+            url: '/php/insert_notification.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            data:{
+                'title': this.state.NTitle,
+                'content': this.state.NContent,
+            },
+            success : function(){
+                console.log('insert_notication Success');
+            }.bind(this),
+            error: function(xhr, status, err, mine){
+                console.log('insert_notication Error' + xhr + status + err);
+            }.bind(this)
+        });
     }
     submitEvent(){
         // Post the Event to the DB
-        console.log(this.state.ETitle)
-        console.log(this.state.EContent)
-        console.log(this.state.EDate)
-        console.log(this.state.EStart)
-        console.log(this.state.Eend)
-        console.log(this.state.Elocation)
-        console.log(this.state.Elink)
-        console.log(this.state.Eemail)
+        console.log(this.state.ETitle);
+        console.log(this.state.EContent);
+        console.log(this.state.EStartDate);
+        console.log(this.state.EendDate);
+        console.log(this.state.EStart);
+        console.log(this.state.Eend);
+        console.log(this.state.Elocation);
+        console.log(this.state.Elink);
+        console.log(this.state.Eemail);
     }
     submitSurvey(){
         // Post the Sruvey to the DB
@@ -147,7 +143,7 @@ class create_notice extends React.Component {
     }
 
     addQuestion(){
-        // Add a blank question to the screen
+        // Survey: Add a blank question to the screen
         mysurveyItems.push(<Question
             key={mysurveyCount}
             count={mysurveyCount + 1}
@@ -161,7 +157,7 @@ class create_notice extends React.Component {
     }
 
     remQuestion(){
-        // Remove the question from the submission array
+        // Survey: Remove the question from the submission array
         var index = this.getQuestionIndex(mysurveyCount);
         if (index != -1){
             Questions.splice(index,1);
@@ -176,7 +172,7 @@ class create_notice extends React.Component {
         this.updatePrev();
     }
 
-    /* An answer has been passed back up  */
+    /* Survey: A new answer has been passed back up  */
     handleAnswerReturn(value, aNumber, qNumber){
         // See if its already got a record in the submissions array
         var index = this.getAnswerIndex(aNumber,qNumber);
@@ -190,7 +186,7 @@ class create_notice extends React.Component {
         }
     }
 
-    /* A Question has been passed back up */
+    /* Survey: A new Question has been passed back up */
     handleQuestionReturn(value, qNumber, qType){
         // See if its already got a record in the submissions array
         var index = this.getQuestionIndex(qNumber);
@@ -205,7 +201,7 @@ class create_notice extends React.Component {
         }
     }
 
-    /* Submission Array Answers and Questions Search functions */
+    /* Survey: Submission Array Answers and Questions Search functions */
     getAnswerIndex(aNumber, qNumber) {
         for(var i = 0; i < Answers.length; i++) {
             if((Answers[i]['aNum'] == aNumber) & (Answers[i]['questionNo'] == qNumber)) {
@@ -224,7 +220,7 @@ class create_notice extends React.Component {
     }
 
     updatePrev(){
-        // Used only to update the survey preview
+        // Used only to update the survey preview by modifying props
         if (this.state.SChange == "0"){
             this.setState({
                 SChange: "1"
@@ -292,25 +288,23 @@ class create_notice extends React.Component {
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Event Content:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv"><div><textarea rows="5" name="EContent" placeholder="My Event Details" value={this.state.EContent} onChange={this.handleChange}></textarea></div></div>
 
-                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><input type="text" name="EDate" placeholder="Start time: 11am" value={this.state.EDate} onChange={this.handleChange}/></div></div>
-                    <DayPickerInput
-                        placeholder="DD/MM/YYYY"
-                        onDayClick={this.handleDayClick}
-                        selectedDays={this.state.selectedDay}
-                    />
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Date:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart}/></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>End Date:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Time:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="EStart" placeholder="Start time: 11am" value={this.state.EStart} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><TimePicker onChange={this.handleTimeStart} value={this.state.EStart} step={30} initialValue={61200}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>End Time:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Eend" placeholder="End Time: 8pm" value={this.state.Eend} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><TimePicker onChange={this.handleTimeEnd} value={this.state.Eend} step={30} initialValue={64800}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Location:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elocation" placeholder="Location" value={this.state.Elocation} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elocation" placeholder="Event Location" value={this.state.Elocation} onChange={this.handleChange}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Link:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elink" placeholder="URL or Link to more information" value={this.state.Elink} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elink" placeholder="" value={this.state.Elink} onChange={this.handleChange}/></div></div>
                 </div>
                 <div>
                     <div><h3>Preview:</h3></div>
@@ -319,8 +313,8 @@ class create_notice extends React.Component {
                         eventID=""
                         title={this.state.ETitle}
                         message={this.state.EContent}
-                        eventdate={moment(this.state.EDate)}
-                        endTime={this.state.Eend}
+                        eventdate={moment(this.state.EStartDate).add(this.state.EStart, 'seconds')}
+                        endTime={moment(this.state.EendDate).add(this.state.Eend, 'seconds')}
                         location={this.state.Elocation}
                         EventURL={this.state.Elink}
                         DatePosted=""
@@ -548,3 +542,45 @@ class AnswerWritten extends React.Component {
         );
     }
 };
+
+/****** General Functions ******/
+// Called when user changes Survey Answer type to written
+function switchTypeText(qNumber){
+    RemoveAnswers(qNumber);
+    // Sets the questions type to textArea
+    for(var i = Questions.length-1; i > -1; i--) {
+        if(Questions[i]['answerType'] == 0 & Questions[i]['questionNo'] == qNumber) {
+            Questions[i]['answerType'] = 1; // TextArea
+        }
+    }
+}
+
+// Called when user changes Survey Answer type to Radio
+function switchTypeRadio(qNumber){
+    // Sets the questions type to radio
+    for(var i = Questions.length-1; i > -1; i--) {
+        if(Questions[i]['answerType'] == 1 & Questions[i]['questionNo'] == qNumber) {
+            Questions[i]['answerType'] = 0; // Radio
+        }
+    }
+}
+
+// Removes any answers they had already entered
+function RemoveAnswers(qNumber){
+    for(var i = Answers.length-1; i > -1; i--) {
+        if(Answers[i]['questionNo'] == qNumber) {
+            Answers.splice(i,1);
+        }
+    }
+}
+
+// Removes a particular answer
+function RemoveIndAnswers(qNumber, aNumber){
+    for(var i = 0; i < Answers.length; i++) {
+        if((Answers[i]['aNum'] == aNumber) & (Answers[i]['questionNo'] == qNumber)) {
+            Answers.splice(i,1);
+            return true;
+        }
+    }
+    return false;
+}
