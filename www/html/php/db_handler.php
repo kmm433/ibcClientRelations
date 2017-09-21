@@ -294,12 +294,68 @@ class DB_Handler
       return false;
   }
 
+  function insertNewField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum){
+      $sql = $this->db->prepare("INSERT INTO $inserttable (displayname, inputtype, mandatory, tablename, minimum, maximum, ordering)
+                  VALUES(:name, :type, :optional, :tablename, :minimum, :maximum, (SELECT MAX(ordering)+1 FROM $inserttable O))");
+
+      $sql->bindParam(':name', $name, PDO::PARAM_STR);
+      $sql->bindParam(':type', $type, PDO::PARAM_STR);
+      $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
+      $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
+      $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
+      $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
+      $sql->execute();
+  }
+
+  function updateField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $dataID){
+      $sql = $this->db->prepare("UPDATE $inserttable SET displayname = :name, mandatory = :optional, inputtype=:type,
+           tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID)");
+
+      $sql->bindParam(':name', $name, PDO::PARAM_STR);
+      $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
+      $sql->bindParam(':type', $type, PDO::PARAM_STR);
+      $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
+      $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
+      $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
+      $sql->bindParam(':dataID', $dataID, PDO::PARAM_INT);
+      if($sql->execute())
+        return true;
+      else
+          return false;
+
+  }
 
   function insertUser($query){
       $sql = $this->db->prepare($query);
-      $sql->execute();
+      if($sql->execute())
+        return true;
+    else
+        return false;
 
   }
+
+  function insertBusiness($query){
+      $sql = $this->db->prepare($query);
+      $next = $this->db->prepare("SELECT LAST_INSERT_ID()");
+      if($sql->execute()){
+          $next->execute();
+          $id = $next->fetchColumn(0);
+          return $id;
+      }
+      else
+        return false;
+
+  }
+
+  function justExecute($query){
+      $sql = $this->db->prepare($query);
+      if($sql->execute()){
+          return true;
+      }
+      return false;
+  }
+
+  //count how many users exists with this value
   function countUser($query){
       $sql = $this->db->prepare($query);
       if ($sql->execute()) {

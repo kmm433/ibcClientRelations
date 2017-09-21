@@ -1,6 +1,6 @@
 import React from 'react';
-import Address from '../ReusableFields/EnterAddress';
-import UserFields from '../ReusableFields/UserFields';
+import Address from './EnterAddress';
+import UserFields from './UserFields';
 import $ from 'jquery';
 
 var update = 0;
@@ -30,16 +30,15 @@ constructor(){
         state: "",
         country: "",
         parentID: "",
-        president: "",
         hasParent: 0,
         parentButton: "Yes",
     }
     this.myCallback = this.myCallback.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddParent = this.handleAddParent.bind(this);
+    this.handleChange = this.handleChange.bind(this);
 }
 
-/*function to send to child to get the chamber id of page to load*/
 myCallback (name, value) {
      this.setState({[name]: value});
  }
@@ -62,6 +61,7 @@ myCallback (name, value) {
 
 
 handleSubmit(event){
+    console.log(this.state.name, this.state.email, this.state.password)
     $.ajax({url: '/php/insert_new_chamber.php', type: 'POST',
         dataType: 'json',
         data: {
@@ -89,13 +89,20 @@ handleSubmit(event){
 });
 }
 
+handleChange(event){
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({[name]: value});
+
+}
+
 renderMenu(){
     return(
     <label>
         Please Select the Chamber that the new Chamber belongs to:
-      <select value={this.state.value} onChange={this.handleChange}>
+      <select name = "parentID" value={this.state.value} onChange={this.handleChange}>
           {Object.keys(chamberMenu).map((item,index) =>
-              <option key = {index} value={item}>{chamberMenu[item]}</option>)}
+              <option key = {index} value={index}>{chamberMenu[item]}</option>)}
       </select>
     </label>
     )
@@ -142,11 +149,6 @@ render(){
             <label>
                 ABN:
                 <input type="number" name="abn" value={this.state.abn} onChange={this.handleChange}/>
-            </label>
-
-            <label>
-                Presidents Full Name:
-                <input type="text" name="president" value={this.state.president} onChange={this.handleChange}/>
             </label>
             <button id= "submitform-button" className = "btn" onClick={() => this.handleSubmit()}>Submit</button>
         </div>

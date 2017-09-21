@@ -17,15 +17,12 @@ $country = $_POST["country"];
 $parentID = $_POST["parentID"];
 
 
-BEGIN;
-INSERT INTO CHAMBER (ABN, parent_id, name) VALUES($abn, '$parentID', '$name');
-SELECT @chamber := 'chamberID' from CHAMBER where name = '$name';
-INSERT INTO USER (email, password, type, chamberID, firstname, lastname) VALUES('$email', '$password', 1, @chamber, '$firstname', '$lastname');
-INSERT INTO ADDRESS (line1, line2, city, postcode, state, chamberID) VALUES('$line1', '$line2', '$city', $postcode, '$state', @chamber);
-SELECT @chamber := 'chamberID' from CHAMBER where name = '$name';
-COMMIT;
+$id = $db->insertBusiness("INSERT INTO CHAMBER (ABN, parent_id, name)
+                            VALUES($abn, '$parentID', '$name')");
 
-$results = $db->getList("SELECT chamberID, name FROM CHAMBER where parent_id=1");
+$results = $db->insertUser("INSERT INTO USER (email, password, type, chamberID, firstname, lastname)
+                                VALUES('$email', '$password', 1, $id, '$firstname', '$lastname');");
+
 
 echo json_encode($results);
 

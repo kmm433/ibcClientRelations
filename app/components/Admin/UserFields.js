@@ -37,7 +37,7 @@ render(){
             </label>
             <label>
                 Confirm Email:
-                <input type="confirmemail" name="confirmemail" value={this.state.confirmemail} onChange={this.handleChange}/>
+                <input type="text" name="confirmemail" value={this.state.confirmemail} onChange={this.handleChange}/>
             </label>
             <label>
                 Password:

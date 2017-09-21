@@ -1,6 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
-import isEmail from 'validator/lib/isEmail';
+import {isEmail} from 'validator';
 import {FormControl, ControlLabel, FormGroup, Col, HelpBlock} from 'react-bootstrap';
 
 class Fields extends React.Component {
@@ -11,7 +11,8 @@ class Fields extends React.Component {
       this.state = {
           value: "",
           errorMessage: "",
-          valid: null
+          valid: null,
+          compareConfirm: ""
       }
 
       this.handleChange = this.handleChange.bind(this);
@@ -20,8 +21,8 @@ class Fields extends React.Component {
       this.validatePassword = this.validatePassword.bind(this);
     }
 
-    duplicate(email) {
 
+    duplicate(email) {
         var answer;
         $.ajax({url: '/php/user_duplicate.php', type: 'POST', dataType: 'json', async: false,
             data: {'email': email},
@@ -41,22 +42,34 @@ class Fields extends React.Component {
                 valid: "error",
                 errorMessage: "Password must be 8-16 characters long and contain at least one uppercase and one integer"
             });
+            return false;
         }
         else{
             this.setState({
                 valid: "success",
                 errorMessage: ""
             });
+            return true;
         }
     }
 
     checkValid(variable){
 
-        if(this.props.type === "email" && !isEmail(variable)){
+        console.log("Not is is comparing", this.props.compareConfirm)
+        if(this.state.compareConfirm === "Do not Match"){
+            this.setState({
+                valid: "error",
+                errorMessage: "Does not Match"
+            });
+            return false;
+        }
+
+        else if(this.props.type === "email" && !isEmail(variable)){
             this.setState({
                 valid: "error",
                 errorMessage: "Invalid Email"
             });
+            return false;
         }
         else if(this.props.type === "email" && isEmail(variable)){
             var isDuplicate=this.duplicate(variable);
@@ -66,24 +79,29 @@ class Fields extends React.Component {
                     valid: "error",
                     errorMessage: "This email already exists"
                 });
+                return false;
             }
             else if(isDuplicate==='0') {
                 this.setState({
                     valid: "success",
                     errorMessage: ""
                 });
+                return true;
             }
         }
         if(this.props.type === "password"){
             console.log("Checking password", variable)
-            this.validatePassword(variable);
+            return (this.validatePassword(variable));
         }
+
     }
 
     handleChange(event){
-        this.checkValid(event.target.value, this.props.type)
-        if(this.state.valid === "success"){
-            this.props.storeUserData(event.target.value, this.props.index);
+        var variable = this.checkValid(event.target.value, this.props.type)
+        console.log("About to call callback", variable)
+        if(variable){
+            console.log("Calling callback")
+            this.props.userAnswer(event.target.value, this.props.index);
         }
     }
 
