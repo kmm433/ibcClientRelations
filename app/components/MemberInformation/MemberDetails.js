@@ -206,6 +206,7 @@ class MemberDetails extends React.Component {
   // This function will allow a chamber members archive status to be changed and
   // then refresh the list of members.
   toggleArchive() {
+    console.log('Attempting to perform archive action.');
     var archived = 1;
     if (this.props.archived) {
       archived = 0;
@@ -220,6 +221,7 @@ class MemberDetails extends React.Component {
       },
       success: response => {
         this.props.getChamberMembers();
+        this.props.unselect();
       },
       error: response => {
         console.log(response);
@@ -251,6 +253,7 @@ class MemberDetails extends React.Component {
           details={this.state.details}
           editable={this.state.editable}
           getCompleteDetails={this.getCompleteDetails}
+          getChamberMembers={this.props.getChamberMembers}
           setEditMode={this.setEditMode}
           getNotes={this.getNotes}
         />

@@ -4,12 +4,12 @@
   $result = $db->setArchiveMember($_POST['memberID'], $_POST['archive_status']);
   if ($result){
     if ($_POST['archive_status'] == '0')
-      $db->addNote($_SESSION['user'], $_POST['memberID'], 'Unarchived Member.');
+      $result = $db->addNote($_SESSION['userid'], $_POST['memberID'], 'Unarchived Member.');
     else
-      $db->addNote($_SESSION['user'], $_POST['memberID'], 'Archived Member.');
+      $result = $db->addNote($_SESSION['userid'], $_POST['memberID'], 'Archived Member.');
   }
   if($result)
-    echo json_encode('Successfully changed archive status');
+    echo json_encode($result);
   else
     echo json_encode('Error: Unable to change archive status.');
 ?>

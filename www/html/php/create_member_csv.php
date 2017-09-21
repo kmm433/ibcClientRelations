@@ -40,9 +40,28 @@ foreach ($displayedFields as $field) {
 }
 fputcsv($csvFile, $headings);
 
-//TODO: Get a list of all chamber members
+// Get a list of all chamber members
+$chamber_members = $db->getChamberMembers($_SESSION['chamber']);
 
-//TODO: Recursively get each member's details and put in the csv
+foreach ($chamber_members as $member) {
+  // Get each detail in the headings list
+  $values = array();
+  foreach($displayedFields as $field) {
+    // For ordinary mandatory fields
+    if (!preg_match('/BUSINESS_/', $field['tablename'])) {
+      $query = strval($field['tablename']) . '.' . strval($field['columnname']);
+      $result = $db->getDetail($member[0], $query);
+      array_push($values, $result[0][0]);
+    }
+    // For the chamber specified fields
+    else {
+      $result = $db->getChamberSpecificDetail($member[0], $field['DataID'], $field['columnname'], $field['tablename']);
+      array_push($values, $result[0]);
+    }
+  }
+  // Write this user's row to the csv
+  fputcsv($csvFile, $values);
+}
 
 fclose($csvFile);
 exit();

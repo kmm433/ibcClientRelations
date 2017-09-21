@@ -59,8 +59,8 @@ class DB_Handler
     }
 
   // Session Set: Returns the user's Business ID
-  function getBusinessID($user) {
-    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE email='$user'");
+  function getBusinessID($userID) {
+    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE UserID='$userID'");
     if ($sql->execute()) {
       $result = $sql->fetch(PDO::FETCH_ASSOC);
       return $result['businessID'];
@@ -108,13 +108,24 @@ class DB_Handler
   }
 
   // Allows a chamber specific detail to be updated for a user
-  function setChamberSpecificDetail($memberID, $dataID, $value, $column, $table) {
-    $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID";
+  function setChamberSpecificDetail($memberID, $dataID, $businessID, $value, $column, $table) {
+    // Check if there is s preexisting value
+    $queryString = "SELECT * FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID='$dataID'";
     $sql = $this->db->prepare($queryString);
-    if($sql->execute())
-      return true;
-    else
-      return false;
+    if ($sql->execute()) {
+      if ($sql->rowCount() > 0)
+        $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID";
+      else
+        $queryString = "INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, '$value', $businessID)";
+      $sql = $this->db->prepare($queryString);
+      if ($sql->execute())
+        return true;
+      else
+        return false;
+    }
+    else {
+      return ('Failed to check for existing entry.');
+    }
   }
 
   // Gets chamber specific information about a user
@@ -156,8 +167,8 @@ class DB_Handler
   }
 
   // Changes whether a member is archived or not.
-  function setArchiveMember($member, $archived) {
-    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE email='$member'");
+  function setArchiveMember($memberID, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE UserID='$memberID'");
     $result = $sql->execute();
     return $result;
   }
