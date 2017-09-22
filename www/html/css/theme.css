@@ -13,6 +13,21 @@ body {
   background-color: #F5F5F5;
 }
 
+/* Overriding some boostrap colors for a custom color scheme.*/
+.panel-primary .panel-heading{
+  background-color: #2462AB;
+  border-bottom: 1px solid #BCBCBC;
+  border-top-left-radius: 10px;
+}
+
+.btn-primary {
+  background-color: #2462AB;
+}
+
+.btn-primary:hover {
+  background-color: #2F7AD3;
+}
+
 .establish-fonts {
     font-family: "Roboto Condensed";
 }
@@ -149,99 +164,11 @@ text-transform: uppercase;
   font-size: 120%;
 }
 
-/* The following is to style the chamber member list table*/
-
-.rounded-table {
-  border: none;
-}
-
-.rounded-table th, .rounded-table td {
-  padding: 1px 5px;
-}
-
-.rounded-table thead th {
-  background-color: #2462AB;
-  border: none;
-  color: #FFFFFF;
-  font-weight: bold;
-}
-
-.rounded-table thead th:first-child {
-  border-radius: 10px 0 0 0;
-}
-
-.rounded-table tbody td {
-  border: none;
-  border-top: 1px solid #BCBCBC;
-}
-
-.rounded-table tbody tr:nth-child(odd) {
-  background-color: #E5E5E5;
-}
-
-.rounded-table tbody tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-.rounded-table td {
-  background-color: inherit;
-}
-
-.member-first-name, .member-last-name {
-  max-width: 100px;
-  min-width: 10%;
-}
-
-.member-email {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.member-business-name {
-  max-width: 300px;
-  min-width: 30%;
-}
-
-.member-expiry {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.rounded-table .expiry-alert {
-  background-color: #DCA7A7;
-}
-
-#member-group-control ul li{
-  list-style: none;
-}
-
 .confirmation-button {
   margin: 10px 5px;
 }
 .btn {
   margin: 5px;
-}
-
-.member-control-panel {
-  margin-top: 10px;
-  border-top-left-radius: 10px;
-}
-
-.member-control-panel ul, .member-control-panel .search {
-  display: inline-block;
-}
-.member-control-panel ul {
-  margin-top: 10px;
-}
-
-.member-control-panel .search {
-  float: right;
-  margin: 7px;
-}
-
-.member-control-panel .search input {
-  border-radius: 4px;
-  border: 1px solid #BCBCBC;
 }
 
 .main-component {
@@ -256,108 +183,50 @@ text-transform: uppercase;
   padding-top: 15px;
 }
 
-/* The following is to style the chamber member list table*/
-
-.rounded-table {
-  border: none;
-}
-
-.rounded-table th, .rounded-table td {
-  padding: 1px 5px;
-}
-
-.rounded-table thead th {
-  background-color: #2462AB;
-  border: none;
-  color: #FFFFFF;
-  font-weight: bold;
-}
-
-.rounded-table thead th:first-child {
-  border-radius: 10px 0 0 0;
-}
-
-.rounded-table tbody td {
-  border: none;
-  border-top: 1px solid #BCBCBC;
-}
-
-.rounded-table tbody tr:nth-child(odd) {
-  background-color: #E5E5E5;
-}
-
-.rounded-table tbody tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-.rounded-table td {
-  background-color: inherit;
-}
-
-.member-first-name, .member-last-name {
-  max-width: 100px;
-  min-width: 10%;
-}
-
-.member-email {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.member-business-name {
-  max-width: 300px;
-  min-width: 30%;
-}
-
-.member-expiry {
-  max-width: 200px;
-  min-width: 20%;
-}
-
-.rounded-table .expiry-alert {
-  background-color: #DCA7A7;
-}
+/* Regarding the member list view available to executives*/
 
 .confirmation-button {
   margin: 10px 5px;
 }
 
-#member-control-panel {
+#member-info-settings {
   background-color: #FFFFFF;
-  border: 1px solid #BCBCBC;
-  border-radius: 10px;
-  border-top-right-radius: 0;
-  margin: 10px 0px
-
+  border: 0px;
 }
 
-#member-control-panel ul, #member-control-panel .search {
-  display: inline-block;
-}
-#member-control-panel ul {
-  margin-top: 10px;
+#member-info-settings .panel-body {
+  background-color: #F5F5F5;
+  border: 0px;
 }
 
-#member-control-panel .search {
-  float: right;
-  margin: 7px;
+#member-info-settings ul {
+  list-style: none;
+  padding-left: 0px;
+  margin-top: 5px;
 }
 
-#member-control-panel .search input {
-  border-radius: 4px;
-  border: 1px solid #BCBCBC;
+#member-info-settings ul li label input {
+  margin-right: 10px;
+  margin-left: 2px;
 }
 
-/* Regarding the member list view available to executives*/
+#member-info-settings input {
+  margin-left: 0px;
+}
+
 #member-list {
   width: 100%;
   word-wrap: break-word;
+  border: 1px solid #BCBCBC;
+  border-top-left-radius: 15px;
 }
 
 #member-list-headers {
   width: 100%;
   background-color: #2462AB;
   overflow: auto;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 #member-list .table-header {
@@ -373,6 +242,12 @@ text-transform: uppercase;
 .member-list-item {
   width: 100%;
   overflow: auto;
+  border-top: 1px solid #BCBCBC;
+}
+
+.member-list-item .alert {
+  margin-bottom: 0px;
+  border-radius: 0px;
 }
 
 .member-list-item-field {
@@ -382,63 +257,133 @@ text-transform: uppercase;
   width: 20%;
 }
 
-#member-list .member-list-item:nth-child(odd) {
-  background-color: #E5E5E5;
-}
-
-#member-list .member-list-item:nth-child(even) {
-  background-color: #F5F5F5;
+#member-list .member-details-block {
+  background-color: #FFFFFF;
 }
 
 .member-details {
   width: 100%;
   min-height: 300px;
   float: none;
-  padding: 10px;
   display: inline-block;
+  padding-top: 5px;
 }
 
-.member-details-right {
-  width: 66%;
-  float: left;
+.member-details h4 {
+  margin-left: 0%;
 }
 
-.member-details-left {
-  width: 33%;
-  float: left;
-  padding: 10px;
+.member-details h5 {
+  font-weight: bold;
 }
 
-.member-details-left img {
-  width: 50%;
-  margin-left: 5%;
-  margin-right: 25%;
+.member-details-text {
+  border-top: 1px solid #BCBCBC;
+  padding-top: 10px;
+}
+
+.member-details-controls {
+  padding: 0px 0px 20px 0px;
+  display: inline-block;
+  width: 100%;
+}
+
+.member-details-controls-buttons {
+  width: 100%;
 }
 
 .member-details-groups {
   width: 100%;
   display: inline-block;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 10px;
-  border-left: 1px solid #BCBCBC;
-  border-right: 1px solid #BCBCBC;
+  margin: 10px 0px 20px 0px;
+  border-top: 1px solid #BCBCBC;
+  padding-top: 10px;
 }
 
-.member-details-complete-block {
-  float: left;
+.notes-panel {
+  border-top: 1px solid #BCBCBC;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.notes-panel textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #BCBCBC;
+  border-radius: 5px;
+  resize: none;
   padding: 5px;
-  margin: 10px;
+}
+
+.member-details input, .member-details a {
+  margin-left: 0px;
+}
+
+.member-details-controls input, .member-details-controls a {
+  margin-right: 10px;
+  padding-top: 10px;
+}
+
+.complete-member-details {
+  border-top: 1px solid #BCBCBC;
+  width: 100%;
+  display: table;
+  margin-bottom: 20px;
+  padding: 20px 0px 10px 0px;
+}
+
+.detail {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: grey;
+  display: table-row;
+}
+
+.detail:nth-child(odd) {
+  background-color: #FBFBFB;
+}
+
+.detail:nth-child(even) {
+  background-color: #FFFFFF;
+}
+
+.detail .member-detail {
+  padding: 0px 20px 0px 10px;
+  background-color: inherit;
+  word-wrap: break-word;
+  display: table-cell;
+  vertical-align: top;
+}
+.detail .member-detail-value {
+  padding: 0px 0px 0px 10px;
+  background-color: inherit;
+  word-wrap: break-word;
+  display: table-cell;
+  vertical-align: top;
+}
+
+.note h5 {
+  margin-left: 0%;
 }
 
 .ReactTags__tag {
   background-color: #5bc0de;
 }
 
+.ReactTags__tagInput {
+  margin: 5px;
+}
+
 div.ReactTags__selected span.ReactTags__tag {
     background: #2462ab;
     color: #FFFFFF;
     border-radius: 5px;
+    margin-left: 0px;
+    margin-right: 10px;
 }
 
 /* Used to allocate screenspace to the main component */
@@ -459,13 +404,6 @@ div.ReactTags__selected span.ReactTags__tag {
   .small-side-menu {
     display: block;
   }
-}
-
-/* Overriding some boostrap colors for a custom color scheme.*/
-.panel-primary .panel-heading{
-  background-color: #2462AB;
-  border-bottom: 1px solid #BCBCBC;
-  border-top-left-radius: 10px;
 }
 
 /* The following is to style the edit sign up fields table */
@@ -646,6 +584,154 @@ see NoticeSurvey.js */
     margin-bottom: 10px;
 }
 
+.react-tabs__tab-list {
+  border-bottom: 1px solid #aaa;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.react-tabs__tab {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-bottom: none;
+  bottom: -1px;
+  position: relative;
+  list-style: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.react-tabs__tab--selected {
+  background: #fff;
+  border-color: #aaa;
+  color: black;
+  border-radius: 5px 5px 0 0;
+}
+
+.react-tabs__tab-panel {
+  display: none;
+}
+
+.react-tabs__tab-panel--selected {
+  display: block;
+}
+
+.react-tabs__tab--disabled {
+  color: GrayText;
+  cursor: default;
+}
+
+.react-tabs__tab:focus {
+  box-shadow: 0 0 5px hsl(208, 99%, 50%);
+  border-color: hsl(208, 99%, 50%);
+  outline: none;
+}
+
+.react-tabs__tab:focus:after {
+  content: "";
+  position: absolute;
+  height: 5px;
+  left: -4px;
+  right: -4px;
+  bottom: -5px;
+  background: #fff;
+}
+
+.CreateNoticeDiv {
+    margin-bottom: 5px;
+}
+
+.CreateNoticeDiv input {
+    width:100%;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+.CreateNoticeDiv textarea {
+    width:100%;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2462AB;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2462AB;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#CreateNoticeEmail{
+    text-align: right;
+    padding-right: 10px;
+    padding-top: 7px;
+}
+
+#CreateNoticeEmailSwitch{
+    text-align: Left;
+}
+
+.surveyAddQuestions{
+    margin-top: 15px;
+}
+
+.questionSwitch{
+    padding-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 5px;
+}
 /*Sign up styling*/
 
 #dropdown-btn-menu{
@@ -683,6 +769,15 @@ margin-bottom: 2%;
     background-color: #f5f5f5!important;
 }
 
+#member-information .w3-light-grey, #member-information .w3-hover-light-grey:hover, #member-information .w3-light-gray {
+  color: #000!important;
+  background-color: #FFFFFF!important;
+  margin-left: 0%;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+}
+
 #signup-headings {
         margin-top: 3%;
         margin-left: 3%;
@@ -699,6 +794,7 @@ margin-bottom: 2%;
     font-size: xx-large;
     margin-bottom: 5%;
 }
+
 
 #edit-signup{
   float: left;
@@ -784,4 +880,38 @@ margin-bottom: 2%;
     max-width: 100%;
     margin-bottom: 5px;
     font-weight: 700;
+}
+
+.react-datepicker {
+  font-size: 1.3rem !important;
+}
+
+.react-datepicker__current-month {
+  font-size: 1.5rem !important;
+}
+
+.react-datepicker__header {
+  padding-top: 6px !important;
+}
+
+.react-datepicker__navigation {
+  top: 13px !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+  margin: 0.5rem !important;
+  width: 1.9rem !important;
+}
+
+.react-datepicker-wrapper, .react-datepicker__input-container {
+    width: 100%;
+}
+
+#member-info-settings .search {
+  min-width: 200px;
+  width: 100%;
+  border: 1px solid #BCBCBC;
+  box-shadow: none;
+  border-radius: 4px;
+  padding-left: 5px;
 }

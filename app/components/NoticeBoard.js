@@ -13,8 +13,9 @@ import React from 'react';
 import Notice from './NoticeBoard/Notice.js';
 import NoticeEvent from './NoticeBoard/NoticeEvent.js';
 import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';
-import $ from 'jquery';   /*For ajax query */
-import Infinite from '@srph/react-infinite-scroll'; /*For inf scroll */
+import $ from 'jquery';                                         /*For ajax query */
+import Infinite from '@srph/react-infinite-scroll';             /*For inf scroll */
+import moment from "moment";                                    /* https://momentjs.com/ */
 
 
 var count = 0;          // Used by inf scroll to know which to display next
@@ -156,6 +157,8 @@ class NoticeBoard extends React.Component {
         var events = this.get_events();
         var survey = this.get_surveys();
 
+        console.log(notifs.length);
+
         for(var i = 0; i < notifs.length; i++){
             messages.push(<Notice
                 key={notifs[i].NotificationID}
@@ -188,9 +191,9 @@ class NoticeBoard extends React.Component {
 
         // Sort the messages based on DatePosted
         messages.sort(function(a, b) {
-            a = new Date(a.props.DatePosted);
-            b = new Date(b.props.DatePosted);
-            return a<b ? -1 : a>b ? 1 : 0;
+            a = new moment(a.props.DatePosted);
+            b = new moment(b.props.DatePosted);
+            return a>b ? -1 : a<b ? 1 : 0;
         });
     }
 

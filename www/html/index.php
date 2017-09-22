@@ -13,7 +13,9 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/react-day-picker/lib/style.css">
     <link rel="stylesheet" type="text/css" href="css/reactTags.css" />
+    <link rel="stylesheet" type="text/scss" href="css/datepicker.scss" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/theme.css" />
   </head>

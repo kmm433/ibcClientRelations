@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { WithContext as ReactTags } from 'react-tag-input';
 import CompleteMemberDetails from './CompleteMemberDetails.js';
+import NotesPanel from './NotesPanel.js'
 
 class MemberDetails extends React.Component {
 
@@ -10,35 +11,87 @@ class MemberDetails extends React.Component {
     this.state = {
       tags: [],
       suggestions: [],
+      details: {},
       complete_details: null,
-      editable: false
+      fields: null,
+      editable: false,
+      notes: []
     }
     this.getCompleteDetails = this.getCompleteDetails.bind(this);
     this.getMembersGroups = this.getMembersGroups.bind(this);
     this.getAvailableGroups = this.getAvailableGroups.bind(this);
+    this.getNotes = this.getNotes.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.setEditMode = this.setEditMode.bind(this);
+    this.toggleArchive = this.toggleArchive.bind(this);
   }
 
   componentWillMount() {
     this.getMembersGroups();
     this.getAvailableGroups();
     this.getCompleteDetails();
+    this.getNotes()
   }
 
   // Finds all the variable information pertaining to a user for display
   getCompleteDetails() {
+    // Fetch the required fields for this chamber
     $.ajax({
-      url: "/php/get_complete_details.php",
+      url: '/php/chamber_form.php',
       type: 'POST',
       dataType: 'json',
-      data: {
-        'member': this.props.member
-      }, success: result => {
-        console.log(result);
-        this.setState({complete_details: result});
+      data: {'chamber': this.props.chamber_id},
+      success: response => {
+        var fields = response;
+        var ignoredResults = [];
+        fields.forEach((field, i)=> {
+          if(field['columnname'] === 'ignore' || field['displayname'] === 'Password')
+            ignoredResults.push(i);
+        });
+        ignoredResults.forEach(field => {
+          delete fields[field];
+        });
+        var expiryField = {
+          DataID:"1",
+          columnname:"expiry",
+          displayname:"Membership Expiry Date",
+          inputtype:"date",
+          mandatory:"1",
+          maximum:"",
+          minimum:"",
+          ordering:"1000000",
+          tablename:"USER",
+          value:this.props.expiry
+        };
+        fields.push(expiryField);
+        this.setState({fields: fields});
+        $.ajax({
+          url: "/php/get_complete_details.php",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            'fields': JSON.stringify(fields),
+            'memberID': this.props.memberID
+          }, success: response => {
+            // Match the values to their fields
+            for (var value in response) {
+              fields.forEach((field) => {
+                if(field['displayname'] === value) {
+                  field['value'] = response[value];
+                }
+              });
+            }
+            // Sort the fields by their ordering value
+            fields.sort((a, b) => {
+              return(a['ordering'] - b['ordering']);
+            });
+            this.setState({details: fields});
+          }, error: response => {
+            console.log('ERROR:', response);
+          }
+        });
       }
     });
   }
@@ -50,7 +103,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member
+        'memberID': this.props.memberID
       },
       success: result => {
         if (result !== '') {
@@ -78,6 +131,22 @@ class MemberDetails extends React.Component {
     }});
   }
 
+  // Fetches any notes left about a member
+  getNotes() {
+    $.ajax({
+      url: "/php/get_notes.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'memberID': this.props.memberID
+      }, success: response => {
+        this.setState({notes: response});
+      }, error: response => {
+        console.log('Failed to retrieve notes.', response);
+      }
+    });
+  }
+
   handleDelete(i) {
     let tags = this.state.tags;
     var deleted = tags[i]['text'];
@@ -88,7 +157,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'group': deleted
       },
       success: result => {
@@ -115,7 +184,7 @@ class MemberDetails extends React.Component {
         type: 'POST',
         dataType: 'json',
         data: {
-          'member': this.props.member,
+          'memberID': this.props.memberID,
           'group': tag
         },
         success: result => {
@@ -132,31 +201,64 @@ class MemberDetails extends React.Component {
 
   setEditMode(event) {
     this.setState({editable: !this.state.editable});
-    console.log('entering edit mode');
-    event.stopPropagation();
+  }
+
+  // This function will allow a chamber members archive status to be changed and
+  // then refresh the list of members.
+  toggleArchive() {
+    console.log('Attempting to perform archive action.');
+    var archived = 1;
+    if (this.props.archived) {
+      archived = 0;
+    }
+    $.ajax({
+      url: '/php/set_archive_member.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'memberID': this.props.memberID,
+        'archive_status': archived
+      },
+      success: response => {
+        this.props.getChamberMembers();
+        this.props.unselect();
+      },
+      error: response => {
+        console.log(response);
+      }
+    });
   }
 
   render() {
     const {tags, suggestions} = this.state
     return (
       <div className='member-details'>
-        <div className='member-details-left'>
-          <img src='img/default_profile_pic_small.png' />
+        <div className='member-details-controls'>
+          <div className='member-details-controls-buttons'>
+            <input type='button' className='btn btn-primary' value='Return to List' onClick={(e) => this.props.unselect(e)}/>
+            <a className='btn btn-primary' href={'mailto:'+this.props.member}>Email User</a>
+            <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
+            { this.props.all || this.props.renewals ?
+              <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
+              : null
+            }
+            { this.props.archived ?
+              <input type='button' className='btn btn-success' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+              : null
+            }
+          </div>
         </div>
         <CompleteMemberDetails
-          class_name='member-details-right'
-          details={this.state.complete_details}
+          memberID={this.props.memberID}
+          details={this.state.details}
           editable={this.state.editable}
+          getCompleteDetails={this.getCompleteDetails}
+          getChamberMembers={this.props.getChamberMembers}
+          setEditMode={this.setEditMode}
+          getNotes={this.getNotes}
         />
-        <div className='member-details-controls'>
-          <input type='button' className='btn btn-success' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
-          <input type='button' className='btn btn-success' value='Email User' />
-          <input type='button' className='btn btn-success' value='Leave a Note'/>
-          <input type='button' className='btn btn-success' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-          <input type='button' className='btn btn-danger' value='Delete Member'/>
-        </div>
         <div className='member-details-groups'>
-          <p>Manage groups:</p>
+          <h4>Manage Groups</h4>
           <ReactTags
             tags={tags}
             suggestions={suggestions}
@@ -168,6 +270,11 @@ class MemberDetails extends React.Component {
             placeholder={'Add to group'}
           />
         </div>
+        <NotesPanel
+          memberID={this.props.memberID}
+          notes={this.state.notes}
+          getNotes={this.getNotes}
+        />
       </div>
     );
   }

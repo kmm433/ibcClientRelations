@@ -7,6 +7,6 @@ $groupID = $db->checkIfExistingGroup($_SESSION['chamber'], $_POST['group']);
 if(!$groupID){
   $groupID = $db->createGroup($_SESSION['chamber'], $_POST['group']);
 }
-$result = $db->addMemberToGroup($_POST['member'], $groupID['groupID']);
+$result = $db->addMemberToGroup($_POST['memberID'], $groupID['groupID']);
 echo json_encode($result);
 ?>
