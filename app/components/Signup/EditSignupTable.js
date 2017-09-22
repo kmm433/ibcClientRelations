@@ -46,8 +46,6 @@ class FieldTable extends React.Component {
             newMin: nextProps.signupFields[i].minimum,
             newMax: nextProps.signupFields[i].maximum
         })
-
-        console.log("Receiving:", nextProps.signupFields[i].inputtype)
     }
 
 
@@ -256,7 +254,11 @@ class FieldTable extends React.Component {
     }
 
     handleSubmit(){
-        this.props.sendNewFields(this.state.newDisplayname, this.state.newOptional, this.state.newType, this.state.newMin, this.state.newMax);
+        var optional=1;
+        this.state.newOptional === true ? optional = '1' : optional = '0'
+
+        console.log("sending", this.state.newDisplayname, optional, this.state.newType, this.state.newMin, this.state.newMax)
+        this.props.sendNewFields(this.state.newDisplayname, optional, this.state.newType, this.state.newMin, this.state.newMax);
 
         this.setState({
             newDisplayname: "",
