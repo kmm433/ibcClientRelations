@@ -80,16 +80,17 @@ handleSubmit(event){
             'parentID': this.state.parentID,
         },
     success: response => {
-        console.log(response)
+        console.log("Did this work",response)
     },
     error: response => {
-        console.log(response)
+        console.log("Did this work",response)
     }
 
 });
 }
 
 handleChange(event){
+    console.log("logging change select", event.target.value, event.target.name)
     const name = event.target.name;
     const value = event.target.value;
     this.setState({[name]: value});
@@ -100,7 +101,7 @@ renderMenu(){
     return(
     <label>
         Please Select the Chamber that the new Chamber belongs to:
-      <select name = "parentID" value={this.state.value} onChange={this.handleChange}>
+      <select id="admin-dropdown" name = "parentID" value={this.state.value} onChange={this.handleChange}>
           {Object.keys(chamberMenu).map((item,index) =>
               <option key = {index} value={index}>{chamberMenu[item]}</option>)}
       </select>
@@ -122,36 +123,38 @@ handleAddParent(){
 
 render(){
     return(
+        <div className='w3-row' id="edit-signup">
+            <div className="w3-container w3-card-4 w3-light-grey">
+                <div className = "signup-fields2">
+                    <h1>ENTER DETAILS FOR NEW CHAMBER</h1>
+                    <label>
+                        Name of new Chamber:
+                        <input type="text" name="name" value={this.state.name} onChange={this.handleChange}/>
+                    </label>
+                    <label>
+                        Is this a branch of another Chamber?
+                        <button id="chamberadmin-btn" className = "btn" onClick={() => this.handleAddParent()}>{display}</button>
+                    </label>
+                    {update ? this.renderMenu() : null}
+                    <hr className = "admin-divider" />
 
+                    <h4>The following fields correspond to the Executive Account of the Chamber</h4>
+                    <UserFields callbackFromParent={this.myCallback} />
+                    <hr className = "admin-divider" />
 
-        <div className= "signup-fields">
-            <h1>ENTER DETAILS FOR NEW CHAMBER</h1>
-            <label>
-                Name of new Chamber:
-                <input type="text" name="name" value={this.state.name} onChange={this.handleChange}/>
-            </label>
-            <label>
-                Is this a branch of another Chamber?
-                <button id="chamberadmin-btn" className = "btn" onClick={() => this.handleAddParent()}>{display}</button>
-            </label>
-            {update ? this.renderMenu() : null}
-            <hr className = "admin-divider" />
+                    <h4>Chamber Address</h4>
+                    <Address />
+                    <hr className = "admin-divider" />
 
-            <h4>The following fields correspond to the Executive Account of the Chamber</h4>
-            <UserFields callbackFromParent={this.myCallback} />
-            <hr className = "admin-divider" />
-
-            <h4>Chamber Address</h4>
-            <Address />
-            <hr className = "admin-divider" />
-
-            <h4>Additional Chamber Details</h4>
-            <label>
-                ABN:
-                <input type="number" name="abn" value={this.state.abn} onChange={this.handleChange}/>
-            </label>
-            <button id= "submitform-button" className = "btn" onClick={() => this.handleSubmit()}>Submit</button>
+                    <h4>Additional Chamber Details</h4>
+                    <label>
+                        ABN:
+                        <input type="number" name="abn" value={this.state.abn} onChange={this.handleChange}/>
+                    </label>
+                    <button id= "submitform-button" className = "btn" onClick={() => this.handleSubmit()}>Submit</button>
+                </div>
         </div>
+    </div>
 
 
     );

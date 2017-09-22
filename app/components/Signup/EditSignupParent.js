@@ -95,22 +95,28 @@ class EditSignup extends React.Component{
     }
 
     sendUpdatedField(newDisplayname, newOptional, newType, newMin, newMax){
-        console.log("sending data", newDisplayname, newOptional, newType, newMin, newMax)
+        var optional=null;
+        newOptional === true ? optional = '1' : optional = '0'
+        console.log("sending data", newDisplayname, optional, newType, newMin, newMax, this.state.signupFields[this.state.currentIndex].DataID)
+        this.setState({
+            edit: false
+        })
         $.ajax({url: '/php/update_signup_field.php', type: 'POST',
             dataType: 'json',
             data: {
                 'name': newDisplayname,
-                'optional': newOptional,
+                'optional': optional,
                 'type': newType,
                 'minimum': newMin,
                 'maximum': newMax,
                 'DataID': this.state.signupFields[this.state.currentIndex].DataID
             },
             success: response => {
+                console.log("is this actually updating", response)
                 this.getFields();
             },
             error: response => {
-                console.log(response)
+                console.log("no its not working",response)
             }
         });
     }

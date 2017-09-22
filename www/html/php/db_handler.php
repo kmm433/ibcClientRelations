@@ -309,7 +309,7 @@ class DB_Handler
 
   function updateField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $dataID){
       $sql = $this->db->prepare("UPDATE $inserttable SET displayname = :name, mandatory = :optional, inputtype=:type,
-           tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID)");
+           tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID");
 
       $sql->bindParam(':name', $name, PDO::PARAM_STR);
       $sql->bindParam(':optional', $optional, PDO::PARAM_INT);

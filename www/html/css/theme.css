@@ -523,10 +523,6 @@ div.ReactTags__selected span.ReactTags__tag {
     height: 30%;
 }
 /*
-.signup-fields {
-    margin-left: 27%;
-}*/
-
 .signup-fields label{
     margin-left: 27%;
     display: grid;
@@ -542,7 +538,7 @@ div.ReactTags__selected span.ReactTags__tag {
 
 .signup-fields h1, h4{
     margin-left: 27%;
-}
+}*/
 
 .signup label {
     color: #595959;
@@ -713,6 +709,7 @@ margin-bottom: 2%;
   margin-top: 3%;
 }
 
+
 @media (min-width: 1200px) {
     .container {
         width: 99%;
@@ -776,4 +773,15 @@ margin-bottom: 2%;
 }
 #signup-submitbtn{
     margin-left: 47%;
+}
+
+.signup-fields2 ol, ul {
+    list-style-type: none;
+}
+
+.signup-fields2 label {
+    display: grid;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
 }

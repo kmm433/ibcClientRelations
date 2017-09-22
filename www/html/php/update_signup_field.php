@@ -8,7 +8,7 @@
     $tablename = "BUSINESS_";
     $tablename .= $_SESSION['chamber'];
 
-    $db->updateField($inserttable, $_POST['name'], $_POST['optional'], $_POST['type'], $tablename, $_POST['minimum'], $_POST['maximum'], $_POST['DataID']);
+    $results = $db->updateField($inserttable, $_POST['name'], $_POST['optional'], $_POST['type'], $tablename, $_POST['minimum'], $_POST['maximum'], $_POST['DataID']);
 
-    echo json_encode("hello");
+    echo json_encode($results);
 ?>

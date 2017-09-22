@@ -219,7 +219,7 @@ class FieldTable extends React.Component {
                 <td><DropDown
                     typeOptions={typeOptions}
                     selecting = {this.selectType}
-                    default={this.state.newType}/></td>
+                    default={this.state.newType ? this.state.newType : "text"}/></td>
                 <td><input
                     type = "number"
                     name = "newMin"
