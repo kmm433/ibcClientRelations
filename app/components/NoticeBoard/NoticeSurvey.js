@@ -39,8 +39,18 @@ class NoticeSurvey extends React.Component {
 
     componentWillMount(){
         /* get all Questions and Answers */
-        this.get_SurveyQuestions();
-        this.get_SurveyAnswers();
+        if (this.props.Disabled == true){
+            questions = this.props.Questions;
+            answers = this.props.Answers;
+        }
+        else{
+            this.get_SurveyQuestions();
+            this.get_SurveyAnswers();
+        }
+        this.setData();
+    }
+
+    componentWillReceiveProps(nextProps){
         this.setData();
     }
 
@@ -127,6 +137,7 @@ class NoticeSurvey extends React.Component {
         FormattedOutput.push(<SubmitPage
                 key="Submit"
                 collapseSurvey={this.collapse}
+                disabled={this.props.Disabled}
         />)
 
         // Set the state to completed question/answer pairs + submit page
@@ -255,12 +266,19 @@ class SubmitPage extends React.Component {
       this.insert_SurveyAnswers = this.insert_SurveyAnswers.bind(this);
     }
 
+    componentWillMount(){
+        if(this.props.disabled == true){
+            this.setState({
+                btnDisabled: true
+            });
+        }
+    }
+
     insert_SurveyAnswers(){
         this.setState({
             btnDisabled: true,
             label: "Thank you for taking the time to complete this survey"
         });
-        console.log(userAnswers);
       /*$.ajax({    //READY, UNCOMMENT WHEN RELEASE
           url: '/php/insert_SurveyAnswers.php',
           type:'POST',

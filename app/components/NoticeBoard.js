@@ -157,6 +157,8 @@ class NoticeBoard extends React.Component {
         var events = this.get_events();
         var survey = this.get_surveys();
 
+        console.log(notifs.length);
+
         for(var i = 0; i < notifs.length; i++){
             messages.push(<Notice
                 key={notifs[i].NotificationID}
@@ -191,7 +193,7 @@ class NoticeBoard extends React.Component {
         messages.sort(function(a, b) {
             a = new moment(a.props.DatePosted);
             b = new moment(b.props.DatePosted);
-            return a<b ? -1 : a>b ? 1 : 0;
+            return a>b ? -1 : a<b ? 1 : 0;
         });
     }
 

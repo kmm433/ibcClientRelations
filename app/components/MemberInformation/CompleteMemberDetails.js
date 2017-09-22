@@ -49,7 +49,6 @@ class CompleteMemberDetails extends React.Component {
       }
     }
 
-    console.log(updatedDetails);
     // Ajax call to submission function then reload details...
     $.ajax({
       url: '/php/update_complete_details.php',

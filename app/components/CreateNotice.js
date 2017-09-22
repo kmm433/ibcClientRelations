@@ -1,45 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Notice from './NoticeBoard/Notice.js';
-import NoticeEvent from './NoticeBoard/NoticeEvent.js';
+import Notice from './NoticeBoard/Notice.js';                       /* Notice Preview */
+import NoticeEvent from './NoticeBoard/NoticeEvent.js';             /* Event Preview */
+import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';           /* Survey Preview */
+import $ from 'jquery';                                             /* For ajax query */
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';          /* https://github.com/reactjs/react-tabs */
 import moment from "moment";                                        /* https://momentjs.com/ */
+import DatePicker from 'react-datepicker';                          /* https://github.com/Hacker0x01/react-datepicker */
+import 'react-datepicker/dist/react-datepicker.css';
+import TimePicker from 'react-bootstrap-time-picker';               /* https://github.com/yury-dymov/react-bootstrap-time-picker */
 
 
-var mysurveyItems = [];
+var mysurveyItems = [];     // Array of Comonents
 var mysurveyCount = 0;
-var Questions = [];
-var Answers = [];
-
-// Called when user changes Survey Answer type to written
-function switchTypeText(qNumber){
-    RemoveAnswers(qNumber);
-    // Sets the questions type to textArea
-    for(var i = Questions.length-1; i > -1; i--) {
-        if(Questions[i]['qType'] == "radio" & Questions[i]['qNum'] == qNumber) {
-            Questions[i]['qType'] = "textArea";
-        }
-    }
-}
-
-// Called when user changes Survey Answer type to Radio
-function switchTypeRadio(qNumber){
-    // Sets the questions type to radio
-    for(var i = Questions.length-1; i > -1; i--) {
-        if(Questions[i]['qType'] == "textArea" & Questions[i]['qNum'] == qNumber) {
-            Questions[i]['qType'] = "radio";
-        }
-    }
-}
-
-// Removes any answers they had already entered
-function RemoveAnswers(qNumber){
-    for(var i = Answers.length-1; i > -1; i--) {
-        if(Answers[i]['qNum'] == qNumber) {
-            Answers.splice(i,1);
-        }
-    }
-}
+var Questions = [];         //Questions.push({questionNo: qNumber, answerType: qType, question: value});
+var Answers = [];           //Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: answerID});
 
 class create_notice extends React.Component {
 
@@ -52,17 +27,18 @@ class create_notice extends React.Component {
 
             ETitle: "",
             EContent: "",
-            EDate: "",
-            EStart: "",
-            Eend: "",
+            EStartDate: "",
+            EendDate: "",
+            EStart: "61200",
+            Eend: "64800",
             Elocation: "",
             Elink: "",
             Eemail: "off",
 
             STitle: "",
             SItems: [],
-            Semail: ""
-
+            SChange: "",
+            Semail: "off"
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeCheckbox = this.handleChangeCheckbox.bind(this);
@@ -75,21 +51,23 @@ class create_notice extends React.Component {
         this.handleQuestionReturn = this.handleQuestionReturn.bind(this);
         this.getQuestionIndex = this.getQuestionIndex.bind(this);
         this.getAnswerIndex = this.getAnswerIndex.bind(this);
+        this.updatePrev = this.updatePrev.bind(this);
+        this.handleDayStart = this.handleDayStart.bind(this);
+        this.handleDayEnd = this.handleDayEnd.bind(this);
+        this.handleTimeStart = this.handleTimeStart.bind(this);
+        this.handleTimeEnd = this.handleTimeEnd.bind(this);
 
+        moment.locale("en-au");
     }
 
-    componentWillMount(){
-        this.addQuestion();   // Push in the first survey answer
-    }
-
-    /* Generic function for all text areas */
+    /* Generic function for most text areas */
     handleChange(event){
         const name = event.target.name;
         const value = event.target.value;
         this.setState({[name]: value});
     }
 
-    handleChangeCheckbox(event){
+    handleChangeCheckbox(event){    // Checkboxes for emails across all tabs
         const name = event.target.name;
         const value = event.target.value;
 
@@ -100,22 +78,62 @@ class create_notice extends React.Component {
             this.setState({[name]: "off"});
         }
     }
+
+    handleDayStart(date){           //Event Start Date (datePicker)
+        this.setState({
+            EStartDate: date
+        });
+    }
+    handleDayEnd(date){             //Event End Date  (datePicker)
+        this.setState({
+            EendDate: date
+        });
+    }
+    handleTimeStart(date){          //Event start Time (timePicker)
+        this.setState({
+            EStart: date
+        });
+    }
+    handleTimeEnd(date){            //Event end Time (timePicker)
+        this.setState({
+            Eend: date
+        });
+    }
+
+
     submitNotice(){
         // Post the notice to the DB
-        console.log(this.state.NTitle)
-        console.log(this.state.NContent)
-        console.log(this.state.Nemail)
+        console.log(this.state.NTitle);
+        console.log(this.state.NContent);
+        console.log(this.state.Nemail);
+        $.ajax({
+            url: '/php/insert_notification.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            data:{
+                'title': this.state.NTitle,
+                'content': this.state.NContent,
+            },
+            success : function(){
+                console.log('insert_notication Success');
+            }.bind(this),
+            error: function(xhr, status, err, mine){
+                console.log('insert_notication Error' + xhr + status + err);
+            }.bind(this)
+        });
     }
     submitEvent(){
         // Post the Event to the DB
-        console.log(this.state.ETitle)
-        console.log(this.state.EContent)
-        console.log(this.state.EDate)
-        console.log(this.state.EStart)
-        console.log(this.state.Eend)
-        console.log(this.state.Elocation)
-        console.log(this.state.Elink)
-        console.log(this.state.Eemail)
+        console.log(this.state.ETitle);
+        console.log(this.state.EContent);
+        console.log(this.state.EStartDate);
+        console.log(this.state.EendDate);
+        console.log(this.state.EStart);
+        console.log(this.state.Eend);
+        console.log(this.state.Elocation);
+        console.log(this.state.Elink);
+        console.log(this.state.Eemail);
     }
     submitSurvey(){
         // Post the Sruvey to the DB
@@ -125,19 +143,21 @@ class create_notice extends React.Component {
     }
 
     addQuestion(){
-        // Add a blank question to the screen
+        // Survey: Add a blank question to the screen
         mysurveyItems.push(<Question
             key={mysurveyCount}
             count={mysurveyCount + 1}
             handleReturn={this.handleAnswerReturn}
             handleQReturn={this.handleQuestionReturn}
+            updatePrev={this.updatePrev}
         />)
         mysurveyCount++;
         this.setState({SItems: mysurveyItems});
+        this.updatePrev();
     }
 
     remQuestion(){
-        // Remove the question from the submission array
+        // Survey: Remove the question from the submission array
         var index = this.getQuestionIndex(mysurveyCount);
         if (index != -1){
             Questions.splice(index,1);
@@ -149,41 +169,42 @@ class create_notice extends React.Component {
         mysurveyItems.pop()
         mysurveyCount--;
         this.setState({SItems: mysurveyItems});
+        this.updatePrev();
     }
 
-    /* An answer has been passed back up  */
+    /* Survey: A new answer has been passed back up  */
     handleAnswerReturn(value, aNumber, qNumber){
         // See if its already got a record in the submissions array
         var index = this.getAnswerIndex(aNumber,qNumber);
 
         // Find the Q# A# that matches, if no match push new
         if (index == -1){
-            Answers.push({aNum: aNumber, qNum: qNumber, Answer: value});
+            Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: qNumber+value});
         }
         else{
-            Answers[index].Answer = value;
+            Answers[index].answer = value;
         }
     }
 
-    /* A Question has been passed back up */
+    /* Survey: A new Question has been passed back up */
     handleQuestionReturn(value, qNumber, qType){
         // See if its already got a record in the submissions array
         var index = this.getQuestionIndex(qNumber);
 
         // Find the Q# that matches, if no match push new
         if (index == -1){
-            Questions.push({qNum: qNumber, qType: qType, Question: value});
+            Questions.push({questionNo: qNumber, answerType: qType, question: value});
         }
         else{
-            Questions[index].Question = value;
-            Questions[index].qType = qType;
+            Questions[index].question = value;
+            Questions[index].answerType = qType;
         }
     }
 
-    /* Submission Array Answers and Questions Search functions */
+    /* Survey: Submission Array Answers and Questions Search functions */
     getAnswerIndex(aNumber, qNumber) {
         for(var i = 0; i < Answers.length; i++) {
-            if((Answers[i]['aNum'] == aNumber) & (Answers[i]['qNum'] == qNumber)) {
+            if((Answers[i]['aNum'] == aNumber) & (Answers[i]['questionNo'] == qNumber)) {
                 return i;
             }
         }
@@ -191,11 +212,25 @@ class create_notice extends React.Component {
     }
     getQuestionIndex(qNumber){
         for(var i = 0; i < Questions.length; i++) {
-            if(Questions[i]['qNum'] == qNumber) {
+            if(Questions[i]['questionNo'] == qNumber) {
                 return i;
             }
         }
         return -1;
+    }
+
+    updatePrev(){
+        // Used only to update the survey preview by modifying props
+        if (this.state.SChange == "0"){
+            this.setState({
+                SChange: "1"
+            });
+        }
+        else{
+            this.setState({
+                SChange: "0"
+            });
+        }
     }
 
     render() {
@@ -230,10 +265,16 @@ class create_notice extends React.Component {
                          DatePosted=""
                      />
                 </div>
+                <div>
+                    <div><h3>Choose Recipients:</h3></div>
+                    <div>
+
+                    </div>
+                </div>
                 <div className="event-buttons">
                     <div className="w3-row">
                         <div className="w3-col s6" id="CreateNoticeEmail"><label>Email to all</label></div>
-                        <div className="w3-col s6" id="CreateNoticeEmailSwitch"><label className="switch"><input type="checkbox" name="Nemail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                        <div className="w3-col s6" id="CreateNoticeEmailSwitch" title="Selecting email to all will send an email to all selected groups as well as display it on their home page"><label className="switch"><input type="checkbox" name="Nemail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
                     </div>
                     <div><button type="button" className="btn btn-primary" id="btnSubmitNotice" onClick={this.submitNotice}>Submit</button></div>
                 </div>
@@ -247,20 +288,23 @@ class create_notice extends React.Component {
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Event Content:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv"><div><textarea rows="5" name="EContent" placeholder="My Event Details" value={this.state.EContent} onChange={this.handleChange}></textarea></div></div>
 
-                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><input type="text" name="EDate" placeholder="Start time: 11am" value={this.state.EDate} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Date:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart}/></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>End Date:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Time:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="EStart" placeholder="Start time: 11am" value={this.state.EStart} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><TimePicker onChange={this.handleTimeStart} value={this.state.EStart} step={30} initialValue={61200}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>End Time:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Eend" placeholder="End Time: 8pm" value={this.state.Eend} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><TimePicker onChange={this.handleTimeEnd} value={this.state.Eend} step={30} initialValue={64800}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Location:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elocation" placeholder="Location" value={this.state.Elocation} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elocation" placeholder="Event Location" value={this.state.Elocation} onChange={this.handleChange}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Link:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elink" placeholder="URL or Link to more information" value={this.state.Elink} onChange={this.handleChange}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="Elink" placeholder="" value={this.state.Elink} onChange={this.handleChange}/></div></div>
                 </div>
                 <div>
                     <div><h3>Preview:</h3></div>
@@ -269,8 +313,8 @@ class create_notice extends React.Component {
                         eventID=""
                         title={this.state.ETitle}
                         message={this.state.EContent}
-                        eventdate={moment(this.state.EDate).format("DD MM YYYY")}
-                        endTime={this.state.Eend}
+                        eventdate={moment(this.state.EStartDate).add(this.state.EStart, 'seconds')}
+                        endTime={moment(this.state.EendDate).add(this.state.Eend, 'seconds')}
                         location={this.state.Elocation}
                         EventURL={this.state.Elink}
                         DatePosted=""
@@ -280,7 +324,7 @@ class create_notice extends React.Component {
                 <div className="event-buttons">
                     <div className="w3-row">
                         <div className="w3-col s6" id="CreateNoticeEmail"><label>Email to all</label></div>
-                        <div className="w3-col s6" id="CreateNoticeEmailSwitch"><label className="switch"><input type="checkbox" name="Eemail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                        <div className="w3-col s6" id="CreateNoticeEmailSwitch" title="Selecting email to all will send an email to all selected groups as well as display it on their home page"><label className="switch"><input type="checkbox" name="Eemail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
                     </div>
                     <div><button type="button" className="btn btn-primary" id="btnSubmitEvent" onClick={this.submitEvent}>Submit</button></div>
                 </div>
@@ -298,20 +342,30 @@ class create_notice extends React.Component {
                     )}
 
                     <div className="event-buttons">
-                        <button type="button" className="btn btn-default" id="btnAddQA" onClick={this.addQuestion}>Add</button>
-                        <button type="button" className="btn btn-default" id="btnRemQA" onClick={this.remQuestion}>Remove</button>
+                        <button type="button" className="btn btn-success" id="btnAddQA" onClick={this.addQuestion}>Add Question</button>
+                        <button type="button" className="btn btn-danger" id="btnRemQA" onClick={this.remQuestion}>Remove Question</button>
                     </div>
 
 
                 </div>
                 <div>
                     <div><h3>Preview:</h3></div>
+                    <NoticeSurvey
+                        key={0}
+                        SurveyID={-1}
+                        title={this.state.STitle}
+                        DatePosted={moment()}
+                        Disabled={true}
+                        Questions={Questions}
+                        Answers={Answers}
+                        Change={this.state.SChange}
+                    />
 
                 </div>
                 <div className="event-buttons">
                     <div className="w3-row">
                         <div className="w3-col s6" id="CreateNoticeEmail"><label>Email to all</label></div>
-                        <div className="w3-col s6" id="CreateNoticeEmailSwitch"><label className="switch"><input type="checkbox" name="Semail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                        <div className="w3-col s6" id="CreateNoticeEmailSwitch" title="Selecting email to all will send an email to all selected groups as well as display it on their home page"><label className="switch"><input type="checkbox" name="Semail" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
                     </div>
                     <div><button type="button" className="btn btn-primary" id="btnSubmitSurvey" onClick={this.submitSurvey}>Submit</button></div>
                 </div>
@@ -331,7 +385,7 @@ class Question extends React.Component {
       super(props);
       this.state = {
           question: "",
-          questionType: "radio",
+          questionType: 0,      // Default Radio
           answers: [],
           answersCount: 0,
           hide: false          // For hiding and displaying add/remove buttons
@@ -356,21 +410,25 @@ class Question extends React.Component {
             key={this.state.answersCount}
             count={this.state.answersCount + 1}
             handleReturn = {this.handleAnswerReturn}
+            updatePrev = {this.props.updatePrev}
         />)
         this.setState({
             answers: newArray,
             answersCount: this.state.answersCount + 1
         });
+        this.props.updatePrev();
     }
 
     // Removes the last answer
     remA(){
+        RemoveIndAnswers(this.props.count, this.state.answersCount);
         var newArray = this.state.answers.slice();
         newArray.pop()
         this.setState({
             answers: newArray,
             answersCount: this.state.answersCount - 1
         });
+        this.props.updatePrev();
     }
 
     // Removes all answers, changes answer to a written one
@@ -385,6 +443,7 @@ class Question extends React.Component {
             answersCount: 1,
             hide: true  // Disable the add/remove buttons
         });
+        this.props.updatePrev();
     }
 
     // Removes the textArea answer, adds a new answer
@@ -401,6 +460,7 @@ class Question extends React.Component {
             answersCount: 1,
             hide: false     // Enable add/remove buttons
         });
+        this.props.updatePrev();
     }
 
     /* Pass back the new question */
@@ -414,12 +474,12 @@ class Question extends React.Component {
     }
 
     handleChangeCheckbox(event){
-        if(this.state.questionType == "radio"){
-            this.setState({questionType: "textArea"});
+        if(this.state.questionType == 0){
+            this.setState({questionType: 1});
             this.setText()
         }
         else{
-            this.setState({questionType: "radio"});
+            this.setState({questionType: 0});
             this.setRadio()
         }
     }
@@ -440,8 +500,8 @@ class Question extends React.Component {
 
             </div>
             <div className="event-buttons" hidden={this.state.hide}>
-                <button type="button" className="btn btn-default" id="btnAddA" onClick={this.addA}>+</button>
-                <button type="button" className="btn btn-default" id="btnRemA" onClick={this.remA}>-</button>
+                <button type="button" className="btn btn-success" id="btnAddA" onClick={this.addA}>+</button>
+                <button type="button" className="btn btn-danger" id="btnRemA" onClick={this.remA}>-</button>
             </div>
         </div>
         );
@@ -466,7 +526,7 @@ class Answer extends React.Component {
     return(
         <div>
             <div className="w3-col s3 CreateNoticeDiv"><div><label>Answer:</label></div></div>
-            <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="SA" placeholder="Answer" value={this.state.Answer} onChange={this.handleChange}/></div></div>
+            <div className="w3-col s9 CreateNoticeDiv"> <div><input type="text" name="SA" placeholder="Answer" value={this.state.Answer} onChange={this.handleChange} onBlur={this.props.updatePrev}/></div></div>
         </div>
         );
     }
@@ -482,3 +542,45 @@ class AnswerWritten extends React.Component {
         );
     }
 };
+
+/****** General Functions ******/
+// Called when user changes Survey Answer type to written
+function switchTypeText(qNumber){
+    RemoveAnswers(qNumber);
+    // Sets the questions type to textArea
+    for(var i = Questions.length-1; i > -1; i--) {
+        if(Questions[i]['answerType'] == 0 & Questions[i]['questionNo'] == qNumber) {
+            Questions[i]['answerType'] = 1; // TextArea
+        }
+    }
+}
+
+// Called when user changes Survey Answer type to Radio
+function switchTypeRadio(qNumber){
+    // Sets the questions type to radio
+    for(var i = Questions.length-1; i > -1; i--) {
+        if(Questions[i]['answerType'] == 1 & Questions[i]['questionNo'] == qNumber) {
+            Questions[i]['answerType'] = 0; // Radio
+        }
+    }
+}
+
+// Removes any answers they had already entered
+function RemoveAnswers(qNumber){
+    for(var i = Answers.length-1; i > -1; i--) {
+        if(Answers[i]['questionNo'] == qNumber) {
+            Answers.splice(i,1);
+        }
+    }
+}
+
+// Removes a particular answer
+function RemoveIndAnswers(qNumber, aNumber){
+    for(var i = 0; i < Answers.length; i++) {
+        if((Answers[i]['aNum'] == aNumber) & (Answers[i]['questionNo'] == qNumber)) {
+            Answers.splice(i,1);
+            return true;
+        }
+    }
+    return false;
+}

@@ -4,6 +4,7 @@ include 'db_handler.php';
 $db = new DB_Handler();
 $details = $_POST['details'];
 $results = '';
+
 $businessID = $db->getBusinessID($_POST['memberID']);
 
 # Update the standard details

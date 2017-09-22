@@ -52,8 +52,9 @@ class MemberListItem extends React.Component {
     } else {
       hoverState = {backgroundColor: '#FFFFFF'};
     }
-    
+
     return (
+
       <div className='member-details-block' style={hoverState}
         onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
         <div className='member-list-item' onClick={() => {this.props.setMemberView(this.props.email, this.props.memberID, this.props.expiry), this.toggleHover()}}>

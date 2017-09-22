@@ -1,6 +1,7 @@
 <?php
   include 'db_handler.php';
   $db = new DB_Handler();
+
   $result = $db->setArchiveMember($_POST['memberID'], $_POST['archive_status']);
   if ($result){
     if ($_POST['archive_status'] == '0')
