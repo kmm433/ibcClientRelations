@@ -55,10 +55,10 @@ class Layout extends React.Component {
 
     }
     renderPage(){
-        if(this.props.user_type === "1" || this.props.user_type === "0"){
+        if(this.props.user_type){
             console.log("Checking: ", this.props.user_type)
             return(
-                (this.props.user_type === '1') ?  this.renderNormalUser() : this.renderAdmin()
+                (this.props.user_type !== '0') ?  this.renderNormalUser() : this.renderAdmin()
             )
         }
         else{

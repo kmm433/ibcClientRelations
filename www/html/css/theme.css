@@ -43,6 +43,7 @@ body {
   background-color: #2462AB;
   padding-bottom: 20px;
   width: 20%;
+  max-width: 292px;
 }
 
 .side-menu ul {
@@ -515,6 +516,7 @@ div.ReactTags__selected span.ReactTags__tag {
     background-color: gray;
     padding-bottom: 20px;
     width: 20%;
+    max-width: 292px;
 }
 
 .admin-side-menu a {
