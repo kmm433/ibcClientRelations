@@ -1,9 +1,9 @@
 import React from 'react';
-import {BrowserRouter, Route} from 'react-router-dom';
-import Logo from './LogoSideBar.js'
+import Logo from './LogoHeader.js'
 import ChamberDropdown from './SignupDropdown.js';
-import SignupForm from './SignupRetrieveFields.js'
+import SignupData from './SignupData.js';
 import $ from 'jquery';
+import {ButtonToolbar, Button} from 'react-bootstrap';
 
 class Main extends React.Component {
 
@@ -11,9 +11,12 @@ class Main extends React.Component {
       super(props);
 
       this.state = {
-          chamber_id: '',
-          chamber_list: []
+          chamber_list: [],
+          chamber: "Please Select a Chamber",
+          selected: false
         };
+
+        this.getChamber = this.getChamber.bind(this);
     }
 
     /*ajax call to get list of chambers to display*/
@@ -25,6 +28,14 @@ class Main extends React.Component {
       }});
     }
 
+    getChamber(newChamber){
+        console.log("Is this updating?", newChamber)
+        this.setState({
+            chamber: newChamber,
+            selected: true
+        })
+    }
+
 
   render() {
     return(
@@ -32,7 +43,16 @@ class Main extends React.Component {
           <div className="w3-panel w3-blue">
               <Logo/>
           </div>
-          <ChamberDropdown chamber_list={this.state.chamber_list} />
+          <ButtonToolbar>
+              <Button style={{'marginLeft': '3%'}}>
+                     <a href="/signin.php">Back to Login</a>
+             </Button>
+              <ChamberDropdown
+                  selectedChamber={this.state.chamber_list[this.state.chamber]}
+                  chamber_list={this.state.chamber_list}
+                  sendChamber={this.getChamber}/>
+          </ButtonToolbar>
+          {this.state.selected && <SignupData chamberID={this.state.chamber}/>}
       </div>
     )
   }
