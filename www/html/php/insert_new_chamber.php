@@ -16,12 +16,26 @@ $state = $_POST["state"];
 $country = $_POST["country"];
 $parentID = $_POST["parentID"];
 
+$options = [
+    'cost' => 11,
+    'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+];
+$password = password_hash($password, PASSWORD_BCRYPT, $options);
+
 
 $id = $db->insertBusiness("INSERT INTO CHAMBER (ABN, parent_id, name)
                             VALUES($abn, '$parentID', '$name')");
 
-$results = $db->insertUser("INSERT INTO USER (email, password, type, chamberID, firstname, lastname)
-                                VALUES('$email', '$password', 1, $id, '$firstname', '$lastname');");
+$results = $db->insertUser("INSERT INTO USER (email, password, type, chamberID, businessID, firstname, lastname)
+                                VALUES('$email', '$password', 1, $id, 100000, '$firstname', '$lastname');");
+$optionaltable = "OPTIONALFIELDS_";
+$optionaltable .= $id;
+
+$businesstable = "BUSINESS_";
+$businesstable .= $id;
+
+$db->justExecute("CREATE TABLE $optionaltable LIKE OPTIONALFIELDS_666");
+$db->justExecute("CREATE TABLE $businesstable LIKE BUSINESS_666");
 
 
 echo json_encode($results);

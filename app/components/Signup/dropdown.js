@@ -11,7 +11,6 @@ class DropDown extends React.Component {
     handleSelect(evt){
         console.log(evt);
         var type = evt;
-        {evt === false ? type === 0 : type === 1}
         this.props.selecting(type);
     }
 

@@ -4,8 +4,9 @@
 
   $title = $_POST['title'];
   $content = $_POST['content'];
-  
-  $results = $db->insert_notification($title,$content);
+
+
+  $results = $db->insert_notification($title,$content, $_SESSION['chamber']);
   echo json_encode($results);
 
 ?>
