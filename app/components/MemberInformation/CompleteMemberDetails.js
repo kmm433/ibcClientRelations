@@ -48,18 +48,20 @@ class CompleteMemberDetails extends React.Component {
         updatedDetails[detail][1]['value'] = null;
       }
     }
+
     // Ajax call to submission function then reload details...
     $.ajax({
       url: '/php/update_complete_details.php',
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'details': updatedDetails
       },
       success: response => {
         // Re-request the complete set of details to show the changes
         this.props.getCompleteDetails();
+        this.props.getChamberMembers();
         this.props.getNotes();
         this.props.setEditMode(event);
       },

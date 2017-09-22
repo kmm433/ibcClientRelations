@@ -59,8 +59,8 @@ class DB_Handler
     }
 
   // Session Set: Returns the user's Business ID
-  function getBusinessID($user) {
-    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE email='$user'");
+  function getBusinessID($userID) {
+    $sql = $this->db->prepare("SELECT businessID FROM USER WHERE UserID='$userID'");
     if ($sql->execute()) {
       $result = $sql->fetch(PDO::FETCH_ASSOC);
       return $result['businessID'];
@@ -81,8 +81,8 @@ class DB_Handler
   }
 
   // Retrieves the groups that a member is in
-  function getMembersGroups($member) {
-    $sql = $this->db->prepare("SELECT GROUPS.name FROM GROUPMEMBERS LEFT JOIN GROUPS ON GROUPMEMBERS.groupID=GROUPS.groupID WHERE GROUPMEMBERS.email='$member'");
+  function getMembersGroups($memberID) {
+    $sql = $this->db->prepare("SELECT GROUPS.name FROM GROUPMEMBERS LEFT JOIN GROUPS ON GROUPMEMBERS.groupID=GROUPS.groupID WHERE GROUPMEMBERS.UserID='$memberID'");
     if($sql->execute()) {
       return $sql->fetchall();
     }
@@ -90,8 +90,8 @@ class DB_Handler
   }
 
   // Gets all variable information about a user
-  function getDetail($member, $query) {
-    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.email='$member'";
+  function getDetail($memberID, $query) {
+    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
     $sql = $this->db->prepare($completeQuery);
     if($sql->execute());
       return  $sql->fetchall();
@@ -99,8 +99,8 @@ class DB_Handler
   }
 
   // Allows a standard detail to be updated for a user
-  function setDetail($member, $value, $column, $table) {
-    $sql = $this->db->prepare("UPDATE BUSINESS JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.email='$member'");
+  function setDetail($memberID, $value, $column, $table) {
+    $sql = $this->db->prepare("UPDATE BUSINESS JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.UserID='$memberID'");
     if($sql->execute())
       return true;
     else
@@ -108,18 +108,29 @@ class DB_Handler
   }
 
   // Allows a chamber specific detail to be updated for a user
-  function setChamberSpecificDetail($member, $dataID, $value, $column, $table) {
-    $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.email='$member' AND $table.DataID=$dataID";
+  function setChamberSpecificDetail($memberID, $dataID, $businessID, $value, $column, $table) {
+    // Check if there is s preexisting value
+    $queryString = "SELECT * FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID='$dataID'";
     $sql = $this->db->prepare($queryString);
-    if($sql->execute())
-      return true;
-    else
-      return false;
+    if ($sql->execute()) {
+      if ($sql->rowCount() > 0)
+        $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID";
+      else
+        $queryString = "INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, '$value', $businessID)";
+      $sql = $this->db->prepare($queryString);
+      if ($sql->execute())
+        return true;
+      else
+        return false;
+    }
+    else {
+      return ('Failed to check for existing entry.');
+    }
   }
 
   // Gets chamber specific information about a user
-  function getChamberSpecificDetail($member, $dataID, $column, $table) {
-    $queryString = "SELECT $table.answer FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.email='$member' AND $table.DataID=$dataID";
+  function getChamberSpecificDetail($memberID, $dataID, $column, $table) {
+    $queryString = "SELECT $table.answer FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID=$dataID";
     $sql = $this->db->prepare($queryString);
     if ($sql->execute()) {
       return $sql->fetch();
@@ -141,30 +152,30 @@ class DB_Handler
   }
 
   // Inserts a member into a group
-  function addMemberToGroup($member, $groupID) {
-    $sql = $this->db->prepare("INSERT INTO GROUPMEMBERS (groupID, email) VALUES ($groupID, '$member')");
+  function addMemberToGroup($memberID, $groupID) {
+    $sql = $this->db->prepare("INSERT INTO GROUPMEMBERS (groupID, UserID) VALUES ($groupID, '$memberID')");
     if ($sql->execute())
       return true;
     return false;
   }
 
   // Removes a member from a group
-  function deleteMemberFromGroup($member, $groupID) {
-    $sql = $this->db->prepare("DELETE FROM GROUPMEMBERS WHERE groupID=$groupID AND email='$member'");
+  function deleteMemberFromGroup($memberID, $groupID) {
+    $sql = $this->db->prepare("DELETE FROM GROUPMEMBERS WHERE groupID=$groupID AND UserID='$memberID'");
     $result = $sql->execute();
     return $groupID;
   }
 
   // Changes whether a member is archived or not.
-  function setArchiveMember($member, $archived) {
-    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE email='$member'");
+  function setArchiveMember($memberID, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE UserID='$memberID'");
     $result = $sql->execute();
     return $result;
   }
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT firstname, lastname, email, businessname, expiry, archived
+      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
           ORDER BY lastname;");
     if ($sql->execute()) {
@@ -382,11 +393,11 @@ class DB_Handler
   }
 
   // Adds a note about a member to the notes table
-  function addNote($user, $member, $note) {
+  function addNote($userID, $memberID, $note) {
     $sql = $this->db->prepare("INSERT INTO NOTES (about, leftBy, note) VALUES (:about, :leftBy, :note)");
     $result = $sql->execute(array(
-      "about" => $member,
-      "leftBy" => $user,
+      "about" => $memberID,
+      "leftBy" => $userID,
       "note" => $note
     ));
     if ($result)
@@ -396,10 +407,10 @@ class DB_Handler
   }
 
   // Retrieves all notes about a member from the database
-  function getNotes($member) {
-    $sql = $this->db->prepare("SELECT NOTES.ts, USER.firstname, USER.lastname, note FROM NOTES JOIN USER ON NOTES.leftBy=USER.email WHERE about=:member ORDER BY ts ASC");
+  function getNotes($memberID) {
+    $sql = $this->db->prepare("SELECT NOTES.ts, USER.firstname, USER.lastname, note FROM NOTES JOIN USER ON NOTES.leftBy=USER.UserID WHERE about=:memberID ORDER BY ts ASC");
     $result = $sql->execute(array(
-      "member" => $member
+      "memberID" => $memberID
     ));
     if ($result)
       return $sql->fetchall(PDO::FETCH_ASSOC);

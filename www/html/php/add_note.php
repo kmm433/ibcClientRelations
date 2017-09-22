@@ -2,7 +2,7 @@
 include 'db_handler.php';
 
 $db = new DB_Handler();
-$result = $db->addNote($_SESSION['user'], $_POST['member'], $_POST['note']);
+$result = $db->addNote($_SESSION['userid'], $_POST['memberID'], $_POST['note']);
 
 if ($result)
   echo json_encode('Successfully added the note.');

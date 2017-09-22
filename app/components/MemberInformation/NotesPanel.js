@@ -26,7 +26,7 @@ class NotesPanel extends React.Component {
         type: 'POST',
         dataType: 'json',
         data: {
-          'member': this.props.member,
+          'memberID': this.props.memberID,
           'note': note
         }, success: response => {
           this.setState({users_note: ''});

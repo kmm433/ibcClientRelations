@@ -1,15 +1,30 @@
 import React from 'react';
+import $ from 'jquery';
 
 class SettingsMenu extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {downloading: false};
+    this.downloadCSV = this.downloadCSV.bind(this);
+  }
+
+  // Fucntion to handle the dowload of a CSV
+  // Sends a field in th epost method for checking on the server side.
+  downloadCSV(event) {
+    console.log('Exporting');
+    window.open('/php/create_member_csv.php');
+  }
+
   render() {
     return (
       <div id='member-info-settings'>
+        <input type='button' className='btn btn-primary' value='Add New User'/>
         <input
-          type='text'
-          className='search'
-          placeholder='Search members...'
-          value={this.props.search_phrase}
-          onChange={(e) => this.props.changeSearchPhrase(e)}
+          type='button'
+          className='btn btn-primary'
+          value='Export List as CSV'
+          onClick={e => this.downloadCSV(e)}
         />
         <ul>
           <li><label>
@@ -40,8 +55,13 @@ class SettingsMenu extends React.Component {
             Show all {this.props.num_archived} archived members
           </label></li>
         </ul>
-        <input type='button' className='btn btn-primary' value='Add New User'/>
-        <input type='button' className='btn btn-primary' value='Export List as CSV'/>
+        <input
+          type='text'
+          className='search'
+          placeholder='Search members...'
+          value={this.props.search_phrase}
+          onChange={(e) => this.props.changeSearchPhrase(e)}
+        />
       </div>
     );
   }
