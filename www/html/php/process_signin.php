@@ -13,7 +13,7 @@ if($user) {
   $_SESSION['user'] = $user;
   $_SESSION['chamber'] = $db->getChamber($user);
   $_SESSION['userid'] = $db->getUserID($user);
-  $_SESSION['businessid'] = $db->getBusinessID($user);
+  $_SESSION['businessid'] = $db->getBusinessID($_SESSION['userid']);
   echo $_SESSION['chamber'];
   header('Location: ../index.php');
 } else {

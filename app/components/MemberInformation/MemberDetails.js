@@ -73,7 +73,7 @@ class MemberDetails extends React.Component {
           dataType: 'json',
           data: {
             'fields': JSON.stringify(fields),
-            'member': this.props.member
+            'memberID': this.props.memberID
           }, success: response => {
             // Match the values to their fields
             for (var value in response) {
@@ -103,7 +103,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member
+        'memberID': this.props.memberID
       },
       success: result => {
         if (result !== '') {
@@ -138,7 +138,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member
+        'memberID': this.props.memberID
       }, success: response => {
         this.setState({notes: response});
       }, error: response => {
@@ -157,7 +157,7 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'group': deleted
       },
       success: result => {
@@ -184,7 +184,7 @@ class MemberDetails extends React.Component {
         type: 'POST',
         dataType: 'json',
         data: {
-          'member': this.props.member,
+          'memberID': this.props.memberID,
           'group': tag
         },
         success: result => {
@@ -206,6 +206,7 @@ class MemberDetails extends React.Component {
   // This function will allow a chamber members archive status to be changed and
   // then refresh the list of members.
   toggleArchive() {
+    console.log('Attempting to perform archive action.');
     var archived = 1;
     if (this.props.archived) {
       archived = 0;
@@ -215,11 +216,12 @@ class MemberDetails extends React.Component {
       type: 'POST',
       dataType: 'json',
       data: {
-        'member': this.props.member,
+        'memberID': this.props.memberID,
         'archive_status': archived
       },
       success: response => {
         this.props.getChamberMembers();
+        this.props.unselect();
       },
       error: response => {
         console.log(response);
@@ -231,17 +233,9 @@ class MemberDetails extends React.Component {
     const {tags, suggestions} = this.state
     return (
       <div className='member-details'>
-        <CompleteMemberDetails
-          member={this.props.member}
-          details={this.state.details}
-          editable={this.state.editable}
-          getCompleteDetails={this.getCompleteDetails}
-          setEditMode={this.setEditMode}
-          getNotes={this.getNotes}
-        />
         <div className='member-details-controls'>
           <div className='member-details-controls-buttons'>
-            <input type='button' className='btn btn-primary' value='Hide Details' onClick={(e) => this.props.unselect(e)}/>
+            <input type='button' className='btn btn-primary' value='Return to List' onClick={(e) => this.props.unselect(e)}/>
             <a className='btn btn-primary' href={'mailto:'+this.props.member}>Email User</a>
             <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
             { this.props.all || this.props.renewals ?
@@ -254,6 +248,15 @@ class MemberDetails extends React.Component {
             }
           </div>
         </div>
+        <CompleteMemberDetails
+          memberID={this.props.memberID}
+          details={this.state.details}
+          editable={this.state.editable}
+          getCompleteDetails={this.getCompleteDetails}
+          getChamberMembers={this.props.getChamberMembers}
+          setEditMode={this.setEditMode}
+          getNotes={this.getNotes}
+        />
         <div className='member-details-groups'>
           <h4>Manage Groups</h4>
           <ReactTags
@@ -268,7 +271,7 @@ class MemberDetails extends React.Component {
           />
         </div>
         <NotesPanel
-          member={this.props.member}
+          memberID={this.props.memberID}
           notes={this.state.notes}
           getNotes={this.getNotes}
         />

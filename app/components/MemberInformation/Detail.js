@@ -30,7 +30,7 @@ class Detail extends React.Component {
     return (
       <div className='detail'>
         <div className='member-detail'>
-          {this.props.displayname}:
+          {this.props.displayname}
         </div>
         <div className='member-detail-value'>
           {this.renderValue()}
