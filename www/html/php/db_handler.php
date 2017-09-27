@@ -440,10 +440,24 @@ class DB_Handler
 
   // Find all of the groups that exist within a chamber
   function getGroups($chamberId) {
-    $sql = $this->db->prepare("SELECT groupID, name FROM GROUPS WHERE chamberID=$chamberId ORDER BY name");
-    if ($sql->execute()) {
+    $sql = $this->db->prepare("SELECT groupID, name, mailchimp_list_id FROM GROUPS WHERE chamberID=:chamberID ORDER BY name");
+    if ($sql->execute(array(
+      "chamberID" => $chamberId
+    ))) {
       $row = $sql->fetchAll(PDO::FETCH_ASSOC);
       return $row;
+    }
+    return false;
+  }
+
+  // Retrives the number opf users assigned to a group
+  function getGroupData($chamberId) {
+    $sql = $this->db->prepare("SELECT DISTINCT(g.groupID), g.name, g.mailchimp_list_id, COUNT(gm.groupID) FROM GROUPS AS g JOIN GROUPMEMBERS as gm ON g.groupID = gm.groupID WHERE g.chamberID=:chamber_id GROUP BY g.groupID");
+    if ($sql->execute(array(
+      "chamber_id" => $chamberId
+    ))) {
+      $groups = $sql->fetchAll(PDO::FETCH_ASSOC);
+      return $groups;
     }
     return false;
   }

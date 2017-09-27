@@ -5,6 +5,7 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
 import MemberInformation from './MemberInformation';
+import GroupManagement from './GroupManagement';
 import EditSignup from './Signup/EditSignupParent';
 import AdminMenu from './AdminMenu'
 import NewChamber from './Admin/CreateChamber'
@@ -35,6 +36,7 @@ class Layout extends React.Component {
                 <Route exact={true} path='/index.php' render={()=> <NoticeBoard user_type={this.props.user_type} />}/>
                 <Route path='/profile' component={Calendar} />
                 <Route path='/member_information' render={()=> <MemberInformation chamber_id={this.props.chamber_id}/>} />
+                <Route path='/manage_groups' render={() => <GroupManagement chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' component={EditSignup} />
                 <Route path='/create_notice' component={create_notice} />

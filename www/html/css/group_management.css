@@ -1,0 +1,51 @@
+/* For styling the new groups input box */
+#new-group-form {
+  width: 30%;
+  max-width: 350px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #BCBCBC;
+}
+
+/* For styling the table that displays the available groups */
+
+#group-management .groups-table {
+  width: 100%;
+  display: table;
+  margin: 5px;
+  border-collapse: collapse;
+}
+
+#group-management .groups-table-headers {
+  background-color: #2462AB;
+  color: #FFFFFF;
+  display: table-row;
+}
+
+#group-management .groups-table-title {
+  display: table-cell;
+  padding: 5px;
+}
+
+#group-management .group {
+  display: table-row;
+  border-top: 1px solid #BCBCBC;
+}
+
+#group-management .group-name {
+  width: 50%;
+  display: table-cell;
+  padding: 5px;
+}
+
+#group-management .group-size {
+  width: 25%;
+  display: table-cell;
+  padding: 5px;
+}
+
+#group-management .group-emailable {
+  width: 25%;
+  display: table-cell;
+  padding: 5px;
+}
