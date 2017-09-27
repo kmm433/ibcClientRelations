@@ -10,6 +10,8 @@ class GroupManagement extends React.Component {
     this.state = {
       loading: true,
       mail_ready: null,
+      new_group_name: '',
+      duplicate_group: false,
       groups: GroupStore.getGroups(),
     };
 
@@ -31,15 +33,32 @@ class GroupManagement extends React.Component {
     this.setState({groups: GroupStore.getGroups()});
   }
 
+  // Allows the new group form to update
+  updateNewGroupName(event) {
+    var duplicate = false;
+    const groups = this.state.groups;
+    groups.forEach(group => {
+      if (group !== undefined && group.group_name === event.target.value)
+        duplicate = true;
+    });
+    this.setState({
+      new_group_name: event.target.value,
+      duplicate_group: duplicate,
+    });
+  }
+
   // Allows for an exeutive to create a new group
   handleCreateGroup(event) {
-    GroupActions.createGroup(Date.now());
+    if(!this.state.duplicate_group) {
+      GroupActions.createGroup(this.state.new_group_name);
+      this.setState({new_group_name: ''});
+    }
   }
 
   render() {
     const groups = this.state.groups;
     var groupComponents = groups.map((group, i) => {
-      if (group.group_id !== undefined)
+      if (group!== undefined && group.group_id !== undefined)
         return(
           <Group
             key={i}
@@ -55,13 +74,23 @@ class GroupManagement extends React.Component {
         <div className='w3-col s12'>
           <div className='w3-container w3-card-4 w3-light-grey'>
             <h2>Manage Groups</h2>
-            <input id='new-group-form' type='text' placeholder='Enter a new group name...' />
-            <input
-              type='button'
-              className='btn btn-primary'
-              value='Create New Group'
-              onClick={e => this.handleCreateGroup(e)}
-            />
+            <div id='create-group_inputs'>
+              <input id='new-group-form'
+                type='text'
+                placeholder='Enter a new group name...'
+                value={this.state.new_group_name}
+                onChange={(e) => {this.updateNewGroupName(e)}}
+              />
+              <input
+                type='button'
+                className='btn btn-primary'
+                value='Create New Group'
+                onClick={e => this.handleCreateGroup(e)}
+              />
+            </div>
+            {this.state.duplicate_group ?
+              <div className='alert alert-danger'>This group name is already in use.</div> : null
+              }
             <div className='groups-table'>
               <div className='groups-table-headers'>
                 <div className='groups-table-title'>Group Name</div>

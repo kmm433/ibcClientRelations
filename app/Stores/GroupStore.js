@@ -13,11 +13,8 @@ class GroupStore extends EventEmitter {
   }
 
   // Can be used to update the available groups
-  createGroup(group_name) {
-    this.groups.push({
-      group_name,
-      email_ready: false,
-    });
+  createGroup(group) {
+    this.groups.push(group);
     this.emit('change');
   }
 
@@ -33,7 +30,7 @@ class GroupStore extends EventEmitter {
         this.initialiseGroupList(action.groups);
       }
       case 'CREATE_GROUP': {
-        this.createGroup(action.group_name);
+        this.createGroup(action.group);
       }
     }
   }

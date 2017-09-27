@@ -33,8 +33,19 @@ export function fetchGroups() {
 // Inserts a new group into the database,
 // Dispatches CREATE_GROUP action on success.
 export function createGroup(groupName) {
-  dispatcher.dispatch({
-    type: 'CREATE_GROUP',
-    group_name: groupName,
+  $.ajax({
+    url:'/php/create_group.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'groupName': groupName,
+    },
+    success: result => {
+      console.log(result.groupID);
+      fetchGroups();
+    },
+    error: result => {
+      console.log('Failed', result);
+    }
   });
 }
