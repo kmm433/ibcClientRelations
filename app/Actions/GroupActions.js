@@ -19,9 +19,11 @@ export function fetchGroups() {
           group_name: group.name,
           email_ready: emailable,
           group_size: group['COUNT(gm.groupID)'],
+          selected: false,
         };
         groups.push(newGroup);
       });
+      console.log('dispatching retrieval');
       dispatcher.dispatch({
         type: 'RETRIEVED_GROUPS',
         groups: groups,
@@ -41,11 +43,54 @@ export function createGroup(groupName) {
       'groupName': groupName,
     },
     success: result => {
-      console.log(result.groupID);
       fetchGroups();
     },
     error: result => {
       console.log('Failed', result);
     }
   });
+}
+
+// Inserts or updates the MailChimp API Key that is registede to a chamber.
+export function updateAPIKey(newKey) {
+  console.log('New Key is: ', newKey);
+}
+
+// broadcasts the addition of a change in the selection of a group
+export function updateGroupSelection(groups) {
+  dispatcher.dispatch({
+    type: 'SELECTED_GROUPS',
+    groups: groups,
+  });
+  getGroupMembers(groups);
+}
+
+// Retrieves a list of all members in a set of group_id's
+export function getGroupMembers(groups) {
+  if (groups.length > 0) {
+    $.ajax({
+      url:'/php/get_group_members.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'groups': groups,
+      },
+      success: result => {
+        console.log('Groups are: ', groups, '. Group Members are: ', result);
+        dispatcher.dispatch({
+          type: 'RETRIEVED_MEMBERS',
+          members: result,
+        });
+      },
+      error: result => {
+        console.log('Error: ', result);
+      }
+    });
+  }
+  else {
+    dispatcher.dispatch({
+      type: 'RETRIEVED_MEMBERS',
+      members: [],
+    });
+  }
 }

@@ -89,6 +89,17 @@ class DB_Handler
     return false;
   }
 
+  // Retrieves all of the members within a group
+  function getGroupsMembers($groupID) {
+    $sql = $this->db->prepare("SELECT USER.email FROM USER JOIN GROUPMEMBERS ON USER.UserID=GROUPMEMBERS.UserID WHERE GROUPMEMBERS.groupID=:group_id");
+    if($sql->execute(array(
+      'group_id' => $groupID,
+    ))) {
+      return $sql->fetchall(PDO::FETCH_ASSOC);
+    }
+    return false;
+  }
+
   // Gets all variable information about a user
   function getDetail($memberID, $query) {
     $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
@@ -452,7 +463,7 @@ class DB_Handler
 
   // Retrives the number opf users assigned to a group
   function getGroupData($chamberId) {
-    $sql = $this->db->prepare("SELECT DISTINCT(g.groupID), g.name, g.mailchimp_list_id, COUNT(gm.groupID) FROM GROUPS AS g LEFT OUTER JOIN GROUPMEMBERS as gm ON g.groupID = gm.groupID WHERE g.chamberID=:chamber_id GROUP BY g.groupID");
+    $sql = $this->db->prepare("SELECT DISTINCT(g.groupID), g.name, g.mailchimp_list_id, COUNT(gm.groupID) FROM GROUPS AS g LEFT OUTER JOIN GROUPMEMBERS as gm ON g.groupID = gm.groupID WHERE g.chamberID=:chamber_id GROUP BY g.groupID ORDER BY COUNT(gm.groupID) DESC");
     if ($sql->execute(array(
       "chamber_id" => $chamberId
     ))) {
