@@ -61,7 +61,7 @@ myCallback (name, value) {
 
 
 handleSubmit(event){
-    console.log(this.state.name, this.state.email, this.state.password)
+    console.log(this.state.name, this.state.email, this.state.password, this.state.parentID, this.state.abn)
     $.ajax({url: '/php/insert_new_chamber.php', type: 'POST',
         dataType: 'json',
         data: {
@@ -83,7 +83,7 @@ handleSubmit(event){
         console.log("Did this work",response)
     },
     error: response => {
-        console.log("Did this work",response)
+        console.log("This didnt work",response)
     }
 
 });
@@ -103,7 +103,7 @@ renderMenu(){
         Please Select the Chamber that the new Chamber belongs to:
       <select id="admin-dropdown" name = "parentID" value={this.state.value} onChange={this.handleChange}>
           {Object.keys(chamberMenu).map((item,index) =>
-              <option key = {index} value={index}>{chamberMenu[item]}</option>)}
+              <option key = {index} value={item}>{chamberMenu[item]}</option>)}
       </select>
     </label>
     )
@@ -126,32 +126,34 @@ render(){
         <div className='w3-row' id="edit-signup">
             <div className="w3-container w3-card-4 w3-light-grey">
                 <div className = "signup-fields2">
-                    <h1>ENTER DETAILS FOR NEW CHAMBER</h1>
-                    <label>
-                        Name of new Chamber:
-                        <input type="text" name="name" value={this.state.name} onChange={this.handleChange}/>
-                    </label>
-                    <label>
-                        Is this a branch of another Chamber?
-                        <button id="chamberadmin-btn" className = "btn" onClick={() => this.handleAddParent()}>{display}</button>
-                    </label>
-                    {update ? this.renderMenu() : null}
-                    <hr className = "admin-divider" />
+                    <form method="POST">
+                        <h1>ENTER DETAILS FOR NEW CHAMBER</h1>
+                        <label>
+                            Name of new Chamber:
+                            <input type="text" name="name" value={this.state.name} onChange={this.handleChange}/>
+                        </label>
+                        <label>
+                            Is this a branch of another Chamber?
+                            <button id="chamberadmin-btn" className = "btn" onClick={() => this.handleAddParent()}>{display}</button>
+                        </label>
+                        {update ? this.renderMenu() : null}
+                        <hr className = "admin-divider" />
 
-                    <h4>The following fields correspond to the Executive Account of the Chamber</h4>
-                    <UserFields callbackFromParent={this.myCallback} />
-                    <hr className = "admin-divider" />
+                        <h4>The following fields correspond to the Executive Account of the Chamber</h4>
+                        <UserFields callbackFromParent={this.myCallback} />
+                        <hr className = "admin-divider" />
 
-                    <h4>Chamber Address</h4>
-                    <Address />
-                    <hr className = "admin-divider" />
+                        <h4>Chamber Address</h4>
+                        <Address />
+                        <hr className = "admin-divider" />
 
-                    <h4>Additional Chamber Details</h4>
-                    <label>
-                        ABN:
-                        <input type="number" name="abn" value={this.state.abn} onChange={this.handleChange}/>
-                    </label>
-                    <button id= "submitform-button" className = "btn" onClick={() => this.handleSubmit()}>Submit</button>
+                        <h4>Additional Chamber Details</h4>
+                        <label>
+                            ABN:
+                            <input type="number" name="abn" value={this.state.abn} onChange={this.handleChange}/>
+                        </label>
+                        <button id= "submitform-button" className = "btn" onClick={() => this.handleSubmit()}>Submit</button>
+                    </form>
                 </div>
         </div>
     </div>

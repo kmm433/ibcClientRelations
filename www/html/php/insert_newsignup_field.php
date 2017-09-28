@@ -8,7 +8,12 @@
     $tablename = "BUSINESS_";
     $tablename .= $_SESSION['chamber'];
 
-    $db->insertNewField($inserttable, $_POST['name'], $_POST['optional'], $_POST['type'], $tablename, $_POST['minimum'], $_POST['maximum']);
+    $ordering = $db->getMaximum("SELECT MAX(ordering)+1 FROM $inserttable");
+    if($ordering == null){
+        $ordering = 30;
+    }
 
-    echo json_encode("hello");
+    $result = $db->insertNewField($inserttable, $_POST['name'], $_POST['optional'], $_POST['type'], $tablename, $_POST['minimum'], $_POST['maximum'], $ordering);
+
+    echo json_encode($ordering);
 ?>

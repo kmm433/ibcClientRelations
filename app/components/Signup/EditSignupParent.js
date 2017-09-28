@@ -85,11 +85,11 @@ class EditSignup extends React.Component{
                 'maximum': newMax
             },
             success: response => {
-                console.log(response)
+                console.log("working",response)
                 this.getFields();
             },
             error: response => {
-                console.log(response)
+                console.log("not working",response)
             }
         });
     }

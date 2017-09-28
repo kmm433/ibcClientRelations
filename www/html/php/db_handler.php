@@ -355,9 +355,10 @@ class DB_Handler
       return false;
   }
 
-  function insertNewField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum){
+
+  function insertNewField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $ordering){
       $sql = $this->db->prepare("INSERT INTO $inserttable (displayname, inputtype, mandatory, tablename, minimum, maximum, ordering)
-                  VALUES(:name, :type, :optional, :tablename, :minimum, :maximum, (SELECT MAX(ordering)+1 FROM $inserttable O))");
+                  VALUES(:name, :type, :optional, :tablename, :minimum, :maximum, :ordering)");
 
       $sql->bindParam(':name', $name, PDO::PARAM_STR);
       $sql->bindParam(':type', $type, PDO::PARAM_STR);
@@ -365,7 +366,13 @@ class DB_Handler
       $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
       $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
       $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
-      $sql->execute();
+      $sql->bindParam(':ordering', $ordering, PDO::PARAM_INT);
+      if($sql->execute()){
+          return true;
+      }
+      else{
+          return false;
+      }
   }
 
   function updateField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $dataID){
@@ -390,6 +397,17 @@ class DB_Handler
       $sql = $this->db->prepare($query);
       if($sql->execute())
         return true;
+    else
+        return false;
+
+  }
+
+  function getMaximum($query){
+      $sql = $this->db->prepare($query);
+      if($sql->execute()){
+          $id = $sql->fetchColumn(0);
+          return $id;
+      }
     else
         return false;
 
@@ -499,9 +517,9 @@ class DB_Handler
       return false;
   }
 
-  function insert_notification($title,$content){
+  function insert_notification($title,$content, $chamberid){
       $userid =  $_SESSION['userid'];
-      $sql = $this->db->prepare("CALL SPinsertNotification($userid,'$title','$content');");
+      $sql = $this->db->prepare("CALL SPinsertNotification($userid,'$title','$content', $chamberid);");
       if ($sql->execute()) {
           return true;
       }
