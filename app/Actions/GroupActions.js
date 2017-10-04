@@ -9,21 +9,20 @@ export function fetchGroups() {
       var groups = [];
       var parsedResult = JSON.parse(result)
       parsedResult.forEach(group => {
-        var emailable = false;
+        var emailable = true;
         var groupSize = 0;
-        if (group.mailchimp_list_id)
-          emailable = true;
+        if (!group.mailchimp_list_id)
+          emailable = false;
         // Format the data for ease of use
         var newGroup = {
           group_id: group.groupID,
           group_name: group.name,
-          email_ready: emailable,
+          email_ready: emailable ? group.mailchimp_list_id : emailable,
           group_size: group['COUNT(gm.groupID)'],
           selected: false,
         };
         groups.push(newGroup);
       });
-      console.log('dispatching retrieval');
       dispatcher.dispatch({
         type: 'RETRIEVED_GROUPS',
         groups: groups,
@@ -33,7 +32,6 @@ export function fetchGroups() {
 }
 
 // Inserts a new group into the database,
-// Dispatches CREATE_GROUP action on success.
 export function createGroup(groupName) {
   $.ajax({
     url:'/php/create_group.php',
@@ -51,9 +49,93 @@ export function createGroup(groupName) {
   });
 }
 
-// Inserts or updates the MailChimp API Key that is registede to a chamber.
-export function updateAPIKey(newKey) {
-  console.log('New Key is: ', newKey);
+// Deletes a set fo groups from the database
+export function deleteGroups(groupIDs) {
+  $.ajax({
+    url:'/php/delete_groups.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'group_ids': groupIDs,
+    },
+    success: result => {
+      var groups = [];
+      updateGroupSelection(groups)
+      fetchGroups();
+    },
+    error: result => {
+      console.log('Failed', result);
+    }
+  });
+}
+
+// Updates the MailChimp API Key that is registered to a chamber.
+export function updateAPIKey(apiKey) {
+  $.ajax({
+    url:'/php/update_mailchimp_api_key.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'api_key': apiKey,
+    },
+    success: result => {
+      if (result.status === 200) {
+        alert('Successfully updated the API key.');
+      }
+      else {
+        alert(result.value);
+      }
+    },
+    error: result => {
+      console.log(result);
+    }
+  });
+}
+
+// Updates the Mail List Id that is associated to a specified group
+export function updateMailListID(groupID, mailListID) {
+  $.ajax({
+    url:'/php/update_mailchimp_listid.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'group_id': groupID,
+      'list_id': mailListID,
+    },
+    success: result => {
+      if(result) {
+        result.value.forEach(error => {
+          alert(JSON.stringify(error[1]));
+        });
+      } else {
+        alert('Successfully added all members.');
+      }
+
+
+      fetchGroups();
+    },
+    error: result => {
+      console.log('An error has occurred: ', result);
+    }
+  });
+}
+
+// Unregisters a saved mail list id so that it can be used for another group.
+export function unregisterMailListID(groupID) {
+  $.ajax({
+    url:'/php/unregister_mail_list_id.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'group_id': groupID,
+    },
+    success: result => {
+      alert(result.value);
+    },
+    error: result => {
+      console.log('An error has occurred: ', result);
+    }
+  });
 }
 
 // broadcasts the addition of a change in the selection of a group
@@ -76,7 +158,6 @@ export function getGroupMembers(groups) {
         'groups': groups,
       },
       success: result => {
-        console.log('Groups are: ', groups, '. Group Members are: ', result);
         dispatcher.dispatch({
           type: 'RETRIEVED_MEMBERS',
           members: result,
@@ -93,4 +174,13 @@ export function getGroupMembers(groups) {
       members: [],
     });
   }
+}
+
+export function updateGroupAllMembers() {
+  $.ajax({
+    url: '/php/update_group_all_members.php',
+    success: result => {
+      fetchGroups();
+    }
+  });
 }
