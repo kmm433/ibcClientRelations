@@ -162,6 +162,9 @@ class MemberDetails extends React.Component {
       },
       success: result => {
         this.setState({tags: tags});
+      },
+      error: result => {
+        console.log(result);
       }
     });
   }
@@ -190,6 +193,9 @@ class MemberDetails extends React.Component {
         success: result => {
           this.setState({tags: tags});
           this.getAvailableGroups()
+        },
+        error: result => {
+          console.log(result);
         }
       });
     }
