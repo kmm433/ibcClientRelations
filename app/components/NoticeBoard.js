@@ -13,6 +13,7 @@ import React from 'react';
 import Notice from './NoticeBoard/Notice.js';
 import NoticeEvent from './NoticeBoard/NoticeEvent.js';
 import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';
+import tmpNotice from './NoticeBoard/tmpNotice.js';
 import $ from 'jquery';                                         /*For ajax query */
 import Infinite from '@srph/react-infinite-scroll';             /*For inf scroll */
 import moment from "moment";                                    /* https://momentjs.com/ */
@@ -103,10 +104,29 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              //console.log('get_Notifications Success')
+              console.log('get_Notifications Success' + notifications)
           }.bind(this),
           error: function(xhr, status, err){
               console.log('get_Notifications Error')
+          }.bind(this)
+      });
+      return notifications;
+  }
+
+  /* Calls the SQL query to return Notifications passed down from a parent */
+  get_notificationsTEMP(){
+      var notifications = [];
+      $.ajax({
+          url: '/php/get_NotificationsTEMP.php',
+          type:'POST',
+          async: false,
+          dataType: "json",
+          success : function(response){
+              notifications = response;
+              console.log('get_NotificationsTEMP Success ' + response)
+          }.bind(this),
+          error: function(xhr, status, err){
+              console.log('get_NotificationsTEMP Error')
           }.bind(this)
       });
       return notifications;
@@ -157,8 +177,6 @@ class NoticeBoard extends React.Component {
         var events = this.get_events();
         var survey = this.get_surveys();
 
-        console.log(notifs.length);
-
         for(var i = 0; i < notifs.length; i++){
             messages.push(<Notice
                 key={notifs[i].NotificationID}
@@ -195,6 +213,22 @@ class NoticeBoard extends React.Component {
             b = new moment(b.props.DatePosted);
             return a>b ? -1 : a<b ? 1 : 0;
         });
+
+        /* THROWING AN ERROR WHY THE FUCK
+        // Get all the temp notices, surveys and events being passed down from a parent
+        var tmpNotifs = this.get_notificationsTEMP();
+        for(var i = 0; i < tmpNotifs.length; i++){
+            console.log(tmpNotifs[i].Notice);
+            messages.push(<tmpNotice
+                key={tmpNotifs[i].NotificationID}
+                title={tmpNotifs[i].NoticeTitle}
+                message={tmpNotifs[i].Notice}
+                DatePosted={tmpNotifs[i].DatePosted}
+            />)
+        }
+        */
+
+
     }
 
 };

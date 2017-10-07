@@ -211,18 +211,31 @@ class DB_Handler
 
     // NoticeBoard: Return Notifications
    function get_Notifications(){
-     $userid =  $_SESSION['userid'];
-     $chamberID = $_SESSION['chamber'];
-     $businessID = $_SESSION['businessid'];
-     $sql = $this->db->prepare("CALL SPgetNotifications($userid,$chamberID,$businessID);");
-     if($sql->execute()) {
-        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-         return $row;
-     }
-     else{
-         return array();
-     }
+     $sql = $this->db->prepare("CALL SPgetNotifications(:userid,:chamberid,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberid" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid']
+     ));
+     if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+     else
+         return false;
+
    }
+   // NoticeBoard: Return Notifications passed down from parent
+  function get_NotificationsTEMP(){
+    $sql = $this->db->prepare("CALL SPgetNotificationsTEMP(:userid,:chamberid,:businessID);");
+    $result = $sql->execute(array(
+      "userid" => $_SESSION['userid'],
+      "chamberid" => $_SESSION['chamber'],
+      "businessID" => $_SESSION['businessid']
+    ));
+    if ($result)
+       return $sql->fetchAll(PDO::FETCH_ASSOC);
+    else
+        return false;
+  }
 
    // Event Page: Return Events
    function get_Events(){
@@ -526,31 +539,42 @@ class DB_Handler
       "memberID" => $memberID
     ));
     if ($result)
-      return $sql->fetchall(PDO::FETCH_ASSOC);
+      return $sql->fetchAll(PDO::FETCH_ASSOC);
     else
       return false;
   }
   // Create New Notice: Insert a notification into the database
-  function insert_notification($title,$content){
-      $sql = $this->db->prepare("SELECT insertNotification(:title, :content, :userid);");
+  function insert_notification($title,$content,$tempStatus){
+
+      if($tempStatus == true){
+          $sql = $this->db->prepare("SELECT insertNotificationtemp(:title, :content, :userid);");
+      }else {
+          $sql = $this->db->prepare("SELECT insertNotification(:title, :content, :userid);");
+      }
 
       $result = $sql->execute(array(
         "title" => $title,
         "content" => $content,
-        "userid" => $_SESSION['userid']
+        "userid" => $_SESSION['userid']     // Keep track of who is posting notifications, only stored in DB, not visible in site
       ));
 
       if ($result)
-        return $sql->fetchall(PDO::FETCH_ASSOC);
+        return $sql->fetchColumn(0);        // Returns only the new notification ID
       else
         return false;
   }
-  function insert_notificationLookup($userID,$chamberID,$businessID,$groupID){
-      $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUP (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (0,:userid,:chamberid,:businessID,:groupID);");
+  function insert_notificationLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
+
+      if($tempStatus == true){
+         $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUPtemp (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
+      }else {
+         $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUP (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
+      }
 
       $result = $sql->execute(array(
+        "id" => $ID,
         "userid" => $userID,
-        "chamberid" => $chamberid,
+        "chamberid" => $chamberID,
         "businessID" => $businessID,
         "groupID" => $groupID
       ));
@@ -559,6 +583,22 @@ class DB_Handler
         return true;
       else
         return false;
+  }
+
+  // Returns a list of child chamber ID's
+  function get_Child_Chambers($chamber){
+      $sql = $this->db->prepare("SELECT chamberID from CHAMBER where parent_id=:myChamber;");
+
+      $result = $sql->execute(array(
+        "myChamber" => $chamber
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
   }
 
 }

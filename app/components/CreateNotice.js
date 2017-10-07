@@ -18,6 +18,9 @@ var mysurveyCount = 0;
 var Questions = [];         //Questions.push({questionNo: qNumber, answerType: qType, question: value});
 var Answers = [];           //Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: answerID});
 
+var groupID = [];           // Used to store suggested Groups w/ id's for submitting
+var busID = [];
+
 class create_notice extends React.Component {
 
     constructor(props){
@@ -204,10 +207,12 @@ class create_notice extends React.Component {
           var groupNames = [];
           results.forEach((item) => {
             groupNames.push(item['name']);
+            groupID.push({name: item['name'], groupID: item['groupID']});
           });
           this.setState({GroupSuggestions: groupNames});
         }
         }});
+        console.log(groupID);
     }
 
     getAllBusiness() {
@@ -218,6 +223,7 @@ class create_notice extends React.Component {
             var groupNames = [];
             results.forEach((item) => {
               groupNames.push(item['businessname']);
+              busID.push({name: item['businessname'], groupID: item['businessID']});
             });
             this.setState({BusSuggestions: groupNames});
           }
@@ -227,36 +233,64 @@ class create_notice extends React.Component {
 
     submitNotice(){
         // Post the notice to the DB
-        console.log(this.state.NTitle);
-        console.log(this.state.NContent);
-        console.log(this.state.Nemail);
-        console.log(this.state.NChambers);
-        console.log(this.state.NChambersChild);
-        console.log(this.state.GroupTags);
-        console.log(this.state.BusTags);
 
-        // TODO: If email do email blast
+        //console.log(this.state.NTitle);
+        //console.log(this.state.NContent);
+        //console.log(this.state.Nemail);
+        //console.log(this.state.NChambers);
+        //console.log(this.state.NChambersChild);
+        //console.log(this.state.GroupTags);
+        //console.log(this.state.BusTags);
+        //console.log(this.state.BusSuggestions);
 
-        $.ajax({
-            url: '/php/insert_notification.php',
-            type:'POST',
-            async: false,
-            dataType: "json",
-            data:{
-                'title': this.state.NTitle,
-                'content': this.state.NContent,
-                'postChamber' : this.state.NChambers,
-                'postChild' : this.state.NChambersChild,
-                'groups' : this.state.GroupTags,
-                'business' : this.state.BusTags
-            },
-            success : function(response){
-                console.log('insert_notication Success' + response);
-            }.bind(this),
-            error: function(xhr, status, err, response){
-                console.log('insert_notication Error' + xhr + status + err + response);
-            }.bind(this)
-        });
+        if((this.state.NTitle == "") || (this.state.NContent == "")){
+            window.alert("That notification has blank fields! Please enter a title and content");
+        }
+        else if ((this.state.NChambers == "off") && (this.state.NChambersChild == "off") && (this.state.GroupTags.length == 0) && (this.state.BusTags.length == 0)){
+            window.alert("Please choose at least one recipient!");
+        }
+        else{
+            // TODO: If email do email blast
+
+            // Get the ID's from our Groups and Businesses
+            var groups = [];
+            for (var i=0; i < this.state.GroupTags.length; i++){
+                for (var b=0; b < groupID.length; b++){
+                    if (this.state.GroupTags[i].text == groupID[b].name){
+                        groups.push(groupID[b].groupID);
+                    }
+                }
+            }
+            var bus = [];
+            for (var i=0; i < this.state.BusTags.length; i++){
+                for (var b=0; b < busID.length; b++){
+                    if (this.state.BusTags[i].text == busID[b].name){
+                        bus.push(busID[b].groupID);
+                    }
+                }
+            }
+
+            $.ajax({
+                url: '/php/insert_notification.php',
+                type:'POST',
+                async: false,
+                dataType: "json",
+                data:{
+                    'title': this.state.NTitle,
+                    'content': this.state.NContent,
+                    'postChamber' : this.state.NChambers,
+                    'postChild' : this.state.NChambersChild,
+                    'groups' : groups,
+                    'business' : bus
+                },
+                success : function(response){
+                    console.log('insert_notication Success ' + response);
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('insert_notication Error ' + xhr.responseText);
+                }.bind(this)
+            });
+        }
 
     }
     submitEvent(){
@@ -408,7 +442,8 @@ class create_notice extends React.Component {
                     <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="NChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
-                    <div className="w3-col s9" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="NChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s2" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="NChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s7 CreateNoticeDiv"><div><label>* You can give child chambers to option to see this notification, but an executive of that chamber will have to approve it before is shown to their chamber members</label></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv">
