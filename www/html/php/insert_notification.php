@@ -4,9 +4,11 @@
 
   $title = $_POST['title'];
   $content = $_POST['content'];
+  //$postChamber = $_POST['postChamber'];
+  //$postChild = $_POST['postChild'];
+  //$groups = $_POST['groups'];
+  //$business = $_POST['business'];
 
-
-  $results = $db->insert_notification($title,$content, $_SESSION['chamber']);
+  $results = $db->insert_notification($title,$content);
   echo json_encode($results);
-
 ?>

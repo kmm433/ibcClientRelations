@@ -186,13 +186,27 @@ class DB_Handler
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
+    $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
           ORDER BY lastname;");
     if ($sql->execute()) {
       return $sql->fetchall();
     }
     return $chamberID;
+  }
+
+  // Retrieve all Businesses of a chamber
+  function get_chamber_business(){
+      $sql = $this->db->prepare("SELECT businessID, businessname FROM BUSINESS WHERE chamberID = :chamberid;");
+
+      $result = $sql->execute(array(
+        "chamberid" => $_SESSION['chamber'],
+      ));
+
+      if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+      else
+        return false;
   }
 
     // NoticeBoard: Return Notifications
@@ -516,14 +530,36 @@ class DB_Handler
     else
       return false;
   }
+  // Create New Notice: Insert a notification into the database
+  function insert_notification($title,$content){
+      $sql = $this->db->prepare("SELECT insertNotification(:title, :content, :userid);");
 
-  function insert_notification($title,$content, $chamberid){
-      $userid =  $_SESSION['userid'];
-      $sql = $this->db->prepare("CALL SPinsertNotification($userid,'$title','$content', $chamberid);");
-      if ($sql->execute()) {
-          return true;
-      }
-      return false;
+      $result = $sql->execute(array(
+        "title" => $title,
+        "content" => $content,
+        "userid" => $_SESSION['userid']
+      ));
+
+      if ($result)
+        return $sql->fetchall(PDO::FETCH_ASSOC);
+      else
+        return false;
   }
+  function insert_notificationLookup($userID,$chamberID,$businessID,$groupID){
+      $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUP (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (0,:userid,:chamberid,:businessID,:groupID);");
+
+      $result = $sql->execute(array(
+        "userid" => $userID,
+        "chamberid" => $chamberid,
+        "businessID" => $businessID,
+        "groupID" => $groupID
+      ));
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+
 }
 ?>

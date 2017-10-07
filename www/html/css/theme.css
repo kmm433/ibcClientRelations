@@ -653,6 +653,10 @@ see NoticeSurvey.js */
     -moz-box-sizing:border-box;
 }
 
+.CreateNoticeDiv .ReactTags__suggestions{
+    z-index: 1;
+}
+
 /* The switch - the box around the slider */
 .switch {
   position: relative;

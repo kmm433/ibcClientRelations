@@ -10,6 +10,8 @@ import DatePicker from 'react-datepicker';                          /* https://g
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'react-bootstrap-time-picker';               /* https://github.com/yury-dymov/react-bootstrap-time-picker */
 
+import { WithContext as ReactTags } from 'react-tag-input';
+
 
 var mysurveyItems = [];     // Array of Comonents
 var mysurveyCount = 0;
@@ -21,9 +23,17 @@ class create_notice extends React.Component {
     constructor(props){
         super(props)
         this.state = {
+            GroupTags: [],
+            GroupSuggestions: [],
+            BusTags: [],
+            BusSuggestions: [],
+
             NTitle: "",
             NContent: "",
             Nemail: "off",
+            NChambers: "off",
+            NChambersChild: "off",
+
 
             ETitle: "",
             EContent: "",
@@ -57,8 +67,25 @@ class create_notice extends React.Component {
         this.handleTimeStart = this.handleTimeStart.bind(this);
         this.handleTimeEnd = this.handleTimeEnd.bind(this);
 
+        this.GrouphandleDelete = this.GrouphandleDelete.bind(this);
+        this.GrouphandleAddition = this.GrouphandleAddition.bind(this);
+        this.GrouphandleDrag = this.GrouphandleDrag.bind(this);
+        this.BushandleDelete = this.BushandleDelete.bind(this);
+        this.BushandleAddition = this.BushandleAddition.bind(this);
+        this.BushandleDrag = this.BushandleDrag.bind(this);
+
+        this.getAvailableGroups = this.getAvailableGroups.bind(this);
+        this.getAllBusiness = this.getAllBusiness.bind(this);
+
+
         moment.locale("en-au");
     }
+
+    componentWillMount() {
+        this.getAvailableGroups();
+        this.getAllBusiness();
+    }
+
 
     /* Generic function for most text areas */
     handleChange(event){
@@ -100,12 +127,116 @@ class create_notice extends React.Component {
         });
     }
 
+    //** Group Tags **//
+    GrouphandleDelete(i) {
+      let tags = this.state.GroupTags;
+      var deleted = tags[i]['text'];
+      tags.splice(i, 1);
+    }
+    GrouphandleAddition(tag) {
+      let tags = this.state.GroupTags;
+      var existing = false;
+      tags.forEach((existingTag) => {
+        if(existingTag['text'] === tag)
+          existing = true;
+      });
+      if(!existing){
+
+        var inSuggestions = false;
+        this.state.GroupSuggestions.forEach((suggestion) => {
+          if(suggestion === tag)
+            inSuggestions = true;
+        });
+        if(inSuggestions){
+            tags.push({
+              id: tags.length + 1,
+              text: tag
+            });
+        }
+        else {
+            alert("That group doesnt exist! You can create a new group using the 'Manage Groups' page")
+        }
+      }
+    }
+    GrouphandleDrag(tag, currPos, newPos) {
+      //Do nothing, function is required but there is no point to rearranging.
+    }
+
+    //** Business Tags **//
+    BushandleDelete(i) {
+      let tags = this.state.BusTags;
+      var deleted = tags[i]['text'];
+      tags.splice(i, 1);
+    }
+    BushandleAddition(tag) {
+      let tags = this.state.BusTags;
+      var existing = false;
+      tags.forEach((existingTag) => {
+        if(existingTag['text'] === tag)
+          existing = true;
+      });
+      if(!existing){
+        var inSuggestions = false;
+        this.state.BusSuggestions.forEach((suggestion) => {
+          if(suggestion === tag)
+            inSuggestions = true;
+        });
+        if(inSuggestions){
+            tags.push({
+              id: tags.length + 1,
+              text: tag
+            });
+        }
+        else {
+            alert("That business doesnt exist!")
+        }
+      }
+    }
+    BushandleDrag(tag, currPos, newPos) {
+      //Do nothing, function is required but there is no point to rearranging.
+    }
+
+    // Fetches the available groups from the database to use as suggestions
+    getAvailableGroups() {
+        $.ajax({url: "/php/get_chamber_groups.php", success: result => {
+        if (result !== '') {
+          var results = JSON.parse(result);
+          var groupNames = [];
+          results.forEach((item) => {
+            groupNames.push(item['name']);
+          });
+          this.setState({GroupSuggestions: groupNames});
+        }
+        }});
+    }
+
+    getAllBusiness() {
+        $.ajax({url: "/php/get_chamber_business.php", success: result => {
+          if (result !== '') {
+            console.log(result);
+            var results = JSON.parse(result);
+            var groupNames = [];
+            results.forEach((item) => {
+              groupNames.push(item['businessname']);
+            });
+            this.setState({BusSuggestions: groupNames});
+          }
+        }});
+    }
+
 
     submitNotice(){
         // Post the notice to the DB
         console.log(this.state.NTitle);
         console.log(this.state.NContent);
         console.log(this.state.Nemail);
+        console.log(this.state.NChambers);
+        console.log(this.state.NChambersChild);
+        console.log(this.state.GroupTags);
+        console.log(this.state.BusTags);
+
+        // TODO: If email do email blast
+
         $.ajax({
             url: '/php/insert_notification.php',
             type:'POST',
@@ -114,14 +245,19 @@ class create_notice extends React.Component {
             data:{
                 'title': this.state.NTitle,
                 'content': this.state.NContent,
+                'postChamber' : this.state.NChambers,
+                'postChild' : this.state.NChambersChild,
+                'groups' : this.state.GroupTags,
+                'business' : this.state.BusTags
             },
-            success : function(){
-                console.log('insert_notication Success');
+            success : function(response){
+                console.log('insert_notication Success' + response);
             }.bind(this),
-            error: function(xhr, status, err, mine){
-                console.log('insert_notication Error' + xhr + status + err);
+            error: function(xhr, status, err, response){
+                console.log('insert_notication Error' + xhr + status + err + response);
             }.bind(this)
         });
+
     }
     submitEvent(){
         // Post the Event to the DB
@@ -267,9 +403,41 @@ class create_notice extends React.Component {
                 </div>
                 <div>
                     <div><h3>Choose Recipients:</h3></div>
-                    <div>
 
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>My Chamber:</label></div></div>
+                    <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="NChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
+                    <div className="w3-col s9" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="NChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.GroupTags}
+                          suggestions={this.state.GroupSuggestions}
+                          handleDelete={this.GrouphandleDelete}
+                          handleAddition={this.GrouphandleAddition}
+                          handleDrag={this.GrouphandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Group'}
+                        />
                     </div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Business:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.BusTags}
+                          suggestions={this.state.BusSuggestions}
+                          handleDelete={this.BushandleDelete}
+                          handleAddition={this.BushandleAddition}
+                          handleDrag={this.BushandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Business'}
+                        />
+                    </div>
+
                 </div>
                 <div className="event-buttons">
                     <div className="w3-row">
