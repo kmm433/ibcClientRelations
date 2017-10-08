@@ -17,14 +17,12 @@ class Layout extends React.Component {
     constructor(props){
         super(props);
 
-        console.log("The user in Layout is: ", this.props.user_type)
         this.renderNormalUser = this.renderNormalUser.bind(this);
         this.renderAdmin = this.renderAdmin.bind(this);
         this.renderPage = this.renderPage.bind(this);
     }
 
     renderNormalUser(){
-        console.log("Rendering should be normal user: ", this.props.first_name)
         return(
             <div>
               <Menu
@@ -60,7 +58,6 @@ class Layout extends React.Component {
     }
     renderPage(){
         if(this.props.user_type){
-            console.log("Checking: ", this.props.user_type)
             return(
                 (this.props.user_type !== '0') ?  this.renderNormalUser() : this.renderAdmin()
             )
@@ -71,7 +68,6 @@ class Layout extends React.Component {
     }
 
   render() {
-    console.log('User type is: ', this.props.user_type)
     return (
       <div className="establish-fonts">
           {this.renderPage()}

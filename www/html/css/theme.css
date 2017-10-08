@@ -51,6 +51,8 @@ body {
 }
 
 .notice-title {
+  display: inline-block;
+  width: 100%;
   margin: 0px;
   background-color: #2462AB;
   border-bottom: 1px solid #BCBCBC;
@@ -58,8 +60,21 @@ body {
   padding: 10px 20px;
 }
 
+.tmpnotice-title{
+    background-color: #676d75 !important;
+}
+
 .notice-content {
-  padding: 10px 10px;
+  padding: 10px 20px;
+}
+
+.notificationDeleteBtn{
+    float: right;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
 }
 
 .survey-content {
@@ -598,6 +613,10 @@ see NoticeSurvey.js */
     width:100%;
     box-sizing:border-box;
     -moz-box-sizing:border-box;
+}
+
+.CreateNoticeDiv .ReactTags__suggestions{
+    z-index: 1;
 }
 
 /* The switch - the box around the slider */
