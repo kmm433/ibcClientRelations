@@ -10,20 +10,33 @@ import DatePicker from 'react-datepicker';                          /* https://g
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'react-bootstrap-time-picker';               /* https://github.com/yury-dymov/react-bootstrap-time-picker */
 
+import { WithContext as ReactTags } from 'react-tag-input';
+
 
 var mysurveyItems = [];     // Array of Comonents
 var mysurveyCount = 0;
 var Questions = [];         //Questions.push({questionNo: qNumber, answerType: qType, question: value});
 var Answers = [];           //Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: answerID});
 
+var groupID = [];           // Used to store suggested Groups w/ id's for submitting
+var busID = [];
+
 class create_notice extends React.Component {
 
     constructor(props){
         super(props)
         this.state = {
+            GroupTags: [],
+            GroupSuggestions: [],
+            BusTags: [],
+            BusSuggestions: [],
+
             NTitle: "",
             NContent: "",
             Nemail: "off",
+            NChambers: "off",
+            NChambersChild: "off",
+
 
             ETitle: "",
             EContent: "",
@@ -57,8 +70,25 @@ class create_notice extends React.Component {
         this.handleTimeStart = this.handleTimeStart.bind(this);
         this.handleTimeEnd = this.handleTimeEnd.bind(this);
 
+        this.GrouphandleDelete = this.GrouphandleDelete.bind(this);
+        this.GrouphandleAddition = this.GrouphandleAddition.bind(this);
+        this.GrouphandleDrag = this.GrouphandleDrag.bind(this);
+        this.BushandleDelete = this.BushandleDelete.bind(this);
+        this.BushandleAddition = this.BushandleAddition.bind(this);
+        this.BushandleDrag = this.BushandleDrag.bind(this);
+
+        this.getAvailableGroups = this.getAvailableGroups.bind(this);
+        this.getAllBusiness = this.getAllBusiness.bind(this);
+
+
         moment.locale("en-au");
     }
+
+    componentWillMount() {
+        this.getAvailableGroups();
+        this.getAllBusiness();
+    }
+
 
     /* Generic function for most text areas */
     handleChange(event){
@@ -100,28 +130,185 @@ class create_notice extends React.Component {
         });
     }
 
+    //** Group Tags **//
+    GrouphandleDelete(i) {
+      let tags = this.state.GroupTags;
+      var deleted = tags[i]['text'];
+      tags.splice(i, 1);
+    }
+    GrouphandleAddition(tag) {
+      let tags = this.state.GroupTags;
+      var existing = false;
+      tags.forEach((existingTag) => {
+        if(existingTag['text'] === tag)
+          existing = true;
+      });
+      if(!existing){
 
-    submitNotice(){
-        // Post the notice to the DB
-        console.log(this.state.NTitle);
-        console.log(this.state.NContent);
-        console.log(this.state.Nemail);
-        $.ajax({
-            url: '/php/insert_notification.php',
-            type:'POST',
-            async: false,
-            dataType: "json",
-            data:{
-                'title': this.state.NTitle,
-                'content': this.state.NContent,
-            },
-            success : function(){
-                console.log('insert_notication Success');
-            }.bind(this),
-            error: function(xhr, status, err, mine){
-                console.log('insert_notication Error' + xhr + status + err);
-            }.bind(this)
+        var inSuggestions = false;
+        this.state.GroupSuggestions.forEach((suggestion) => {
+          if(suggestion === tag)
+            inSuggestions = true;
         });
+        if(inSuggestions){
+            tags.push({
+              id: tags.length + 1,
+              text: tag
+            });
+        }
+        else {
+            alert("That group doesnt exist! You can create a new group using the 'Manage Groups' page")
+        }
+      }
+    }
+    GrouphandleDrag(tag, currPos, newPos) {
+      //Do nothing, function is required but there is no point to rearranging.
+    }
+
+    //** Business Tags **//
+    BushandleDelete(i) {
+      let tags = this.state.BusTags;
+      var deleted = tags[i]['text'];
+      tags.splice(i, 1);
+    }
+    BushandleAddition(tag) {
+      let tags = this.state.BusTags;
+      var existing = false;
+      tags.forEach((existingTag) => {
+        if(existingTag['text'] === tag)
+          existing = true;
+      });
+      if(!existing){
+        var inSuggestions = false;
+        this.state.BusSuggestions.forEach((suggestion) => {
+          if(suggestion === tag)
+            inSuggestions = true;
+        });
+        if(inSuggestions){
+            tags.push({
+              id: tags.length + 1,
+              text: tag
+            });
+        }
+        else {
+            alert("That business doesnt exist!")
+        }
+      }
+    }
+    BushandleDrag(tag, currPos, newPos) {
+      //Do nothing, function is required but there is no point to rearranging.
+    }
+
+    // Fetches the available groups from the database to use as suggestions
+    getAvailableGroups() {
+        $.ajax({url: "/php/get_chamber_groups.php", success: result => {
+        if (result !== '') {
+          var results = JSON.parse(result);
+          var groupNames = [];
+          results.forEach((item) => {
+            groupNames.push(item['name']);
+            groupID.push({name: item['name'], groupID: item['groupID']});
+          });
+          this.setState({GroupSuggestions: groupNames});
+        }
+        }});
+    }
+
+    getAllBusiness() {
+        $.ajax({url: "/php/get_chamber_business.php", success: result => {
+          if (result !== '') {
+            var results = JSON.parse(result);
+            var groupNames = [];
+            results.forEach((item) => {
+              groupNames.push(item['businessname']);
+              busID.push({name: item['businessname'], groupID: item['businessID']});
+            });
+            this.setState({BusSuggestions: groupNames});
+          }
+        }});
+    }
+
+    /* Post the notice to the DB */
+    submitNotice(){
+        if((this.state.NTitle == "") || (this.state.NContent == "")){
+            window.alert("That notification has blank fields! Please enter a title and content");
+        }
+        else if ((this.state.NChambers == "off") && (this.state.NChambersChild == "off") && (this.state.GroupTags.length == 0) && (this.state.BusTags.length == 0)){
+            window.alert("Please choose at least one recipient!");
+        }
+        else{
+            // Get the ID's from our Groups and Businesses
+            var groups = [];
+            for (var i=0; i < this.state.GroupTags.length; i++){
+                for (var b=0; b < groupID.length; b++){
+                    if (this.state.GroupTags[i].text == groupID[b].name){
+                        groups.push(groupID[b].groupID);
+                    }
+                }
+            }
+            var bus = [];
+            for (var i=0; i < this.state.BusTags.length; i++){
+                for (var b=0; b < busID.length; b++){
+                    if (this.state.BusTags[i].text == busID[b].name){
+                        bus.push(busID[b].groupID);
+                    }
+                }
+            }
+
+            $.ajax({
+                url: '/php/insert_notification.php',
+                type:'POST',
+                async: false,
+                dataType: "json",
+                data:{
+                    'title': this.state.NTitle,
+                    'content': this.state.NContent,
+                    'postChamber' : this.state.NChambers,
+                    'postChild' : this.state.NChambersChild,
+                    'groups' : groups,
+                    'business' : bus
+                },
+                success : function(response){
+                    //console.log('insert_notication Success ' + response);
+                    alert("Notification successfully posted");
+                    this.setState({
+                        NTitle: "",
+                        NContent: ""
+                    });
+
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('insert_notication Error ' + xhr.responseText);
+                }.bind(this)
+            });
+
+
+            //If email do email blast
+            if (this.state.Nemail == "on"){
+                var emails = [];
+                $.ajax({
+                    url: '/php/get_Emails.php',
+                    type:'POST',
+                    async: false,
+                    dataType: "json",
+                    data:{
+                        'postChamber' : this.state.NChambers,
+                        'groups' : groups,
+                        'business' : bus
+                    },
+                    success : function(response){
+                        console.log('get_Emails Success ');
+                        emails = response;
+                    }.bind(this),
+                    error: function(xhr, status, err){
+                        console.log('get_Emails Error ' + xhr.responseText);
+                    }.bind(this)
+                });
+                window.location = 'mailto:?bcc=' + emails + '&subject=New Chamber Notice: ' + this.state.NTitle + '&body=' + this.state.NContent;
+            }
+
+        }
+
     }
     submitEvent(){
         // Post the Event to the DB
@@ -267,9 +454,42 @@ class create_notice extends React.Component {
                 </div>
                 <div>
                     <div><h3>Choose Recipients:</h3></div>
-                    <div>
 
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>My Chamber:</label></div></div>
+                    <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="NChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
+                    <div className="w3-col s2" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="NChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s7 CreateNoticeDiv"><div><label>* You can give child chambers to option to see this notification, but an executive of that chamber will have to approve it before is shown to their chamber members</label></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.GroupTags}
+                          suggestions={this.state.GroupSuggestions}
+                          handleDelete={this.GrouphandleDelete}
+                          handleAddition={this.GrouphandleAddition}
+                          handleDrag={this.GrouphandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Group'}
+                        />
                     </div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Business:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.BusTags}
+                          suggestions={this.state.BusSuggestions}
+                          handleDelete={this.BushandleDelete}
+                          handleAddition={this.BushandleAddition}
+                          handleDrag={this.BushandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Business'}
+                        />
+                    </div>
+
                 </div>
                 <div className="event-buttons">
                     <div className="w3-row">
