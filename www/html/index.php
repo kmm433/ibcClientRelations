@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/scss" href="css/datepicker.scss" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/group_management.css" />
   </head>
   <body>
     <div id="app"></div>
