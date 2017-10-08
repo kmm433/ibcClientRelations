@@ -218,6 +218,7 @@ class MemberInformation extends React.Component {
                 member={this.state.displayed_user}
                 memberID={this.state.displayed_user_id}
                 expiry={this.state.expiry}
+                selected={true}
                 unselect={this.resetMemberView}
                 chamber_id={this.props.chamber_id}
                 all={this.state.all}

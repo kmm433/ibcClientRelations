@@ -60,14 +60,13 @@ class CompleteMemberDetails extends React.Component {
       },
       success: response => {
         // Re-request the complete set of details to show the changes
-        console.log(response);
         this.props.getCompleteDetails();
         this.props.getChamberMembers();
         this.props.getNotes();
         this.props.setEditMode(event);
       },
       error: response => {
-        console.log('Error: ', response);
+        console.log(response);
       }
     });
   }

@@ -73,7 +73,7 @@ class DB_Handler
   function getUserData($email_addr) {
     $sql = $this->db->prepare("SELECT firstname, lastname, type, chamberID, businessID FROM USER WHERE email='$email_addr'");
     if ($sql->execute()) {
-      $row = $sql->fetch( PDO::FETCH_ASSOC );
+      $row = $sql->fetch(PDO::FETCH_ASSOC);
       $results = array ('firstname'=>$row['firstname'],'lastname'=>$row['lastname'], 'type'=>$row['type'], 'chamberID'=>$row['chamberID'], 'businessID'=>$row['businessID']);
       return $results;
     }
@@ -82,20 +82,9 @@ class DB_Handler
 
   // Retrieves the groups that a member is in
   function getMembersGroups($memberID) {
-    $sql = $this->db->prepare("SELECT GROUPS.groupID, GROUPS.name FROM GROUPMEMBERS LEFT JOIN GROUPS ON GROUPMEMBERS.groupID=GROUPS.groupID WHERE GROUPMEMBERS.UserID='$memberID'");
+    $sql = $this->db->prepare("SELECT GROUPS.name FROM GROUPMEMBERS LEFT JOIN GROUPS ON GROUPMEMBERS.groupID=GROUPS.groupID WHERE GROUPMEMBERS.UserID='$memberID'");
     if($sql->execute()) {
-      return $sql->fetchall( PDO::FETCH_ASSOC );
-    }
-    return false;
-  }
-
-  // Retrieves all of the members within a group
-  function getGroupsMembers($groupID) {
-    $sql = $this->db->prepare("SELECT USER.email FROM USER JOIN GROUPMEMBERS ON USER.UserID=GROUPMEMBERS.UserID WHERE GROUPMEMBERS.groupID=:group_id");
-    if($sql->execute(array(
-      'group_id' => $groupID,
-    ))) {
-      return $sql->fetchall(PDO::FETCH_ASSOC);
+      return $sql->fetchall();
     }
     return false;
   }
@@ -162,34 +151,18 @@ class DB_Handler
     }
   }
 
-  // Determines if a member is in a specified group
-  function checkIfMemberInGroup($userID, $groupID) {
-    $sql = $this->db->prepare("SELECT groupID FROM GROUPMEMBERS WHERE UserID=:user_id AND groupID=:group_id");
-    $sql->execute(array(
-      'user_id' => $userID,
-      'group_id' => $groupID,
-    ));
-    return $sql->fetch(PDO::FETCH_ASSOC);
-  }
-
   // Inserts a member into a group
-  function addMemberToGroup($userID, $groupID) {
-    $sql = $this->db->prepare("INSERT INTO GROUPMEMBERS (groupID, UserID) VALUES (:group_id, :user_id)");
-    if ($sql->execute(array(
-      'group_id' => $groupID,
-      'user_id' => $userID,
-    )))
+  function addMemberToGroup($memberID, $groupID) {
+    $sql = $this->db->prepare("INSERT INTO GROUPMEMBERS (groupID, UserID) VALUES ($groupID, '$memberID')");
+    if ($sql->execute())
       return true;
     return false;
   }
 
   // Removes a member from a group
-  function deleteMemberFromGroup($userID, $groupID) {
-    $sql = $this->db->prepare("DELETE FROM GROUPMEMBERS WHERE groupID=:group_id AND UserID=:user_id");
-    $result = $sql->execute(array(
-      'group_id' => $groupID,
-      'user_id' => $userID,
-    ));
+  function deleteMemberFromGroup($memberID, $groupID) {
+    $sql = $this->db->prepare("DELETE FROM GROUPMEMBERS WHERE groupID=$groupID AND UserID='$memberID'");
+    $result = $sql->execute();
     return $groupID;
   }
 
@@ -203,12 +176,10 @@ class DB_Handler
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
       $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
-          FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=:chamber_id
+          FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=$chamberID
           ORDER BY lastname;");
-    if ($sql->execute(array(
-      'chamber_id' => $chamberID,
-    ))) {
-      return $sql->fetchall(PDO::FETCH_ASSOC);
+    if ($sql->execute()) {
+      return $sql->fetchall();
     }
     return $chamberID;
   }
@@ -534,160 +505,35 @@ function updatePayment($payment, $expiry, $chamber){
       return false;
   }
 
-  // Updates the MailChimp API key for a given chamber
-  function updateMailChimpAPIKey($chamberID, $APIkey) {
-    $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $this->db->beginTransaction();
-    $sql = $this->db->prepare( "SELECT COUNT(chamberID) FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id" );
-    $sql->execute( array(
-      'chamber_id' => $chamberID,
-    ));
-    $existing = $sql->fetch( PDO::FETCH_ASSOC );
-    // If there is an existing entry update it
-    if( $existing['COUNT(chamberID)'] > 0) {
-      $sql = $this->db->prepare("UPDATE CHAMBER_API_KEYS SET mailchimp=:mailchimp_key WHERE chamberID=:chamber_id");
-      if  ( $sql->execute( array(
-        'chamber_id' => $chamberID,
-        'mailchimp_key' => $APIkey,
-      )))
-      {
-        $this->db->commit();
-        return true;
-      }
-      else {
-        $this->db->rollBack();
-        return false;
-      }
-    }
-    // If there is no existing entry create one
-    else {
-      $sql = $this->db->prepare( "INSERT INTO CHAMBER_API_KEYS (chamberID, mailchimp) VALUES (:chamber_id, :mailchimp_key)" );
-      if  ( $sql->execute( array(
-        'chamber_id' => $chamberID,
-        'mailchimp_key' => $APIkey,
-      )))
-      {
-        $this->db->commit();
-        return true;
-      }
-      else {
-        $this->db->rollBack();
-        return false;
-      }
-    }
-  }
-
-  // Retrieves the mailchimp API key for a chamber
-  function getMailChimpAPIKey($chamberID) {
-    $sql = $this->db->prepare("SELECT mailchimp FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id");
-    $sql->execute(array(
-      'chamber_id' => $chamberID,
-    ));
-    $result = $sql->fetch( PDO::FETCH_ASSOC );
-    return $result['mailchimp'];
-  }
-
-  // Update Mailchimp ListID
-  function updateMailChimpListID($groupID, $listID) {
-    $sql = $this->db->prepare("UPDATE GROUPS SET mailchimp_list_id=:list_id WHERE groupID=:group_id");
-    if($sql->execute(array(
-      'list_id' => $listID,
-      'group_id' => $groupID,
-    )))
-      return true;
-    else {
-      return false;
-    }
-  }
-
-  // Can be use to unregister a saved mail list id associated with a group
-  function unregisterMailListID($groupID) {
-    $sql = $this->db->prepare("UPDATE GROUPS SET mailchimp_list_id=NULL WHERE groupID=:group_id" );
-    if($sql->execute( array('group_id' => $groupID,))) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // Retrieves the mail list associated with a group.
-  function getMailListID($groupID) {
-    $sql = $this->db->prepare( "SELECT mailchimp_list_id FROM GROUPS WHERE groupID=:group_id" );
-    $sql->execute(array( 'group_id' => $groupID));
-    $result = $sql->fetch( PDO::FETCH_ASSOC );
-    return $result['mailchimp_list_id'];
-  }
-
-  // Retrieves a member's email address
-  function getMemberEmail($UserID) {
-    $sql = $this->db->prepare( "SELECT email FROM USER WHERE UserID=:user_id" );
-    $sql->execute(array('user_id' => $UserID));
-    $result = $sql->fetch( PDO::FETCH_ASSOC );
-    if ($result) {
-      return $result['email'];
-    } else {
-      return false;
-    }
-  }
-
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $name) {
-    $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES (:group_name, :chamber_id)");
-    if ($sql->execute(array(
-      'group_name' => $name,
-      'chamber_id' => $chamberId,
-    ))) {
+    $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES ('$name', $chamberId)");
+    if ($sql->execute()) {
       return $this->checkIfExistingGroup($chamberId, $name);
     }
     return false;
   }
 
   // Deletes a specified list of groups from a chamber
-  function deleteGroups($groupIDs) {
+  function deleteGroups($chamberId, $groupNames) {
     $successCounter = 0;
-    foreach($groupIDs as $group) {
-      $sql = $this->db->prepare("DELETE FROM GROUPS WHERE groupID=:group_id");
-      if($sql->execute(array(
-        'group_id' => $group
-      )))
+    foreach($groupNames as $group) {
+      $sql = $this->db->prepare("DELETE FROM CHAMBER_GROUPS_$chamberId WHERE groupName='$group'");
+      if($sql->execute())
         $successCounter++;
     }
-    if ($successCounter == count($groupIDs))
+    if ($successCounter == count($groupNames))
       return true;
     else
       return false;
   }
 
-  // Allows for the retrieval of a groupsID
-  function getGroupID($chamberID, $name) {
-    $sql = $this->db->prepare("SELECT groupID FROM GROUPS WHERE chamberID=:chamber_id AND name=:group_name");
-    $sql->execute(array(
-      'chamber_id' => $chamberID,
-      'group_name' => $name,
-    ));
-    return $sql->fetch(PDO::FETCH_ASSOC);
-  }
-
   // Find all of the groups that exist within a chamber
   function getGroups($chamberId) {
-    $sql = $this->db->prepare("SELECT groupID, name, mailchimp_list_id FROM GROUPS WHERE chamberID=:chamberID ORDER BY name");
-    if ($sql->execute(array(
-      "chamberID" => $chamberId
-    ))) {
+    $sql = $this->db->prepare("SELECT groupID, name FROM GROUPS WHERE chamberID=$chamberId ORDER BY name");
+    if ($sql->execute()) {
       $row = $sql->fetchAll(PDO::FETCH_ASSOC);
       return $row;
-    }
-    return false;
-  }
-
-  // Retrives the number opf users assigned to a group
-  function getGroupData($chamberId) {
-    $sql = $this->db->prepare("SELECT DISTINCT(g.groupID), g.name, g.mailchimp_list_id, COUNT(gm.groupID) FROM GROUPS AS g LEFT OUTER JOIN GROUPMEMBERS as gm ON g.groupID = gm.groupID WHERE g.chamberID=:chamber_id GROUP BY g.groupID ORDER BY COUNT(gm.groupID) DESC");
-    if ($sql->execute(array(
-      "chamber_id" => $chamberId
-    ))) {
-      $groups = $sql->fetchAll(PDO::FETCH_ASSOC);
-      return $groups;
     }
     return false;
   }
