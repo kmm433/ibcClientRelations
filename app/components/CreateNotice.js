@@ -212,13 +212,11 @@ class create_notice extends React.Component {
           this.setState({GroupSuggestions: groupNames});
         }
         }});
-        console.log(groupID);
     }
 
     getAllBusiness() {
         $.ajax({url: "/php/get_chamber_business.php", success: result => {
           if (result !== '') {
-            console.log(result);
             var results = JSON.parse(result);
             var groupNames = [];
             results.forEach((item) => {
@@ -230,19 +228,8 @@ class create_notice extends React.Component {
         }});
     }
 
-
+    /* Post the notice to the DB */
     submitNotice(){
-        // Post the notice to the DB
-
-        //console.log(this.state.NTitle);
-        //console.log(this.state.NContent);
-        //console.log(this.state.Nemail);
-        //console.log(this.state.NChambers);
-        //console.log(this.state.NChambersChild);
-        //console.log(this.state.GroupTags);
-        //console.log(this.state.BusTags);
-        //console.log(this.state.BusSuggestions);
-
         if((this.state.NTitle == "") || (this.state.NContent == "")){
             window.alert("That notification has blank fields! Please enter a title and content");
         }
@@ -250,8 +237,6 @@ class create_notice extends React.Component {
             window.alert("Please choose at least one recipient!");
         }
         else{
-            // TODO: If email do email blast
-
             // Get the ID's from our Groups and Businesses
             var groups = [];
             for (var i=0; i < this.state.GroupTags.length; i++){
@@ -284,12 +269,44 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    console.log('insert_notication Success ' + response);
+                    //console.log('insert_notication Success ' + response);
+                    alert("Notification successfully posted");
+                    this.setState({
+                        NTitle: "",
+                        NContent: ""
+                    });
+
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_notication Error ' + xhr.responseText);
                 }.bind(this)
             });
+
+
+            //If email do email blast
+            if (this.state.Nemail == "on"){
+                var emails = [];
+                $.ajax({
+                    url: '/php/get_Emails.php',
+                    type:'POST',
+                    async: false,
+                    dataType: "json",
+                    data:{
+                        'postChamber' : this.state.NChambers,
+                        'groups' : groups,
+                        'business' : bus
+                    },
+                    success : function(response){
+                        console.log('get_Emails Success ');
+                        emails = response;
+                    }.bind(this),
+                    error: function(xhr, status, err){
+                        console.log('get_Emails Error ' + xhr.responseText);
+                    }.bind(this)
+                });
+                window.location = 'mailto:?bcc=' + emails + '&subject=New Chamber Notice: ' + this.state.NTitle + '&body=' + this.state.NContent;
+            }
+
         }
 
     }

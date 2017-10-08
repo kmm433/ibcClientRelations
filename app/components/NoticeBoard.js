@@ -2,7 +2,6 @@
 - At this stage infinite scroll works by getting ALL messages and storing them
 in messages, then getting the next lot as required
 Todo:
-- Surveys formatting
 - in each SP if given a userID check what other groups user belongs too
 - in the php pages need to get the associated UserId / ChamberID / BusinessID
  / GroupID from session variables
@@ -13,10 +12,11 @@ import React from 'react';
 import Notice from './NoticeBoard/Notice.js';
 import NoticeEvent from './NoticeBoard/NoticeEvent.js';
 import NoticeSurvey from './NoticeBoard/NoticeSurvey.js';
-import tmpNotice from './NoticeBoard/tmpNotice.js';
 import $ from 'jquery';                                         /*For ajax query */
 import Infinite from '@srph/react-infinite-scroll';             /*For inf scroll */
 import moment from "moment";                                    /* https://momentjs.com/ */
+
+import TmpNotice from './NoticeBoard/TmpNotice.js';
 
 
 var count = 0;          // Used by inf scroll to know which to display next
@@ -37,7 +37,8 @@ class NoticeBoard extends React.Component {
         items: [],
         loading: false
     };
-    this.request = this.request.bind(this)
+    this.request = this.request.bind(this);
+    this.reload = this.reload.bind(this);
   }
 
   componentWillMount(){
@@ -64,6 +65,15 @@ class NoticeBoard extends React.Component {
     );
   }
 
+  reload(){
+      this.setState({
+        items: []
+      });
+      count = 0;
+      messages = [];
+      this.get_AllNotices();
+      this.request();
+  }
 
   /* Sets the state items[] with next load of messages */
   request(){
@@ -78,7 +88,7 @@ class NoticeBoard extends React.Component {
 
   /* Returns the next 15 messages */
   get_nextMessages(){
-    //console.log('getNextMessages Called')
+    //console.log('getNextMessages Called');
     var getNext = []
     if(count == messages.length){
       hasMore = false;
@@ -104,7 +114,7 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              console.log('get_Notifications Success' + notifications)
+              //console.log('get_Notifications Success' + notifications)
           }.bind(this),
           error: function(xhr, status, err){
               console.log('get_Notifications Error')
@@ -123,7 +133,7 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              console.log('get_NotificationsTEMP Success ' + response)
+              //console.log('get_NotificationsTEMP Success ' + response)
           }.bind(this),
           error: function(xhr, status, err){
               console.log('get_NotificationsTEMP Error')
@@ -183,6 +193,9 @@ class NoticeBoard extends React.Component {
                 title={notifs[i].NoticeTitle}
                 message={notifs[i].Notice}
                 DatePosted={notifs[i].DatePosted}
+                user_type={this.props.user_type}
+                NotificationID={notifs[i].NotificationID}
+                reload = {this.reload}
             />)
         }
         for(var i = 0; i < events.length; i++){
@@ -214,21 +227,22 @@ class NoticeBoard extends React.Component {
             return a>b ? -1 : a<b ? 1 : 0;
         });
 
-        /* THROWING AN ERROR WHY THE FUCK
-        // Get all the temp notices, surveys and events being passed down from a parent
-        var tmpNotifs = this.get_notificationsTEMP();
-        for(var i = 0; i < tmpNotifs.length; i++){
-            console.log(tmpNotifs[i].Notice);
-            messages.push(<tmpNotice
-                key={tmpNotifs[i].NotificationID}
-                title={tmpNotifs[i].NoticeTitle}
-                message={tmpNotifs[i].Notice}
-                DatePosted={tmpNotifs[i].DatePosted}
-            />)
+        // ONLY IF USER IS EXECUTIVES
+        // Get all the temp notices, surveys and events being passed down from a parent chamber
+        if (this.props.user_type == 1){
+            var tmpNotifs = this.get_notificationsTEMP();
+            for(var i = 0; i < tmpNotifs.length; i++){
+                console.log(tmpNotifs[i].NotificationID);
+                messages.unshift(<TmpNotice
+                    key={tmpNotifs[i].NotificationID + tmpNotifs[i].NoticeTitle}
+                    NotificationID={tmpNotifs[i].NotificationID}
+                    title={tmpNotifs[i].NoticeTitle}
+                    message={tmpNotifs[i].Notice}
+                    DatePosted={tmpNotifs[i].DatePosted}
+                    reload = {this.reload}
+                />)
+            }
         }
-        */
-
-
     }
 
 };

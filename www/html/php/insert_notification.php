@@ -9,17 +9,17 @@
   $groups = (isset($_POST['groups']) ? $_POST['groups'] : null);
   $business = (isset($_POST['business']) ? $_POST['business'] : null);
 
-  $ID = $db->insert_notification($title,$content,false);        // insert_notification will add the notification to DB and return the new ID
+  $ID = $db->insert_notification($title,$content,false,null);        // insert_notification will add the notification to DB and return the new ID
 
   if ($postChamber == "on"){
       // Add to my Chamber
       $res1 = $db->insert_notificationLookup($ID, NULL, $_SESSION['chamber'], NULL, NULL,false);
   }
   if ($postChild == "on"){
-      $res2 = $db->get_Child_Chambers($_SESSION['chamber']);                                  // Get a list of all child chambers
-      $newID = $db->insert_notification($title,$content,true);                                // OPTIONALLY add notification
+      $res2 = $db->get_Child_Chambers($_SESSION['chamber']);                                      // Get a list of all child chambers
+      $db->insert_notification($title,$content,true,$ID);                                // OPTIONALLY add notification
       foreach ($res2 as $childID){
-          $db->insert_notificationLookup($newID, NULL, $childID['chamberID'], NULL, NULL,true);            // OPTIONALLY add lookup with childID
+          $db->insert_notificationLookup($ID, NULL, $childID['chamberID'], NULL, NULL,true);       // OPTIONALLY add lookup with childID
       }
   }
   foreach((array)$groups as $group){
