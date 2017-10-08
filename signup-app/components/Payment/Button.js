@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+@ -1,99 +0,0 @@
+=======
+>>>>>>> parent of de3f1c8... Revert "Updating"
 import React from 'react';
 import ReactDOM from 'react-dom';
 import scriptLoader from 'react-async-script-loader';
