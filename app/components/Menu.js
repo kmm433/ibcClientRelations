@@ -29,6 +29,11 @@ class Menu extends React.Component {
                     </NavLink>
                   </li>
                   <li>
+                    <NavLink activeClassName='active-route' to='/manage_groups'>
+                      Manage Groups
+                    </NavLink>
+                  </li>
+                  <li>
                     <NavLink activeClassName='active-route' to='/edit_signup'>
                         Edit Signup Form
                     </NavLink>

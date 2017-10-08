@@ -1,9 +1,9 @@
 import React from 'react';
 import $ from 'jquery';
 import {Form, Col, HelpBlock} from 'react-bootstrap';
-import Validator from './SignupInput.js';
-import Payment from './Payment/Paypal';
-import Address from './Address.js'
+import GetData from './SignupInput.js'
+
+var storeAnswers = [];
 
 class SignupForm extends React.Component {
 
@@ -15,23 +15,7 @@ class SignupForm extends React.Component {
           safeSubmit: false,
           compareConfirm: "",
           errorMessage: "",
-          storeAnswers: [],
-          address: {
-              line1: "",
-              line2: "",
-              city: "",
-              postcode: "",
-              state: "",
-              country: ""
-          },
-          postalAddress: {
-              line1: "",
-              line2: "",
-              city: "",
-              postcode: "",
-              state: "",
-              country: ""
-          }
+          storeAnswers: []
       });
 
       this.storeUserData = this.storeUserData.bind(this);
@@ -39,7 +23,6 @@ class SignupForm extends React.Component {
       this.renderDisabledbtn = this.renderDisabledbtn.bind(this);
       this.checkReadyForSubmit = this.checkReadyForSubmit.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-      this.storeAddress = this.storeAddress;
   }
 
   componentWillMount(){
@@ -75,24 +58,11 @@ class SignupForm extends React.Component {
 
     }
 
-    storeAddress(data, name){
-        console.log("Storing Address: ", data)
-        this.setState({
-            address: {
-                [name]: data
-            }
-        })
-    }
-
     checkReadyForSubmit(){
         for(var i=0; i<this.state.storeAnswers.length; i++){
-            console.log("comparing", this.state.storeAnswers[i], this.props.fields[i].mandatory)
             if(this.state.storeAnswers[i] === null && this.props.fields[i].mandatory === '1'){
                 return false;
             }
-        }
-        if(line1 === null || city === null || postcode === null || state === null){
-            return false;
         }
         return true;
     }
@@ -103,7 +73,7 @@ class SignupForm extends React.Component {
                  id="signup-submitbtn"
                  className = "btn"
                  onClick={this.handleSubmit}>
-                 Conitnue to Payment
+                 Submit
              </button>
          )
      }
@@ -116,6 +86,7 @@ class SignupForm extends React.Component {
 
      handleSubmit(event){
          this.props.sendData(this.state.storeAnswers);
+
      }
 
 
@@ -124,20 +95,14 @@ class SignupForm extends React.Component {
         <div id="signup-container" className="w3-row">
                 <Form method='POST' className="w3-container w3-card-4 w3-light-grey" horizontal={true}>
                     <div id="signup-headings">Membership Form</div>
-                    {this.props.fields.map((item, i) =>
-                            <Validator
-                                key = {i}
-                                type = {this.props.fields[i].inputtype}
-                                displayName = {this.props.fields[i].displayname}
-                                minimum = {this.props.fields[i].minimum}
-                                maximum = {this.props.fields[i].maximum}
-                                mandatory = {this.props.fields[i].mandatory}
-                                userAnswer = {this.storeUserData}
-                                index = {i}/>
+                {this.props.fields.map((item, i) =>
+                            <GetData key = {i}
+                                    type = {this.props.fields[i].inputtype}
+                                    displayName = {this.props.fields[i].displayname}
+                                    mandatory = {this.props.fields[i].mandatory}
+                                    userAnswer = {this.storeUserData}
+                                    index = {i}/>
                             )}
-                    <Address
-                    save = {this.storeAddress}/>
-                <Payment amount = {1}/>
                     {this.state.safeSubmit ? this.renderEnableBtn() : this.renderDisabledbtn()}
                 </Form>
         </div>
