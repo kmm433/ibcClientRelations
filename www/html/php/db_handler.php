@@ -382,13 +382,56 @@ class DB_Handler
 
   }
 
-  function insertUser($query){
-      $sql = $this->db->prepare($query);
-      if($sql->execute())
-        return true;
+  function insertUser($email, $password, $id, $chamber, $firstname, $lastname, $expiry, $jobtitle){
+
+      if(!isset($jobtitle) || empty($jobtitle)) { $jobtitle= null; }
+
+      $sql = $this->db->prepare("INSERT INTO USER (email, password, businessID, chamberID, firstname, lastname, expiry, jobtitle)
+                          VALUES(:email, :password, $id, $chamber, :firstname, :lastname, $expiry, :jobtitle)");
+
+      $sql->bindParam(':email', $email, PDO::PARAM_STR);
+      $sql->bindParam(':password', $password, PDO::PARAM_STR);
+      $sql->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+      $sql->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+      $sql->bindParam(':jobtitle', $jobtitle, PDO::PARAM_STR);
+
+      try{
+          if($sql->execute()){
+              return ("success");
+          }
+          else{
+              return("error");
+          }
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
+  }
+
+  function insertExtraUserData($tablename, $data, $var, $id){
+      $sql = $this->db->prepare("INSERT INTO $tablename (DataID, answer, BUSINESSID)
+                          VALUES($data, :var, $id)");
+
+      $sql->bindParam(':var', $var, PDO::PARAM_STR);
+
+      if($sql->execute()){
+          return ("success");
+      }
+      else{
+          return("error");
+      }
+
+  }
+
+  function getLastID(){
+      $sql = $this->db->prepare("SELECT LAST_INSERT_ID()");
+      if($sql->execute()){
+          $id = $sql->fetchColumn(0);
+          return $id;
+      }
     else
         return false;
-
   }
 
   function getMaximum($query){
@@ -402,18 +445,47 @@ class DB_Handler
 
   }
 
-  function insertBusiness($query){
-      $sql = $this->db->prepare($query);
-      $next = $this->db->prepare("SELECT LAST_INSERT_ID()");
-      if($sql->execute()){
-          $next->execute();
-          $id = $next->fetchColumn(0);
-          return $id;
-      }
-      else
-        return false;
+  function insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website){
 
+            if(!isset($established) || empty($established)) { $established = null; }
+            if(!isset($addressid) || empty($addressid)) { $addressid = null; }
+            if(!isset($mobile) || empty($mobile)) { $mobile = null; }
+            if(!isset($anzic) || empty($anzic)) { $anzic = null; }
+            if(!isset($numofemployees) || empty($numofemployees)) { $numofemployees = null; }
+            if(!isset($website) || empty($website)) { $website = null; }
+
+          $sql = $this->db->prepare("INSERT INTO BUSINESS (established, chamberID, addressid, ABN, businessname, businessphone, mobile, anziccode, numofemployees, website)
+                              VALUES(:established, $chamber, null, :abn, :businessname, :businessphone, :mobile, :anzic, :numofemployees, :website)");
+        $sql->bindParam(':abn', $abn, PDO::PARAM_INT);
+        $sql->bindParam(':businessname', $businessname, PDO::PARAM_STR);
+        $sql->bindParam(':businessphone', $businessphone, PDO::PARAM_INT);
+          $sql->bindParam(':established', $established, PDO::PARAM_STR);
+          $sql->bindParam(':mobile', $mobile, PDO::PARAM_INT);
+          $sql->bindParam(':anzic', $anziccode, PDO::PARAM_INT);
+          $sql->bindParam(':numofemployees', $numofemployees, PDO::PARAM_INT);
+          $sql->bindParam(':website', $website, PDO::PARAM_STR);
+
+          try{
+              if($sql->execute())
+                return ("success");
+            else {
+                return("fail");
+            }
+          } catch(PDOExecption $e) {
+              echo $e->getMessage();
+          }
   }
+
+function updatePayment($payment, $expiry, $chamber){
+
+    if(!isset($expiry) || empty($expiry)) { $expiry = null; }
+
+    $sql = $this->db->prepare("UPDATE PAYMENTTYPES SET type='$payment', expiry_date=$expiry where chamberid=$chamber");
+    if($sql->execute()){
+        return true;
+    }
+    return false;
+}
 
   function justExecute($query){
       $sql = $this->db->prepare($query);

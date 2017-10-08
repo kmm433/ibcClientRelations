@@ -4,6 +4,7 @@ import ChamberDropdown from './SignupDropdown.js';
 import SignupData from './SignupData.js';
 import $ from 'jquery';
 import {ButtonToolbar, Button} from 'react-bootstrap';
+import Actions from './test.js';
 
 class Main extends React.Component {
 
@@ -21,11 +22,15 @@ class Main extends React.Component {
 
     /*ajax call to get list of chambers to display*/
     componentWillMount() {
+
+
       $.ajax({url: '/php/chamber_list.php', type: 'POST', dataType: 'json',
       success: response => {
         console.log('Ajax call occured', response);
         this.setState({chamber_list: response})
       }});
+      var chamberlist = Actions.GetChamberList();
+      console.log("flux",chamberlist)
     }
 
     getChamber(newChamber){

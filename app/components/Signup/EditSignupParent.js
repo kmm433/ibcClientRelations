@@ -11,6 +11,7 @@ class EditSignup extends React.Component{
         this.state = {
             data1loaded: false,
             data2loaded: false,
+            data3loaded: false,
             signupFields: [{
                  displayname: [],
                  columnname: [],
@@ -27,10 +28,13 @@ class EditSignup extends React.Component{
                  info: [],
                  amount: [],
                  expirytype: [],
-                 expirydate: []
+                 expirydate: [],
+                 disabled: []
              }],
              edit: false,
-             currentIndex: ""
+             currentIndex: "",
+             paymentType: "",
+             expiry: ""
         }
         this.renderPage = this.renderPage.bind(this);
         this.sendData = this.sendData.bind(this);
@@ -38,11 +42,14 @@ class EditSignup extends React.Component{
         this.sendFieldtoEnable = this.sendFieldtoEnable.bind(this);
         this.updateEdit = this.updateEdit.bind(this);
         this.sendUpdatedField = this.sendUpdatedField.bind(this);
+        this.editFalse = this.editFalse.bind(this);
+        this.updatePayment = this.updatePayment.bind(this);
     }
 
     componentWillMount(){
         this.getFields();
         this.getPaymentDetails();
+        this.getPaymentType();
 
     }
     //Retrieve all of the fields that are on the sign up form corresponding to the chamber who is logged in
@@ -64,12 +71,54 @@ class EditSignup extends React.Component{
             dataType: 'json',
 
         success: response => {
-
            this.setState({
                data2loaded: true,
-               paymentFields: response,
+               paymentFields: response
            });
       }});
+    }
+
+    getPaymentType(){
+        $.ajax({url: '/php/get_membership_type.php', type: 'POST',
+            dataType: 'json',
+
+        success: response => {
+            console.log("membership types: ", response[0].type, response[0].expiry_date)
+           this.setState({
+               data3loaded: true,
+               paymentType: response[0].type,
+               expiry: response[0].expiry_date
+           });
+      }});
+    }
+
+    updatePayment(type, expiry){
+        if(type === 'Annual'){
+            type = 'Prorata'
+        }
+        else{
+            type = 'Annual';
+            expiry = null;
+        }
+        $.ajax({url: '/php/update_membership_type.php', type: 'POST',
+            dataType: 'json',
+            data: {
+                'type': type,
+                'expiry': expiry
+            },
+        success: response => {
+            console.log("membership types: ", response)
+           this.setState({
+               paymentType: response[0].type,
+               expiry: response[0].expiry_date
+           });
+      },
+      error: response => {
+          console.log("no its not working",response)
+      }
+  }
+
+  );
     }
 
 
@@ -162,13 +211,22 @@ class EditSignup extends React.Component{
         })
     }
 
+    editFalse(){
+        this.setState({
+            edit: false
+        })
+    }
+
     renderPage(){
         return(
             <div className='w3-row' id="edit-signup">
                 <div className="w3-container w3-card-4 w3-light-grey">
                     <h2 id="h2-editsignup">Edit Sign up Form</h2>
                     <hr className = "signup-divider" />
-                    <h3 id="h3-editsignup">Fields currently on Sign up Form</h3>
+                    <h3
+                        id="h3-editsignup">
+                        Fields currently on Sign up Form
+                    </h3>
                     <FieldTable
                         sendNewFields = {this.sendData}
                         disableField={this.sendFieldtoDisable}
@@ -177,11 +235,23 @@ class EditSignup extends React.Component{
                         edit = {this.state.edit}
                         currentIndex = {this.state.currentIndex}
                         updateEdit = {this.updateEdit}
-                        sendUpdatedField ={this.sendUpdatedField}   />
-                    <h3 id="h3-editsignup">Edit Membership Payments</h3>
+                        sendUpdatedField ={this.sendUpdatedField}
+                        editFalse = {this.editFalse}/>
+                    <h3
+                        id="h3-editsignup">
+                        Edit Membership Payments
+                    </h3>
                     <hr className = "signup-divider" />
-                    <EditPayment paymentFields = {this.state.paymentFields}/>
-                    <h3 id="h3-editsignup">Upload Logo</h3>
+                    <EditPayment
+                        paymentFields = {this.state.paymentFields}
+                        paymentType={this.state.paymentType}
+                        expiry={this.state.expiry}
+                        updatePaymentType = {this.updatePayment}
+                    />
+                    <h3
+                        id="h3-editsignup">
+                        Upload Logo
+                    </h3>
                     <hr className = "signup-divider" />
                 </div>
             </div>
@@ -192,7 +262,9 @@ class EditSignup extends React.Component{
 
         return(
             <div>
-                {(this.state.data1loaded && this.state.data2loaded) ? this.renderPage() : null}
+                {console.log("the user type is",this.props.usertype)}
+                {this.props.usertype === '1' &&
+                ((this.state.data1loaded && this.state.data2loaded && this.state.data3loaded) ? this.renderPage() : null)}
             </div>
         );
     }

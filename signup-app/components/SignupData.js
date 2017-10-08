@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import {Form, Col} from 'react-bootstrap';
 import SignupForm from './SignupFormChild.js'
+import Payment from './Payment/Paypal';
 
 class SignupData extends React.Component {
 
@@ -26,6 +27,7 @@ class SignupData extends React.Component {
 
         this.getFields = this.getFields.bind(this);
         this.sendData = this.sendData.bind(this);
+        this.renderSignupForm = this.renderSignupForm.bind(this);
 }
 
     componentWillMount(){
@@ -74,22 +76,33 @@ class SignupData extends React.Component {
                 'columnname': columnname
             },
             success: response => {
-                console.log("success",response)
+                console.log("success", response)
             },
             error: (xhr, status, err) => {
-                console.log("error",xhr, status, err)
+                console.log("react error", xhr, status, err)
             }
         });
+    }
+
+    renderSignupForm(){
+            return(
+                <div>
+                    <SignupForm
+                        fields={this.state.signupFields}
+                        sendData={this.sendData}/>
+                </div>
+
+            )
     }
 
   render() {
     return (
         <div>
             {this.state.loaded ?
-            <SignupForm
-                fields={this.state.signupFields}
-                sendData={this.sendData}/>
+            this.renderSignupForm()
             : null}
+
+
         </div>
     );
   }
