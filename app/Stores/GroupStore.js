@@ -7,6 +7,7 @@ class GroupStore extends EventEmitter {
     this.groups = [];
     this.selectedGroups = [];
     this.groupMembers = [];
+    this.APIMessage = '';
   }
 
   // Allows the grouplist to be (re-)initiallised
@@ -24,7 +25,6 @@ class GroupStore extends EventEmitter {
   // Can be used to update the selected groups with a newly selected item
   updateSelectedGroups(groups) {
     this.selectedGroups = groups;
-    console.log('SELECTED_GROUPS: ', this.selectedGroups);
     this.emit('change');
   }
 
@@ -39,7 +39,7 @@ class GroupStore extends EventEmitter {
     return this.groups;
   }
 
-  // Can be used by a comppnenet to get selected groups
+  // Can be used by a component to get selected groups
   getSelectedGroups() {
     return this.selectedGroups;
   }

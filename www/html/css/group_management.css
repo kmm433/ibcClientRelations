@@ -4,6 +4,11 @@
   margin-right: 10px;
 }
 
+.group-management-options a {
+  margin-left: 0px;
+  margin-right: 10px;
+}
+
 /* For styling the new groups input box */
 #create-group-inputs {
   margin: 10px 0px 10px 0px;
@@ -103,13 +108,33 @@
 }
 
 #group-management .group-size {
-  width: 25%;
+  width: 15%;
   display: table-cell;
   padding: 5px;
 }
 
 #group-management .group-emailable {
-  width: 10%;
+  width: 20%;
   display: table-cell;
   padding: 5px;
+}
+
+#group-management .group-emailable .list-id-editor {
+  width: 100%;
+}
+
+#group-management .group-emailable .list-id-editor .listid-edit-form {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border: 1px solid #BCBCBC;
+  padding: 6px;
+}
+
+#group-management .group-emailable .list-id-editor .listid-confirmation {
+  display: none;
+  margin: 0px;
+}
+
+#group-management .group-emailable .list-id-editor .listid-unregister {
+  margin: 0px;
 }

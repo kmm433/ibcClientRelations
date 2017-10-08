@@ -12,7 +12,7 @@ class GroupManagement extends React.Component {
       loading: true,
       mail_ready: null,
       create_button_text: 'Create New Group',
-      key_button_text: 'Update MailChimp Key',
+      key_button_text: 'Update MailChimp API Key',
       new_group_name: '',
       api_key_input: '',
       duplicate_group: false,
@@ -21,6 +21,7 @@ class GroupManagement extends React.Component {
       groups: GroupStore.getGroups(),
       selected_groups:GroupStore.getSelectedGroups(),
       group_members: '',
+      edit_mode: false,
     };
 
     this.updateValues = this.updateValues.bind(this);
@@ -28,7 +29,9 @@ class GroupManagement extends React.Component {
     this.toggleDisplayCreateGroup = this.toggleDisplayCreateGroup.bind(this);
     this.toggleDisplayEnterKey = this.toggleDisplayEnterKey.bind(this);
     this.handleCreateGroup = this.handleCreateGroup.bind(this);
+    this.deleteSelectedGroups = this.deleteSelectedGroups.bind(this);
     this.updateSelectedGroups = this.updateSelectedGroups.bind(this);
+    this.toggleEditMode = this.toggleEditMode.bind(this);
     this.renderGroupMembers = this.renderGroupMembers.bind(this);
     this.renderGroups = this.renderGroups.bind(this);
   }
@@ -36,6 +39,7 @@ class GroupManagement extends React.Component {
   componentWillMount() {
     GroupStore.on('change', this.updateValues);
     GroupActions.fetchGroups();
+    GroupActions.updateGroupAllMembers();
   }
 
   componentWillUnmount() {
@@ -100,7 +104,7 @@ class GroupManagement extends React.Component {
 
   // Allows for the display of the API Key editor to be toggle
   toggleDisplayEnterKey() {
-    if(this.state.key_button_text === 'Update MailChimp Key') {
+    if(this.state.key_button_text === 'Update MailChimp API Key') {
       $('#mailchimp-api-key-form').fadeIn('slow');
       $('#submit-api-key').fadeIn('slow');
       this.setState({key_button_text: 'Cancel'});
@@ -108,7 +112,7 @@ class GroupManagement extends React.Component {
     else {
       $('#mailchimp-api-key-form').fadeOut('slow');
       $('#submit-api-key').fadeOut('slow');
-      this.setState({key_button_text: 'Update MailChimp Key'});
+      this.setState({key_button_text: 'Update MailChimp API Key'});
     }
   }
 
@@ -121,8 +125,19 @@ class GroupManagement extends React.Component {
     }
   }
 
+  // Allows for an executive to delete a set of groups
+  deleteSelectedGroups() {
+    const groups = this.state.selected_groups;
+    var decision = confirm('Are you sure you want to delete the selected groups?');
+    if (decision) {
+      GroupActions.deleteGroups(groups);
+    }
+  }
+
   handleSubmitKey(event) {
-    console.log('submitting');
+    const apiKey = this.state.api_key_input;
+    GroupActions.updateAPIKey(apiKey);
+    this.toggleDisplayEnterKey();
   }
 
   // Alllows for the search phrase to be updated when the input form changes
@@ -141,6 +156,11 @@ class GroupManagement extends React.Component {
        selectedGroups.splice(index, 1);
      }
      GroupActions.updateGroupSelection(selectedGroups);
+  }
+
+  // Allows for the enabling/disabling of the mail list id edit mode.
+  toggleEditMode() {
+    this.setState({edit_mode: !this.state.edit_mode});
   }
 
   renderGroupMembers() {
@@ -173,6 +193,7 @@ class GroupManagement extends React.Component {
               email_ready={group.email_ready}
               group_size={group.group_size}
               selected={group.selected}
+              editable={this.state.edit_mode}
               updateSelectedGroups={this.updateSelectedGroups}
             />
           );
@@ -206,6 +227,7 @@ class GroupManagement extends React.Component {
                 value={this.state.create_button_text}
                 onClick={() => this.toggleDisplayCreateGroup()}
               />
+              <a className='btn btn-primary' href={'mailto:?bcc=' + this.state.group_members}>Email Selected Groups</a>
               <input id='mailchimp-api-key-form'
                 type='text'
                 placeholder='Enter MailChimp API key...'
@@ -223,7 +245,18 @@ class GroupManagement extends React.Component {
                 value={this.state.key_button_text}
                 onClick={() => this.toggleDisplayEnterKey()}
               />
-              <a className='btn btn-primary' href={'mailto:?bcc=' + this.state.group_members}>Email Selected Groups</a>
+              <input id='group-edit-mode'
+                type='button'
+                className='btn btn-primary'
+                value={this.state.edit_mode ? 'Stop Changing List IDs' : 'Change MailChimp List IDs'}
+                onClick={() => this.toggleEditMode()}
+              />
+              <input id='delete-group-button'
+                type='button'
+                className='btn btn-danger'
+                value='Delete Selected Groups'
+                onClick={() => this.deleteSelectedGroups()}
+              />
             </div>
             {(this.state.duplicate_group && this.state.duplicate_warning) ?
               <div id='duplicate-group-warning' className='alert alert-danger'>This group name is already in use.</div> : null
@@ -240,7 +273,7 @@ class GroupManagement extends React.Component {
                 <div className='groups-table-title'>Selected Groups</div>
                 <div className='groups-table-title'>Group Name</div>
                 <div className='groups-table-title'>Number of Members</div>
-                <div className='groups-table-title'>Syncronized to MailChimp</div>
+                <div className='groups-table-title'>MailChimp List ID</div>
               </div>
               {this.renderGroups()}
             </div>
