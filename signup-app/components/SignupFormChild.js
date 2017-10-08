@@ -1,9 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
-import {Form, Col, HelpBlock} from 'react-bootstrap';
-import GetData from './SignupInput.js'
-
-var storeAnswers = [];
+import {Form, Col, HelpBlock, ButtonToolbar} from 'react-bootstrap';
+import Validator from './SignupInput.js';
+import Payment from './Payment/Paypal';
 
 class SignupForm extends React.Component {
 
@@ -16,6 +15,7 @@ class SignupForm extends React.Component {
           compareConfirm: "",
           errorMessage: "",
           storeAnswers: []
+
       });
 
       this.storeUserData = this.storeUserData.bind(this);
@@ -58,8 +58,10 @@ class SignupForm extends React.Component {
 
     }
 
+
     checkReadyForSubmit(){
         for(var i=0; i<this.state.storeAnswers.length; i++){
+            console.log("comparing", this.state.storeAnswers[i], this.props.fields[i].mandatory)
             if(this.state.storeAnswers[i] === null && this.props.fields[i].mandatory === '1'){
                 return false;
             }
@@ -69,12 +71,16 @@ class SignupForm extends React.Component {
 
      renderEnableBtn(){
          return(
-             <button
-                 id="signup-submitbtn"
-                 className = "btn"
-                 onClick={this.handleSubmit}>
-                 Submit
-             </button>
+             <ButtonToolbar>
+                 <Payment amount = {1} />
+                 {this.state.safeSubmit ? this.renderEnableBtn() : this.renderDisabledbtn()}
+                 <Button
+                     id="signup-submitbtn"
+                     className = "btn"
+                     onClick={this.handleSubmit}>
+                     Submit
+                 </Button>
+             </ButtonToolbar>
          )
      }
 
@@ -86,7 +92,6 @@ class SignupForm extends React.Component {
 
      handleSubmit(event){
          this.props.sendData(this.state.storeAnswers);
-
      }
 
 
@@ -95,15 +100,18 @@ class SignupForm extends React.Component {
         <div id="signup-container" className="w3-row">
                 <Form method='POST' className="w3-container w3-card-4 w3-light-grey" horizontal={true}>
                     <div id="signup-headings">Membership Form</div>
-                {this.props.fields.map((item, i) =>
-                            <GetData key = {i}
-                                    type = {this.props.fields[i].inputtype}
-                                    displayName = {this.props.fields[i].displayname}
-                                    mandatory = {this.props.fields[i].mandatory}
-                                    userAnswer = {this.storeUserData}
-                                    index = {i}/>
+                    {this.props.fields.map((item, i) =>
+                            <Validator
+                                key = {i}
+                                type = {this.props.fields[i].inputtype}
+                                displayName = {this.props.fields[i].displayname}
+                                minimum = {this.props.fields[i].minimum}
+                                maximum = {this.props.fields[i].maximum}
+                                mandatory = {this.props.fields[i].mandatory}
+                                userAnswer = {this.storeUserData}
+                                index = {i}/>
                             )}
-                    {this.state.safeSubmit ? this.renderEnableBtn() : this.renderDisabledbtn()}
+                            {this.state.safeSubmit ? this.renderEnableBtn() : this.renderDisabledbtn()}
                 </Form>
         </div>
     );
