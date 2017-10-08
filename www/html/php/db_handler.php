@@ -213,20 +213,47 @@ class DB_Handler
     return $chamberID;
   }
 
+  // Retrieve all Businesses of a chamber
+  function get_chamber_business(){
+      $sql = $this->db->prepare("SELECT businessID, businessname FROM BUSINESS WHERE chamberID = :chamberid;");
+
+      $result = $sql->execute(array(
+        "chamberid" => $_SESSION['chamber'],
+      ));
+
+      if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+      else
+        return false;
+  }
+
     // NoticeBoard: Return Notifications
    function get_Notifications(){
-     $userid =  $_SESSION['userid'];
-     $chamberID = $_SESSION['chamber'];
-     $businessID = $_SESSION['businessid'];
-     $sql = $this->db->prepare("CALL SPgetNotifications($userid,$chamberID,$businessID);");
-     if($sql->execute()) {
-        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-         return $row;
-     }
-     else{
-         return array();
-     }
+     $sql = $this->db->prepare("CALL SPgetNotifications(:userid,:chamberid,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberid" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid']
+     ));
+     if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+     else
+         return false;
+
    }
+   // NoticeBoard: Return Notifications passed down from parent
+  function get_NotificationsTEMP(){
+    $sql = $this->db->prepare("CALL SPgetNotificationsTEMP(:userid,:chamberid,:businessID);");
+    $result = $sql->execute(array(
+      "userid" => $_SESSION['userid'],
+      "chamberid" => $_SESSION['chamber'],
+      "businessID" => $_SESSION['businessid']
+    ));
+    if ($result)
+       return $sql->fetchAll(PDO::FETCH_ASSOC);
+    else
+        return false;
+  }
 
    // Event Page: Return Events
    function get_Events(){
@@ -558,6 +585,20 @@ class DB_Handler
     }
   }
 
+  // Retrieves the information required to complete an invoice for a member
+  function getMemberInvoiceData($UserID) {
+    $sql = $this->db->prepare("SELECT USER.email, USER.firstname, USER.lastname FROM USER WHERE USER.UserID=:user_id");
+    $sql->execute(array('user_id' => $UserID));
+    return $sql->fetch( PDO::FETCH_ASSOC );
+  }
+
+  // Retrieves the chambers renewal policy
+  function getRenewalPolicy($chamberId) {
+    $sql = $this->db->prepare("SELECT type, expiry_date FROM PAYMENTTYPES WHERE chamberid=:chamber_id");
+    $sql->execute(array('chamber_id' => $chamberId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $name) {
     $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES (:group_name, :chamber_id)");
@@ -641,18 +682,159 @@ class DB_Handler
       "memberID" => $memberID
     ));
     if ($result)
-      return $sql->fetchall(PDO::FETCH_ASSOC);
+      return $sql->fetchAll(PDO::FETCH_ASSOC);
     else
       return false;
   }
+  // Create New Notice: Insert a notification into the database
+  function insert_notification($title,$content,$tempStatus,$tmpID){
 
-  function insert_notification($title,$content, $chamberid){
-      $userid =  $_SESSION['userid'];
-      $sql = $this->db->prepare("CALL SPinsertNotification($userid,'$title','$content', $chamberid);");
-      if ($sql->execute()) {
+      if($tempStatus == true){
+          $sql = $this->db->prepare("INSERT INTO NOTIFICATIONtemp (`NotificationID`,`NoticeTitle`, `Notice`, `DatePosted`, `UserID`) VALUES (:id, :title, :content, NOW(), :userid);");
+          $result = $sql->execute(array(
+            "title" => $title,
+            "content" => $content,
+            "userid" => $_SESSION['userid'],     // Keep track of who is posting notifications, only stored in DB, not visible in site
+            "id" => $tmpID
+          ));
+      }else {
+          $sql = $this->db->prepare("SELECT insertNotification(:title, :content, :userid);");
+          $result = $sql->execute(array(
+            "title" => $title,
+            "content" => $content,
+            "userid" => $_SESSION['userid']     // Keep track of who is posting notifications, only stored in DB, not visible in site
+          ));
+      }
+
+      if ($result)
+        return $sql->fetchColumn(0);        // Returns only the new notification ID
+      else
+        return false;
+  }
+  function insert_notificationLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
+
+      if($tempStatus == true){
+         $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUPtemp (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
+         $result = $sql->execute(array(
+           "id" => $ID,
+           "userid" => $userID,
+           "chamberid" => $chamberID,
+           "businessID" => $businessID,
+           "groupID" => $groupID,
+         ));
+      }else {
+         $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUP (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`, `RelatedChamber`) VALUES (:id,:userid,:chamberid,:businessID,:groupID,:relChamber);");
+         $result = $sql->execute(array(
+           "id" => $ID,
+           "userid" => $userID,
+           "chamberid" => $chamberID,
+           "businessID" => $businessID,
+           "groupID" => $groupID,
+           "relChamber" => $_SESSION['chamber']
+         ));
+      }
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+
+  // Returns a list of child chamber ID's
+  function get_Child_Chambers($chamber){
+      $sql = $this->db->prepare("SELECT chamberID from CHAMBER where parent_id=:myChamber;");
+
+      $result = $sql->execute(array(
+        "myChamber" => $chamber
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+
+
+  function reject_TmpNotifications($notifID, $chamber){
+      $sql = $this->db->prepare("CALL SPrejectNotificationTmp(:id,:chamberID)");
+
+      $result = $sql->execute(array(
+        "id" => $notifID,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
           return true;
       }
-      return false;
+      else{
+          return false;
+      }
   }
+
+  // Deletes the reference to a notication for a given chamber
+  function delete_Notification($notifID, $chamber){
+      $sql = $this->db->prepare("DELETE FROM NOTIFICATIONLOOKUP WHERE NotificationID = :id AND  RelatedChamber = :chamberID;");
+
+      $result = $sql->execute(array(
+        "id" => $notifID,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
+  // Returns a list of emails related to a given chamber
+  function get_Chamber_Emails($chamber){
+      $sql = $this->db->prepare("SELECT email FROM USER WHERE chamberID = :chamberID;");
+
+      $result = $sql->execute(array(
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_NUM);
+      }
+      else{
+          return false;
+      }
+  }
+
+  function get_Group_Emails($group){
+      $sql = $this->db->prepare("SELECT u.email FROM USER u LEFT JOIN GROUPMEMBERS g on g.UserID = u.UserID WHERE g.GroupID = :groupID;");
+
+      $result = $sql->execute(array(
+        "groupID" => $group
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_NUM);
+      }
+      else{
+          return false;
+      }
+  }
+
+  function get_Business_Emails($bus){
+      $sql = $this->db->prepare("SELECT email FROM USER where businessID = :busID;");
+
+      $result = $sql->execute(array(
+        "busID" => $bus
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_NUM);
+      }
+      else{
+          return false;
+      }
+  }
+
 }
 ?>

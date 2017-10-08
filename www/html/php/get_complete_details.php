@@ -26,8 +26,9 @@
   $matchedResults = array();
   foreach($fields as $field) {
     if (!preg_match('/BUSINESS_/', $field['tablename']) and ($field['tablename'] != '')) {
-      if($field['columnname'] != 'password')
+      if($field['columnname'] != 'password'){
         $matchedResults[strval($field['displayname'])] = $result[0][$index];
+      }
       $index += 1;
     }
   }

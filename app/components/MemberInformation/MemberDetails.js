@@ -26,6 +26,7 @@ class MemberDetails extends React.Component {
     this.handleDrag = this.handleDrag.bind(this);
     this.setEditMode = this.setEditMode.bind(this);
     this.toggleArchive = this.toggleArchive.bind(this);
+    this.renderInvoice= this.renderInvoice.bind(this);
   }
 
   componentWillMount() {
@@ -209,6 +210,41 @@ class MemberDetails extends React.Component {
     this.setState({editable: !this.state.editable});
   }
 
+  // Checks if an expiry is upcoming or has occurred
+  renderInvoice() {
+    // Splice the datestring into a usable date object
+    var warningWindow = new Date();
+    var expiryString = this.props.expiry;
+    var expiryDateComponents;
+    var expiryDate = null;
+    if (expiryString) {
+      var date = expiryString.split(' ');
+      expiryDateComponents = date[0].split('-');
+      expiryDate = new Date(expiryDateComponents[0], parseInt(expiryDateComponents[1]) - 1, expiryDateComponents[2]);
+    }
+    // Check if in warning phase or already expired
+    if(expiryDate && (expiryDate < warningWindow)) {
+      /*return (
+        <input type='button' className='btn btn-primary' value='Send Invoice Via Xero' />
+      );*/
+      return (
+        <a className='btn btn-primary'
+          href={'/php/xero/xero_invoice.php?user_id=' + this.props.memberID}>
+          Manage Invoices with Xero
+        </a>
+      );
+    }
+    else{
+      warningWindow.setDate(warningWindow.getDate() + 14);
+      if (expiryDate && (expiryDate < warningWindow)){
+        /*return (
+          <input type='button' className='btn btn-primary' value='Send Invoice Via Xero' />
+        );*/
+      }
+    }
+    return null;
+  }
+
   // This function will allow a chamber members archive status to be changed and
   // then refresh the list of members.
   toggleArchive() {
@@ -236,7 +272,8 @@ class MemberDetails extends React.Component {
   }
 
   render() {
-    const {tags, suggestions} = this.state
+    const {tags, suggestions} = this.state;
+    const invoiceButton = this.renderInvoice();
     return (
       <div className='member-details'>
         <div className='member-details-controls'>
@@ -244,6 +281,7 @@ class MemberDetails extends React.Component {
             <input type='button' className='btn btn-primary' value='Return to List' onClick={(e) => this.props.unselect(e)}/>
             <a className='btn btn-primary' href={'mailto:'+this.props.member}>Email User</a>
             <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
+            { invoiceButton }
             { this.props.all || this.props.renewals ?
               <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
               : null
