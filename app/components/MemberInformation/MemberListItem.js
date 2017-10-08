@@ -38,7 +38,9 @@ class MemberListItem extends React.Component {
         warning='warning';
     }
     if (warning) {
-      return (<div className={'alert alert-'+warning+' member-list-item-field'}>{this.props.expiry}</div>);
+      return (
+        <div className={'alert alert-'+warning+' member-list-item-field'}>{this.props.expiry}</div>
+      );
     }
     else {
       return (<div className='member-list-item-field'>{this.props.expiry}</div>);

@@ -217,7 +217,7 @@ class MemberInformation extends React.Component {
               <MemberDetails
                 member={this.state.displayed_user}
                 memberID={this.state.displayed_user_id}
-                expiry={this.state.expiry}
+                expiry={this.state.displayed_user_expiry}
                 unselect={this.resetMemberView}
                 chamber_id={this.props.chamber_id}
                 all={this.state.all}

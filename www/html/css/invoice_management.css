@@ -1,0 +1,139 @@
+/* For styling the payment received notification */
+#invoice-paid-options {
+  margin-top: 20px;
+}
+
+/* For styling the table that displays the existing invoices */
+
+#invoice-list .invoice-table {
+  width: 100%;
+  display: table;
+  margin: 10px 0px 10px 0px;
+  border-collapse: collapse;
+}
+
+#invoice-list .invoice-table-headers {
+  background-color: #2462AB;
+  color: #FFFFFF;
+  display: table-row;
+}
+
+#invoice-list .invoice-table-title {
+  display: table-cell;
+  padding: 5px;
+}
+
+#invoice-list .invoice-list-item {
+  display: table-row;
+  border-top: 1px solid #BCBCBC;
+}
+
+#invoice-list .invoice-list-item-cell {
+  width: 20%;
+  display: table-cell;
+  padding: 5px;
+}
+
+/* Styling for the drop down menu on the invoice creator */
+
+#invoice-management .dropdown {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  padding: 5px;
+}
+
+#invoice-management .dropdown-menu {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+}
+
+#invoice-management .dropdown-item {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  padding: 5px;
+}
+
+#invoice-management option {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  padding: 5px;
+}
+
+/* Syling for buttons in the invoice creator */
+#invoice-management .btn {
+  margin-left: 0px;
+}
+
+#invoice-creator .react-datepicker__input-container div {
+  display: inline-block;
+}
+
+#invoice-creator .input-group {
+  line-height: 1.5;
+}
+
+
+#invoice-creator .react-datepicker__input-container input {
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #BCBCBC;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #333;
+  margin-right: 10px;
+  line-height: 1.5;
+}
+
+#invoice-creator button {
+  margin-right: 10px;
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+#invoice-creator {
+  border-top: 1px solid #BCBCBC;
+  border-bottom: 1px solid #BCBCBC;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#invoice-creator .dropdown {
+  padding: 0px;
+  margin: 0px;
+}
+
+#invoice-creator #dropdown-btn {
+  margin: 0px;
+}
+
+#create-invoice-btn {
+  margin: 0px;
+}
+
+#due-date-picker {
+  width: 100%;
+  min-width: 220px;
+  margin: 0px;
+}
+
+#invoice-creator .btn-group {
+  width: 100%;
+}
+
+
+/* Styling for the notification of invoice creation */
+#created-invoice-notice {
+  margin-top: 20px;
+}
+
+
+/* Styling for the payment detection notice */
+#expiry-date-picker {
+  width: 100%;
+  min-width: 220px;
+  margin: 0px;
+  padding: 6px 12px;
+  border: 0px;
+}
