@@ -37,35 +37,7 @@ body {
   background-color: red;
 }
 
-.side-menu {
-  height: 100%;
-  position: fixed;
-  background-color: #2462AB;
-  padding-bottom: 20px;
-  width: 20%;
-  max-width: 292px;
-}
 
-.side-menu ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0px 10px 0px 10px;
-  background-color: #2462AB;
-}
-
-.side-menu li:hover {
-  background-color: #2F7AD3;
-}
-
-.side-menu a {
-  display: block;
-  color: #FFFFFF;
-  padding: 12px 15px;
-  text-decoration: none;
-  text-align: center;
-  text-transform: uppercase;
-  font-family: "Roboto Condensed";
-}
 
 .notice {
   position: relative;
@@ -408,17 +380,7 @@ div.ReactTags__selected span.ReactTags__tag {
   margin-right: 3%;
 }
 
-@media (max-width: 720px) {
-  .side-menu {
-    display: none;
-  }
-}
 
-@media (min-width: 720px) {
-  .small-side-menu {
-    display: block;
-  }
-}
 
 /* The following is to style the edit sign up fields table */
 
@@ -523,21 +485,6 @@ div.ReactTags__selected span.ReactTags__tag {
     margin-left: 27%;
 }
 
-.admin-side-menu {
-    height: 100%;
-    position: fixed;
-    background-color: gray;
-    padding-bottom: 20px;
-    width: 20%;
-    max-width: 292px;
-}
-
-.admin-side-menu a {
-  display: block;
-  color: black;
-  padding: 8px 10px;
-  text-decoration: none;
-}
 
 hr.admin-divider{
 margin-left: 20%;

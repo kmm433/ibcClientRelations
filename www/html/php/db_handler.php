@@ -585,6 +585,20 @@ class DB_Handler
     }
   }
 
+  // Retrieves the information required to complete an invoice for a member
+  function getMemberInvoiceData($UserID) {
+    $sql = $this->db->prepare("SELECT USER.email, USER.firstname, USER.lastname FROM USER WHERE USER.UserID=:user_id");
+    $sql->execute(array('user_id' => $UserID));
+    return $sql->fetch( PDO::FETCH_ASSOC );
+  }
+
+  // Retrieves the chambers renewal policy
+  function getRenewalPolicy($chamberId) {
+    $sql = $this->db->prepare("SELECT type, expiry_date FROM PAYMENTTYPES WHERE chamberid=:chamber_id");
+    $sql->execute(array('chamber_id' => $chamberId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $name) {
     $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES (:group_name, :chamber_id)");
