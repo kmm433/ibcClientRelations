@@ -1,5 +1,4 @@
 import React from 'react';
-import {FormControl, FormGroup, HelpBlock} from 'react-bootstrap';
 
 class Detail extends React.Component {
 
