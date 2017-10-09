@@ -1,7 +1,7 @@
 import React from 'react';
-import {Form, Col, HelpBlock} from 'react-bootstrap';
-import Input from './SignupInput.js';
-import Dropdown from '../../app/components/Signup/dropdown.js';
+import {Form, Col, HelpBlock, FormControl, FormGroup, ControlLabel} from 'react-bootstrap';
+import Input from './../SignupInput.js';
+import Dropdown from '../../../app/components/Signup/dropdown.js';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class Address extends React.Component {
@@ -11,7 +11,7 @@ class Address extends React.Component {
         this.state = ({
             valid: null,
             error: "",
-            address: 'San Francisco, CA'
+            address: 'Wollongong, NSW'
         })
         this.checkValid = this.checkValid.bind(this);
         this.selectType = this.selectType.bind(this);
@@ -40,17 +40,40 @@ class Address extends React.Component {
 
 render(){
 
+
     const inputProps = {
       value: this.state.address,
       onChange: this.onChange,
     }
 
+    const options = {
+        location: new google.maps.LatLng(-34.42, 150.89),
+        radius: 10000,
+        types: ['address']
+}
+
     //const type = ['ACT', 'NSW', 'NT', 'QLD','SA', 'VIC', 'WA'];
 
     return(
         <div>
-                    <PlacesAutocomplete inputProps={inputProps} />
-                <button type="submit" onClick={this.handleFormSubmit}>Submit</button>
+            <FormGroup
+
+                method='POST'
+                validationState={this.props.valid}>
+            <Col sm={3}>
+                    <ControlLabel>
+                        Address
+                        {this.props.mandatory === '1' && <a id="asterisk">*</a>}
+                </ControlLabel>
+            </Col>
+                <Col sm={9}>
+                    <PlacesAutocomplete
+                        id="google-address-box"
+                        inputProps={inputProps}
+                        onBlur={this.handleFormSubmit}
+                        options={options}/>
+                </Col>
+            </FormGroup>
 
             {/*
             <Input

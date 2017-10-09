@@ -3,7 +3,7 @@ import $ from 'jquery';
 import {Form, Col, HelpBlock} from 'react-bootstrap';
 import Validator from './SignupInput.js';
 import Payment from './Payment/Paypal';
-import Address from './Address.js'
+import Address from './Address/Address.js'
 
 class SignupForm extends React.Component {
 
