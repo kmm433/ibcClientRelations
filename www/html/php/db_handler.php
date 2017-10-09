@@ -255,34 +255,30 @@ class DB_Handler
         return false;
   }
 
-   // Event Page: Return Events
-   function get_Events(){
-     $userid =  $_SESSION['userid'];
-     $chamberID = $_SESSION['chamber'];
-     $businessID = $_SESSION['businessid'];
-     $sql = $this->db->prepare("CALL SPgetEvents($userid,$chamberID,$businessID);");
-     if($sql->execute()) {
-         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-         return $row;
-     }
-     else{
-         return array();
-     }
-   }
-
    // NoticeBoard: Return Events
    function get_EventsNoticeBoard(){
-     $userid =  $_SESSION['userid'];
-     $chamberID = $_SESSION['chamber'];
-     $businessID = $_SESSION['businessid'];
-     $sql = $this->db->prepare("CALL SPgetEventsNoticeBoard($userid,$chamberID,$businessID);");
-     if($sql->execute()) {
-         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-         return $row;
-     }
-     else{
-         return array();
-     }
+     $sql = $this->db->prepare("CALL SPgetEventsNoticeBoard(:userid,:chamberid,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberid" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid']
+     ));
+     if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+     else
+         return false;
+   }
+   function get_EventsNoticeBoardTEMP(){
+       $sql = $this->db->prepare("CALL SPgetEventsNoticeBoardTEMP(:userid,:chamberid,:businessID);");
+       $result = $sql->execute(array(
+         "userid" => $_SESSION['userid'],
+         "chamberid" => $_SESSION['chamber'],
+         "businessID" => $_SESSION['businessid']
+       ));
+       if ($result)
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+       else
+           return false;
    }
 
    // NoticeBoard: Hide Events (from the noticeboard)
@@ -293,6 +289,20 @@ class DB_Handler
        return true;
      }
      return false;
+   }
+
+   // Event Page: Return Events
+   function get_Events(){
+     $sql = $this->db->prepare("CALL SPgetEvents(:userid,:chamberid,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberid" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid']
+     ));
+     if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+     else
+         return false;  //Old version returning array()
    }
 
    // Events: Mark Event as Going
@@ -711,6 +721,41 @@ class DB_Handler
       else
         return false;
   }
+
+  function insert_event($title,$content,$sDate,$eDate,$location,$link,$tempStatus,$tmpID){
+      if($tempStatus == true){
+          $sql = $this->db->prepare("INSERT INTO MYEVENTtemp (`EventID`,`EventTitle`, `Event`, `EventDate`, `endTime`, `Location`, `EventURL`, `DatePosted`, `UserID`) VALUES (:id, :title, :content, :sDate, :eDate, :loc, :url, NOW(),:userid);");
+          $result = $sql->execute(array(
+            "title" => $title,
+            "content" => $content,
+            "sDate" => $sDate,
+            "eDate" => $eDate,
+            "loc" => $location,
+            "url" => $link,
+            "userid" => $_SESSION['userid'],     // Keep track of who is posting notifications, only stored in DB, not visible in site
+            "id" => $tmpID
+          ));
+      }else {
+          $sql = $this->db->prepare("SELECT insertEvent(:title, :content, :sDate, :eDate, :loc, :url, :userid);");
+          $result = $sql->execute(array(
+            "title" => $title,
+            "content" => $content,
+            "sDate" => $sDate,
+            "eDate" => $eDate,
+            "loc" => $location,
+            "url" => $link,
+            "userid" => $_SESSION['userid']     // Keep track of who is posting events, only stored in DB, not visible in site
+          ));
+      }
+
+      if ($result)
+        return $sql->fetchColumn(0);        // Returns only the new event ID
+      else
+        return false;
+  }
+
+
+
   function insert_notificationLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
 
       if($tempStatus == true){
@@ -740,6 +785,36 @@ class DB_Handler
         return false;
   }
 
+  function insert_eventLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
+
+      if($tempStatus == true){
+          $sql = $this->db->prepare("INSERT INTO MYEVENTLOOKUPtemp (`EventID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
+          $result = $sql->execute(array(
+              "id" => $ID,
+              "userid" => $userID,
+              "chamberid" => $chamberID,
+              "businessID" => $businessID,
+              "groupID" => $groupID
+          ));
+      }else {
+         $sql = $this->db->prepare("INSERT INTO MYEVENTLOOKUP (`EventID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`, `RelatedChamber`) VALUES (:id,:userid,:chamberid,:businessID,:groupID,:relChamber);");
+         $result = $sql->execute(array(
+            "id" => $ID,
+            "userid" => $userID,
+            "chamberid" => $chamberID,
+            "businessID" => $businessID,
+            "groupID" => $groupID,
+            "relChamber" => $_SESSION['chamber']
+         ));
+      }
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+
+
   // Returns a list of child chamber ID's
   function get_Child_Chambers($chamber){
       $sql = $this->db->prepare("SELECT chamberID from CHAMBER where parent_id=:myChamber;");
@@ -762,6 +837,22 @@ class DB_Handler
 
       $result = $sql->execute(array(
         "id" => $notifID,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
+  function reject_TmpEvent($eventID, $chamber){
+      $sql = $this->db->prepare("CALL SPrejectEventTmp(:id,:chamberID)");
+
+      $result = $sql->execute(array(
+        "id" => $eventID,
         "chamberID" => $chamber
       ));
 

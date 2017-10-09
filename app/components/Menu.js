@@ -24,6 +24,11 @@ class Menu extends React.Component {
                     </NavLink>
                   </li>
                   <li>
+                    <NavLink activeClassName='active-route' to='/results'>
+                        Event / Survey Results
+                    </NavLink>
+                  </li>
+                  <li>
                     <NavLink activeClassName='active-route' to='/member_information'>
                       Member Information
                     </NavLink>

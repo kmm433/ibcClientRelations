@@ -99,7 +99,7 @@ class NoticeSurvey extends React.Component {
         for(var i = 0; i < questions.length; i++){
 
             var tmpA = [];
-            if (questions[i].answerType == 0){ // Type is RadioButton
+            if (questions[i].answerType == 0 && answers.length > 0){ // Type is RadioButton
                 //Prepare results array
                 userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: answers[0].AnswerID, Answer: answers[0].answer});
                 //Add all potential answers

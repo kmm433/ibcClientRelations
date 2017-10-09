@@ -24,7 +24,8 @@ class NoticeEvent extends React.Component {
           goingText: "RSVP Going",
           cantgo: "btn btn-default",
           cantgoText: "RSVP Can't go",
-          Disabled: false
+          Disabled: false,
+          remHide: false
       };
       this.hide = this.hide.bind(this);
       this.going = this.going.bind(this);
@@ -32,11 +33,19 @@ class NoticeEvent extends React.Component {
     }
 
     componentWillMount(){
-        this.setEventStatus(); // Set the buttons to pre-fill attending or not
+        if (this.props.remHide == true){
+            this.setState({
+                remHide: true
+            });
+        }
+
         if (this.props.Disabled == true){
             this.setState({
                 Disabled: true
             });
+        }
+        else {
+            this.setEventStatus(); // Set the buttons to pre-fill attending or not
         }
 
     }
@@ -182,7 +191,7 @@ class NoticeEvent extends React.Component {
                 <div className="notice-content">
                   <div className="eventDiv"> <i>When: </i>
                         <span>
-                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')} 
+                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')}
                         </span>
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
@@ -191,7 +200,7 @@ class NoticeEvent extends React.Component {
                 <div className="event-buttons">
                     {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
                     {<button type="button" disabled={this.state.Disabled} className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
-                    {<button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button>}
+                    {this.state.remHide ? null : <button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button> }
                 </div>
               </div>
           </Collapse>
