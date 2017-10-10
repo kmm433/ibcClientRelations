@@ -57,7 +57,7 @@ class TmpNoticeSurvey extends React.Component {
                 'SurveyID': this.props.SurveyID
             },
             success : function(response){
-                console.log('reject_TmpSurvey Success')
+                //console.log('reject_TmpSurvey Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('reject_TmpSurvey Error ' + xhr.responseText)
@@ -76,7 +76,7 @@ class TmpNoticeSurvey extends React.Component {
                 'SurveyID': this.props.SurveyID
             },
             success : function(response){
-                console.log('accept_TmpSurvey Success')
+                //console.log('accept_TmpSurvey Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('accept_TmpSurvey Error ' + xhr.responseText)

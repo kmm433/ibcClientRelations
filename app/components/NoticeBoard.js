@@ -226,11 +226,11 @@ class NoticeBoard extends React.Component {
             emptyNotifications = false;
             messages.push(<Notice
                 key={notifs[i].NotificationID}
+                NotificationID={notifs[i].NotificationID}
                 title={notifs[i].NoticeTitle}
                 message={notifs[i].Notice}
                 DatePosted={notifs[i].DatePosted}
                 user_type={this.props.user_type}
-                NotificationID={notifs[i].NotificationID}
                 reload = {this.reload}
             />)
         }
@@ -246,6 +246,8 @@ class NoticeBoard extends React.Component {
                 location={events[i].Location}
                 EventURL={events[i].EventURL}
                 DatePosted={events[i].DatePosted}
+                user_type={this.props.user_type}
+                reload = {this.reload}
             />)
         }
         for(var i = 0; i < survey.length; i++){

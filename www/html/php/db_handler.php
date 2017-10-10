@@ -397,10 +397,15 @@ class DB_Handler
 
    // NoticeBoard: Return Surveys Answers
   function get_SurveyAnswers($surveyID){
-      $sql = $this->db->prepare("CALL SPgetSurveyAnswers($surveyID);");
-      if($sql->execute()) {
-          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-          return $row;
+      $sql = $this->db->prepare("CALL SPgetSurveyAnswers(:surveyid);");
+      $result = $sql->execute(array(
+        "surveyid" => $surveyID
+      ));
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
       }
   }
 
@@ -977,10 +982,25 @@ class DB_Handler
 
   // Deletes the reference to a notication for a given chamber
   function delete_Notification($notifID, $chamber){
-      $sql = $this->db->prepare("DELETE FROM NOTIFICATIONLOOKUP WHERE NotificationID = :id AND  RelatedChamber = :chamberID;");
+      $sql = $this->db->prepare("DELETE FROM NOTIFICATIONLOOKUP WHERE NotificationID = :id AND RelatedChamber = :chamberID;");
 
       $result = $sql->execute(array(
         "id" => $notifID,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+  function delete_Event($eventID, $chamber){
+      $sql = $this->db->prepare("DELETE FROM MYEVENTLOOKUP WHERE EventID = :id AND RelatedChamber = :chamberID;");
+
+      $result = $sql->execute(array(
+        "id" => $eventID,
         "chamberID" => $chamber
       ));
 

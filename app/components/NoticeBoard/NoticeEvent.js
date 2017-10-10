@@ -30,6 +30,7 @@ class NoticeEvent extends React.Component {
       this.hide = this.hide.bind(this);
       this.going = this.going.bind(this);
       this.cantgo = this.cantgo.bind(this);
+      this.deleteNotice = this.deleteNotice.bind(this);
     }
 
     componentWillMount(){
@@ -48,6 +49,29 @@ class NoticeEvent extends React.Component {
             this.setEventStatus(); // Set the buttons to pre-fill attending or not
         }
 
+    }
+
+    deleteNotice(){
+        if (confirm("Warning: This will remove this event from your chamber members and can not be undone! Are you sure?") == true){
+            $.ajax({
+                url: '/php/delete_Event.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'eventID': this.props.eventID
+                },
+                success : function(response){
+                    console.log('delete_Event Success');
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('delete_Event Error' + xhr.responseText);
+                }.bind(this)
+            });
+
+            this.setState({
+                hidden: false
+            });
+        }
     }
 
     setEventStatus(){
@@ -182,11 +206,18 @@ class NoticeEvent extends React.Component {
     }
 
     render(){
+
+        let deleteBtn = null;
+        if (this.props.user_type == 1){
+            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
+        }
+
         return(
             <Collapse isOpened={this.state.hidden}>
               <div className="notice">
                 <div className="notice-title">
-                  <h2>{"Upcoming event: " + this.props.title}</h2>
+                  <div className="w3-col s11"><h2>{"Upcoming event: " + this.props.title}</h2></div>
+                  {deleteBtn}
                 </div>
                 <div className="notice-content">
                   <div className="eventDiv"> <i>When: </i>

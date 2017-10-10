@@ -40,6 +40,7 @@ class NoticeSurvey extends React.Component {
     componentWillMount(){
         /* get all Questions and Answers */
         if (this.props.Disabled == true){
+            // For use in Create Survey Page, provides a disabled preview version of component
             questions = this.props.Questions;
             answers = this.props.Answers;
         }
@@ -65,10 +66,10 @@ class NoticeSurvey extends React.Component {
           },
           success : function(response){
               questions = response;
-              //console.log('get_SurveyQuestions Success' + response)
+              console.log('get_SurveyQuestions Success' + this.props.SurveyID + ' ' + response);
           }.bind(this),
           error: function(xhr, status, err){
-              console.log('get_SurveyQuestions Error')
+              console.log('get_SurveyQuestions Error');
           }.bind(this)
       });
   }
@@ -84,10 +85,10 @@ class NoticeSurvey extends React.Component {
             },
             success : function(response){
                 answers = response;
-                //console.log('get_SurveyAnswers Success' + response)
+                console.log('get_SurveyAnswers Success' + this.props.SurveyID + ' ' + response);
             }.bind(this),
             error: function(xhr, status, err){
-                console.log('get_SurveyAnswers Error')
+                console.log('get_SurveyAnswers Error');
             }.bind(this)
         });
     }
