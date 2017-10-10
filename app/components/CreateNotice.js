@@ -52,7 +52,9 @@ class create_notice extends React.Component {
             STitle: "",
             SItems: [],
             SChange: "",
-            Semail: "off"
+            Semail: "off",
+            SChambers: "off",
+            SChambersChild: "off"
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeCheckbox = this.handleChangeCheckbox.bind(this);
@@ -80,6 +82,7 @@ class create_notice extends React.Component {
 
         this.getAvailableGroups = this.getAvailableGroups.bind(this);
         this.getAllBusiness = this.getAllBusiness.bind(this);
+        this.surveyReset = this.surveyReset.bind(this);
 
 
         moment.locale("en-au");
@@ -88,8 +91,20 @@ class create_notice extends React.Component {
     componentWillMount() {
         this.getAvailableGroups();
         this.getAllBusiness();
+        this.surveyReset()
     }
 
+    surveyReset(){
+        var count = mysurveyItems.length + 1;
+        for (var i=0; i < count; i++){
+            this.remQuestion();
+        }
+        this.setState({
+            STitle: "",
+            SItems: []
+        });
+        this.updatePrev();
+    }
 
     /* Generic function for most text areas */
     handleChange(event){
@@ -297,7 +312,7 @@ class create_notice extends React.Component {
                         'business' : bus
                     },
                     success : function(response){
-                        console.log('get_Emails Success ');
+                        //console.log('get_Emails Success ');
                         emails = response;
                     }.bind(this),
                     error: function(xhr, status, err){
@@ -350,8 +365,6 @@ class create_notice extends React.Component {
 
             var sdate = moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format();
             var edate = moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format();
-            console.log(sdate);
-            console.log(edate);
             $.ajax({
                 url: '/php/insert_event.php',
                 type:'POST',
@@ -370,7 +383,7 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    console.log('Event Success ' + response);
+                    //console.log('Event Success ' + response);
                     alert("Event successfully posted");
                     this.setState({
                         ETitle: "",
@@ -418,10 +431,83 @@ class create_notice extends React.Component {
         }
     }
     submitSurvey(){
-        // Post the Sruvey to the DB
-        console.log(this.state.STitle);
-        console.log(Questions);
-        console.log(Answers);
+
+        if((this.state.STitle == "") || (Questions.length == 0)){
+            window.alert("That Survey has blank fields! Please ensure there is a title and at least 1 question");
+        }
+        else if ((this.state.SChambers == "off") && (this.state.SChambersChild == "off") && (this.state.GroupTags.length == 0) && (this.state.BusTags.length == 0)){
+            window.alert("Please choose at least one recipient!");
+        }
+        else{
+            var groups = [];
+            for (var i=0; i < this.state.GroupTags.length; i++){
+                for (var b=0; b < groupID.length; b++){
+                    if (this.state.GroupTags[i].text == groupID[b].name){
+                        groups.push(groupID[b].groupID);
+                    }
+                }
+            }
+            var bus = [];
+            for (var i=0; i < this.state.BusTags.length; i++){
+                for (var b=0; b < busID.length; b++){
+                    if (this.state.BusTags[i].text == busID[b].name){
+                        bus.push(busID[b].groupID);
+                    }
+                }
+            }
+
+            $.ajax({
+                url: '/php/insert_Survey.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'title': this.state.STitle,
+                    'questions': Questions,
+                    'answers' : Answers,
+                    'postChamber' : this.state.SChambers,
+                    'postChild' : this.state.SChambersChild,
+                    'groups' : groups,
+                    'business' : bus
+                },
+                success : function(response){
+                    //console.log('insert_Survey Success' + response);
+                    alert("Survey successfully posted");
+                    this.surveyReset();
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('insert_Survey Error ' + xhr.responseText);
+                }.bind(this)
+            });
+
+            //If email option selected, do email blast
+            if (this.state.Semail == "on"){
+                var emails = [];
+                $.ajax({
+                    url: '/php/get_Emails.php',
+                    type:'POST',
+                    async: false,
+                    dataType: "json",
+                    data:{
+                        'postChamber' : this.state.SChambers,
+                        'groups' : groups,
+                        'business' : bus
+                    },
+                    success : function(response){
+                        //console.log('get_Emails Success ');
+                        emails = response;
+                    }.bind(this),
+                    error: function(xhr, status, err){
+                        console.log('get_Emails Error ' + xhr.responseText);
+                    }.bind(this)
+                });
+                window.location = 'mailto:?bcc=' + emails
+                    + '&subject=New Chamber Survey: '+ this.state.STitle
+                    + '&body=' + 'You have a new Survey available, to complete, log in to CRM and visit the Noticeboard on the main page';
+            }
+        }
+
+
+
     }
 
     addQuestion(){
@@ -461,7 +547,7 @@ class create_notice extends React.Component {
 
         // Find the Q# A# that matches, if no match push new
         if (index == -1){
-            Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: qNumber+value});
+            Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: value+qNumber});
         }
         else{
             Answers[index].answer = value;
@@ -701,13 +787,12 @@ class create_notice extends React.Component {
                         <button type="button" className="btn btn-danger" id="btnRemQA" onClick={this.remQuestion}>Remove Question</button>
                     </div>
 
-
                 </div>
                 <div>
                     <div><h3>Preview:</h3></div>
                     <NoticeSurvey
-                        key={0}
-                        SurveyID={-1}
+                        key="PrevSurvey"
+                        SurveyID=""
                         title={this.state.STitle}
                         DatePosted={moment()}
                         Disabled={true}
@@ -715,6 +800,44 @@ class create_notice extends React.Component {
                         Answers={Answers}
                         Change={this.state.SChange}
                     />
+                </div>
+                <div>
+                    <div><h3>Choose Recipients:</h3></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>My Chamber:</label></div></div>
+                    <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="SChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
+                    <div className="w3-col s2" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="SChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s7 CreateNoticeDiv"><div><label>* You can give child chambers to option to see this notification, but an executive of that chamber will have to approve it before is shown to their chamber members</label></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.GroupTags}
+                          suggestions={this.state.GroupSuggestions}
+                          handleDelete={this.GrouphandleDelete}
+                          handleAddition={this.GrouphandleAddition}
+                          handleDrag={this.GrouphandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Group'}
+                        />
+                    </div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Business:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.BusTags}
+                          suggestions={this.state.BusSuggestions}
+                          handleDelete={this.BushandleDelete}
+                          handleAddition={this.BushandleAddition}
+                          handleDrag={this.BushandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Business'}
+                        />
+                    </div>
 
                 </div>
                 <div className="event-buttons">

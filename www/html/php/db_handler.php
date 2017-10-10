@@ -353,25 +353,45 @@ class DB_Handler
 
     // NoticeBoard: Return Surveys (only ID's and titles)
    function get_Surveys(){
-     $userid =  $_SESSION['userid'];
-     $chamberID = $_SESSION['chamber'];
-     $businessID = $_SESSION['businessid'];
-     $sql = $this->db->prepare("CALL SPgetSurvey($userid,$chamberID,$businessID);");
-     if($sql->execute()) {
-         $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-         return $row;
+     $sql = $this->db->prepare("CALL SPgetSurvey(:userid,:chamberID,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberID" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid'],
+     ));
+     if ($result){
+         return $sql->fetchAll(PDO::FETCH_ASSOC);
      }
      else{
-         return array();
+         return false; // was array(); HL 10/10/17
+     }
+   }
+   function get_SurveysTEMP(){
+     $sql = $this->db->prepare("CALL SPgetSurveyTEMP(:userid,:chamberID,:businessID);");
+     $result = $sql->execute(array(
+       "userid" => $_SESSION['userid'],
+       "chamberID" => $_SESSION['chamber'],
+       "businessID" => $_SESSION['businessid'],
+     ));
+     if ($result){
+         return $sql->fetchAll(PDO::FETCH_ASSOC);
+     }
+     else{
+         return false;
      }
    }
 
     // NoticeBoard: Return Surveys Questions
    function get_SurveyQuestions($surveyID){
-       $sql = $this->db->prepare("CALL SPgetSurveyQuestion($surveyID);");
-       if($sql->execute()) {
-           $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-           return $row;
+       $sql = $this->db->prepare("SELECT * FROM SURVEYQUESTION WHERE SurveyID = :surveyid;");
+       $result = $sql->execute(array(
+         "surveyid" => $surveyID
+       ));
+       if ($result){
+           return $sql->fetchAll(PDO::FETCH_ASSOC);
+       }
+       else{
+           return false;
        }
    }
 
@@ -754,10 +774,58 @@ class DB_Handler
         return false;
   }
 
+  function insert_survey($title,$tempStatus,$tmpID){
+      if($tempStatus == true){
+          $sql = $this->db->prepare("INSERT INTO SURVEYtemp (`SurveyID`, `SurveyTitle`, `DatePosted`, `UserID`) VALUES (:id, :mytitle, NOW(),:userid);");
+          $result = $sql->execute(array(
+            "id" => $tmpID,
+            "mytitle" => $title,
+            "userid" => $_SESSION['userid']
+          ));
+      }else {
+          $sql = $this->db->prepare("SELECT insertSurvey(:title, :userid);");
+          $result = $sql->execute(array(
+            "title" => $title,
+            "userid" => $_SESSION['userid']     // Keep track of who is posting events, only stored in DB, not visible in site
+          ));
+      }
+
+      if ($result)
+        return $sql->fetchColumn(0);        // Returns only the new event ID
+      else
+        return false;
+  }
+  function insert_surveyQuestion($surveyID,$questionNo,$question,$type){
+      $sql = $this->db->prepare("INSERT INTO SURVEYQUESTION (`SurveyID`, `questionNo`, `question`, `answerType`) VALUES (:surveyid, :qNO, :q, :answerType);");
+      $result = $sql->execute(array(
+        "surveyid" => $surveyID,
+        "qNO" => $questionNo,
+        "q" => $question,
+        "answerType" => $type
+      ));
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+  function insert_surveyAnswer($surveyID,$questionNo,$answer){
+      $sql = $this->db->prepare("INSERT INTO SURVEYANSWER (`SurveyID`, `questionNo`, `answer`) VALUES (:surveyid, :qNO, :a);");
+      $result = $sql->execute(array(
+        "surveyid" => $surveyID,
+        "qNO" => $questionNo,
+        "a" => $answer
+      ));
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+
 
 
   function insert_notificationLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
-
       if($tempStatus == true){
          $sql = $this->db->prepare("INSERT INTO NOTIFICATIONLOOKUPtemp (`NotificationID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
          $result = $sql->execute(array(
@@ -814,6 +882,34 @@ class DB_Handler
         return false;
   }
 
+  function insert_SurveyLookup($ID,$userID,$chamberID,$businessID,$groupID,$tempStatus){
+      if($tempStatus == true){
+          $sql = $this->db->prepare("INSERT INTO SURVEYLOOKUPtemp (`SurveyID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`) VALUES (:id,:userid,:chamberid,:businessID,:groupID);");
+          $result = $sql->execute(array(
+            "id" => $ID,
+            "userid" => $userID,
+            "chamberid" => $chamberID,
+            "businessID" => $businessID,
+            "groupID" => $groupID,
+          ));
+      }else {
+         $sql = $this->db->prepare("INSERT INTO SURVEYLOOKUP (`SurveyID`, `UserID`, `ChamberID`, `BusinessID`, `GroupID`, `RelatedChamber`) VALUES (:id,:userid,:chamberid,:businessID,:groupID,:relChamber);");
+         $result = $sql->execute(array(
+            "id" => $ID,
+            "userid" => $userID,
+            "chamberid" => $chamberID,
+            "businessID" => $businessID,
+            "groupID" => $groupID,
+            "relChamber" => $_SESSION['chamber']
+         ));
+      }
+
+      if ($result)
+        return true;
+      else
+        return false;
+  }
+
 
   // Returns a list of child chamber ID's
   function get_Child_Chambers($chamber){
@@ -853,6 +949,21 @@ class DB_Handler
 
       $result = $sql->execute(array(
         "id" => $eventID,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+  function reject_TmpSurvey($SurveyID, $chamber){
+      $sql = $this->db->prepare("CALL SPrejectSurveyTmp(:id,:chamberID)");
+
+      $result = $sql->execute(array(
+        "id" => $SurveyID,
         "chamberID" => $chamber
       ));
 

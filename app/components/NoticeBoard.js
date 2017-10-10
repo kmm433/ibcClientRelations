@@ -18,6 +18,7 @@ import moment from "moment";                                    /* https://momen
 
 import TmpNotice from './NoticeBoard/TmpNotice.js';
 import TmpNoticeEvent from './NoticeBoard/TmpNoticeEvent.js';
+import TmpNoticeSurvey from './NoticeBoard/TmpNoticeSurvey.js'
 
 
 var count = 0;          // Used by inf scroll to know which to display next
@@ -196,6 +197,22 @@ class NoticeBoard extends React.Component {
             }.bind(this)
         });
         return surveys;
+    }get_surveysTEMP(){
+        var surveys = [];
+        $.ajax({
+            url: '/php/get_SurveysTEMP.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            success : function(response){
+                surveys = response;
+                console.log('get_surveysTEMP Success')
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_surveysTEMP Error')
+            }.bind(this)
+        });
+        return surveys;
     }
 
     /* Calls each sql function, formats data as needed and adds to messages */
@@ -265,7 +282,6 @@ class NoticeBoard extends React.Component {
             }
 
             var tmpEvents = this.get_eventsTEMP();
-            console.log(tmpEvents.length);
             for(var i = 0; i < tmpEvents.length; i++){
                 emptyNotifications = false;
                 messages.unshift(<TmpNoticeEvent
@@ -278,6 +294,18 @@ class NoticeBoard extends React.Component {
                     location={tmpEvents[i].Location}
                     EventURL={tmpEvents[i].EventURL}
                     DatePosted={tmpEvents[i].DatePosted}
+                    reload = {this.reload}
+                />)
+            }
+
+            var tmpSurveys = this.get_surveysTEMP();
+            for(var i = 0; i < tmpSurveys.length; i++){
+                emptyNotifications = false;
+                messages.unshift(<TmpNoticeSurvey
+                    key={tmpSurveys[i].SurveyID}
+                    SurveyID={tmpSurveys[i].SurveyID}
+                    title={tmpSurveys[i].SurveyTitle}
+                    DatePosted={tmpSurveys[i].DatePosted}
                     reload = {this.reload}
                 />)
             }

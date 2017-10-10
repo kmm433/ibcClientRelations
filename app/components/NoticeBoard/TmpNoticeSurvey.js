@@ -1,12 +1,3 @@
-/*
-Page Gets:
-    key={survey[i].SurveyID}
-    SurveyID={survey[i].SurveyID}
-    title={survey[i].SurveyTitle + survey[i].SurveyID}
-    DatePosted={survey[i].DatePosted}
-    noQuestions={survey[i].noQuestions}
-*/
-
 import React from 'react';
 import $ from 'jquery';                                         /* For ajax query */
 import Slider from 'react-slick';                               /* https://github.com/akiran/react-slick */
@@ -26,32 +17,72 @@ const Loader = () =>
     <div />
   </div>
 
-class NoticeSurvey extends React.Component {
+class TmpNoticeSurvey extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
           items: [],
-          hidden: true
+          isOpened: true
       };
-
       this.collapse = this.collapse.bind(this);
+      this.help = this.help.bind(this);
+      this.approve = this.approve.bind(this);
+      this.reject = this.reject.bind(this);
     }
 
     componentWillMount(){
         /* get all Questions and Answers */
-        if (this.props.Disabled == true){
-            questions = this.props.Questions;
-            answers = this.props.Answers;
-        }
-        else{
-            this.get_SurveyQuestions();
-            this.get_SurveyAnswers();
-        }
+        this.get_SurveyQuestions();
+        this.get_SurveyAnswers();
         this.setData();
     }
 
     componentWillReceiveProps(nextProps){
         this.setData();
+    }
+
+    help(){
+        alert("This Survey has been offered to your chamber by a Parent Chamber. Parent Chambers have the ability to offer notifications, events and surveys to their child chambers, however they require approval by an executive chamber member before it is displayed to the rest of the chamber. You can approve or reject this Survey offering here")
+    }
+
+    reject(){
+        this.setState({
+            isOpened: false
+        });
+        $.ajax({
+            url: '/php/reject_TmpSurvey.php',
+            type:'POST',
+            dataType: "json",
+            data:{
+                'SurveyID': this.props.SurveyID
+            },
+            success : function(response){
+                console.log('reject_TmpSurvey Success')
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('reject_TmpSurvey Error ' + xhr.responseText)
+            }.bind(this)
+        });
+    }
+    approve(){
+        this.setState({
+            isOpened: false
+        });
+        $.ajax({
+            url: '/php/accept_TmpSurvey.php',
+            type:'POST',
+            dataType: "json",
+            data:{
+                'SurveyID': this.props.SurveyID
+            },
+            success : function(response){
+                console.log('accept_TmpSurvey Success')
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('accept_TmpSurvey Error ' + xhr.responseText)
+            }.bind(this)
+        });
+        this.props.reload();
     }
 
     get_SurveyQuestions(){
@@ -136,8 +167,6 @@ class NoticeSurvey extends React.Component {
         // Add the submit page
         FormattedOutput.push(<SubmitPage
                 key="Submit"
-                collapseSurvey={this.collapse}
-                disabled={this.props.Disabled}
         />)
 
         // Set the state to completed question/answer pairs + submit page
@@ -148,7 +177,7 @@ class NoticeSurvey extends React.Component {
 
     collapse(){
         this.setState({
-            hidden: false
+            isOpened: false
         });
     }
 
@@ -162,9 +191,9 @@ class NoticeSurvey extends React.Component {
           slidesToScroll: 1
         };
         return(
-            <Collapse isOpened={this.state.hidden}>
+            <Collapse isOpened={this.state.isOpened}>
                 <div className="notice">
-                    <div className="notice-title">
+                    <div className="tmpnotice-title notice-title">
                         <h2>{"New Survey: " + this.props.title}</h2>
                         <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
                     </div>
@@ -177,13 +206,18 @@ class NoticeSurvey extends React.Component {
                            )}
                         </Slider>
                     </div>
+                    <div className="notice-content">
+                        {<button type="button" className="btn btn-success" style={{marginLeft: '0px'}} id="btnApprove" onClick={this.approve}>Approve</button>}
+                        {<button type="button" className="btn btn-danger" id="btnReject" onClick={this.reject} >Reject</button>}
+                        {<button type="button" className="btn btn-primary" id="btnHelp" onClick={this.help}>Why am I seeing this?</button>}
+                    </div>
                 </div>
             </Collapse>
         );
     }
 };
 
-export default NoticeSurvey;
+export default TmpNoticeSurvey;
 
 class SurveyRadio extends React.Component {
     constructor(props) {
@@ -257,57 +291,12 @@ class SurveyText extends React.Component {
 };
 
 class SubmitPage extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-          btnDisabled: false,
-          label: "Would you like to submit?"
-      };
-      this.insert_SurveyAnswers = this.insert_SurveyAnswers.bind(this);
-    }
-
-    componentWillMount(){
-        if(this.props.disabled == true){
-            this.setState({
-                btnDisabled: true
-            });
-        }
-    }
-
-    insert_SurveyAnswers(){
-        this.setState({
-            btnDisabled: true,
-            label: "Thank you for taking the time to complete this survey"
-        });
-      /*$.ajax({    //READY, UNCOMMENT WHEN RELEASE
-          url: '/php/insert_SurveyAnswers.php',
-          type:'POST',
-          dataType: "json",
-          data: {
-              'data': userAnswers
-          },
-          success : function(response){
-              //console.log(response)
-              //console.log('insert_SurveyAnswers Success')
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('insert_SurveyAnswers Error')
-              //console.log(status)
-          }.bind(this)
-      });
-      */
-        this.timeoutHandle = setTimeout(()=>{
-              this.props.collapseSurvey();  // Add your logic for the transition
-          }, 3000);
-
-    }
-
     render(){
     return(
         <div>
-            <h3><label htmlFor="title">{this.state.label}</label></h3>
+            <h3><label htmlFor="title">Would you like to submit?</label></h3>
             <div>
-                {<button type="button" className="btn btn-primary" id="btnSubmitSurvey" disabled={this.state.btnDisabled} onClick={this.insert_SurveyAnswers}>Submit</button>}
+                {<button type="button" className="btn btn-primary" id="btnSubmitSurvey" disabled={true}>Submit</button>}
             </div>
         </div>
         );

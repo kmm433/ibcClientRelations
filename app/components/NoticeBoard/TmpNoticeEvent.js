@@ -16,7 +16,7 @@ class TmpNoticeEvent extends React.Component {
     }
 
     help(){
-        alert("This Event has been offered to your chamber by a Parent Chamber. Parent Chambers have the ability to offer notifications, events and surveys to their child chambers, however they require approval by an executive chamber member before it is displayed to the rest of the chamber. You can approve or reject this notification here")
+        alert("This Event has been offered to your chamber by a Parent Chamber. Parent Chambers have the ability to offer notifications, events and surveys to their child chambers, however they require approval by an executive chamber member before it is displayed to the rest of the chamber. You can approve or reject this event offering here")
     }
 
     reject(){
