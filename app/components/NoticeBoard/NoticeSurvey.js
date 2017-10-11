@@ -33,8 +33,8 @@ class NoticeSurvey extends React.Component {
           items: [],
           hidden: true
       };
-
       this.collapse = this.collapse.bind(this);
+      this.deleteNotice = this.deleteNotice.bind(this);
     }
 
     componentWillMount(){
@@ -53,6 +53,29 @@ class NoticeSurvey extends React.Component {
 
     componentWillReceiveProps(nextProps){
         this.setData();
+    }
+
+    deleteNotice(){
+        if (confirm("Warning: This will remove this Survey from your chamber members and can not be undone! Are you sure?") == true){
+            $.ajax({
+                url: '/php/delete_Survey.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'SurveyID': this.props.SurveyID
+                },
+                success : function(response){
+                    console.log('delete_Survey Success');
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('delete_Survey Error' + xhr.responseText);
+                }.bind(this)
+            });
+
+            this.setState({
+                hidden: false
+            });
+        }
     }
 
     get_SurveyQuestions(){
@@ -162,12 +185,21 @@ class NoticeSurvey extends React.Component {
           slidesToShow: 1,
           slidesToScroll: 1
         };
+
+        let deleteBtn = null;
+        if (this.props.user_type == 1){
+            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
+        }
+
         return(
             <Collapse isOpened={this.state.hidden}>
                 <div className="notice">
                     <div className="notice-title">
-                        <h2>{"New Survey: " + this.props.title}</h2>
-                        <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
+                        <div className="w3-col s11">
+                            <h2>{"New Survey: " + this.props.title}</h2>
+                            <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
+                        </div>
+                        {deleteBtn}
                     </div>
                     <div className="survey-content">
                         <Slider {...settings}>

@@ -1011,6 +1011,21 @@ class DB_Handler
           return false;
       }
   }
+  function delete_Survey($surveyid, $chamber){
+      $sql = $this->db->prepare("DELETE FROM SURVEYLOOKUP WHERE SurveyID = :id AND RelatedChamber = :chamberID;");
+
+      $result = $sql->execute(array(
+        "id" => $surveyid,
+        "chamberID" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
 
   // Returns a list of emails related to a given chamber
   function get_Chamber_Emails($chamber){
@@ -1052,6 +1067,52 @@ class DB_Handler
 
       if ($result){
           return $sql->fetchAll(PDO::FETCH_NUM);
+      }
+      else{
+          return false;
+      }
+  }
+
+  // Returns the count of people going to an event
+  function get_EventGoing($EventID){
+      $sql = $this->db->prepare("SELECT COUNT(*) FROM MYEVENTGOING WHERE EventID = :id;");
+
+      $result = $sql->execute(array(
+        "id" => $EventID
+      ));
+
+      if ($result){
+          return $sql->fetchColumn(0);
+      }
+      else{
+          return false;
+      }
+  }
+  // Returns the count of people not going to an event
+  function get_EventNotGoing($EventID){
+      $sql = $this->db->prepare("SELECT COUNT(*) FROM MYEVENTCANTGO WHERE EventID = :id;");
+
+      $result = $sql->execute(array(
+        "id" => $EventID
+      ));
+
+      if ($result){
+          return $sql->fetchColumn(0);
+      }
+      else{
+          return false;
+      }
+  }
+   // Returns the count of people who where offered an event
+  function get_EventCount($EventID){
+      $sql = $this->db->prepare("CALL SPgetEventCount(:id)");
+
+      $result = $sql->execute(array(
+        "id" => $EventID
+      ));
+
+      if ($result){
+          return $sql->fetchColumn(0);
       }
       else{
           return false;

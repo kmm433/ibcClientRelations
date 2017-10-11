@@ -257,6 +257,8 @@ class NoticeBoard extends React.Component {
                 SurveyID={survey[i].SurveyID}
                 title={survey[i].SurveyTitle}
                 DatePosted={survey[i].DatePosted}
+                user_type={this.props.user_type}
+                reload = {this.reload}
             />)
         }
 

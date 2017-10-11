@@ -138,7 +138,7 @@ class NoticeEvent extends React.Component {
         this.setState({
             hidden: false
         });
-        /*$.ajax({      // READY, UNCOMMENT WHEN RELEASE
+        $.ajax({
             url: '/php/hide_Event.php',
             type:'POST',
             async: false,
@@ -152,7 +152,7 @@ class NoticeEvent extends React.Component {
             error: function(xhr, status, err){
                 console.log('hide_Event Error')
             }.bind(this)
-        });*/
+        });
 
     }
     going(){
