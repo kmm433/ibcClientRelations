@@ -24,21 +24,54 @@ class NoticeEvent extends React.Component {
           goingText: "RSVP Going",
           cantgo: "btn btn-default",
           cantgoText: "RSVP Can't go",
-          Disabled: false
+          Disabled: false,
+          remHide: false
       };
       this.hide = this.hide.bind(this);
       this.going = this.going.bind(this);
       this.cantgo = this.cantgo.bind(this);
+      this.deleteNotice = this.deleteNotice.bind(this);
     }
 
     componentWillMount(){
-        this.setEventStatus(); // Set the buttons to pre-fill attending or not
+        if (this.props.remHide == true){
+            this.setState({
+                remHide: true
+            });
+        }
+
         if (this.props.Disabled == true){
             this.setState({
                 Disabled: true
             });
         }
+        else {
+            this.setEventStatus(); // Set the buttons to pre-fill attending or not
+        }
 
+    }
+
+    deleteNotice(){
+        if (confirm("Warning: This will remove this event from your chamber members and can not be undone! Are you sure?") == true){
+            $.ajax({
+                url: '/php/delete_Event.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'eventID': this.props.eventID
+                },
+                success : function(response){
+                    console.log('delete_Event Success');
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('delete_Event Error' + xhr.responseText);
+                }.bind(this)
+            });
+
+            this.setState({
+                hidden: false
+            });
+        }
     }
 
     setEventStatus(){
@@ -105,7 +138,7 @@ class NoticeEvent extends React.Component {
         this.setState({
             hidden: false
         });
-        /*$.ajax({      // READY, UNCOMMENT WHEN RELEASE
+        $.ajax({
             url: '/php/hide_Event.php',
             type:'POST',
             async: false,
@@ -119,7 +152,7 @@ class NoticeEvent extends React.Component {
             error: function(xhr, status, err){
                 console.log('hide_Event Error')
             }.bind(this)
-        });*/
+        });
 
     }
     going(){
@@ -173,16 +206,23 @@ class NoticeEvent extends React.Component {
     }
 
     render(){
+
+        let deleteBtn = null;
+        if (this.props.user_type == 1){
+            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
+        }
+
         return(
             <Collapse isOpened={this.state.hidden}>
               <div className="notice">
                 <div className="notice-title">
-                  <h2>{"Upcoming event: " + this.props.title}</h2>
+                  <div className="w3-col s11"><h2>{"Upcoming event: " + this.props.title}</h2></div>
+                  {deleteBtn}
                 </div>
                 <div className="notice-content">
                   <div className="eventDiv"> <i>When: </i>
                         <span>
-                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')} 
+                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')}
                         </span>
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
@@ -191,7 +231,7 @@ class NoticeEvent extends React.Component {
                 <div className="event-buttons">
                     {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
                     {<button type="button" disabled={this.state.Disabled} className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
-                    {<button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button>}
+                    {this.state.remHide ? null : <button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button> }
                 </div>
               </div>
           </Collapse>

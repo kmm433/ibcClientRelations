@@ -106,9 +106,11 @@ body {
 }
 
 .slick-next:before{
+    font-size: 26px;
     color: black;
 }
 .slick-prev:before{
+    font-size: 26px;
     color: black;
 }
 
@@ -880,3 +882,37 @@ margin-bottom: 2%;
   border-radius: 4px;
   padding: 5px;
 }
+
+.emptyNotices {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.circle{
+      width: 20px;
+      height: 20px;
+      -webkit-border-radius: 25px;
+      -moz-border-radius: 25px;
+      border-radius: 25px;
+      float: right;
+      margin-right: 10px;
+ }
+
+ .event-list-item {
+   width: 100%;
+   overflow: auto;
+   border-bottom: 1px solid #BCBCBC;
+   color: DimGrey!important;
+ }
+ 
+ .event-list-item .alert {
+   margin-bottom: 0px;
+   border-radius: 0px;
+ }
+
+ .evnet-list-item-field {
+   border: none;
+   float: left;
+   padding: 5px;
+   width: 20%;
+ }
