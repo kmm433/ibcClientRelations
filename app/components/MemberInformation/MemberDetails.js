@@ -1,6 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
 import { WithContext as ReactTags } from 'react-tag-input';
+import * as MemberActions from '../../Actions/MemberActions.js';
+import MemberStore from '../../Stores/MemberStore.js';
 import CompleteMemberDetails from './CompleteMemberDetails.js';
 import NotesPanel from './NotesPanel.js'
 
@@ -17,6 +19,7 @@ class MemberDetails extends React.Component {
       editable: false,
       notes: []
     }
+    this.updateValues = this.updateValues.bind(this);
     this.getCompleteDetails = this.getCompleteDetails.bind(this);
     this.getMembersGroups = this.getMembersGroups.bind(this);
     this.getAvailableGroups = this.getAvailableGroups.bind(this);
@@ -29,11 +32,22 @@ class MemberDetails extends React.Component {
     this.renderInvoice= this.renderInvoice.bind(this);
   }
 
-  componentWillMount() {
+  componentWillMount(props) {
+    MemberStore.on('change', this.updateValues);
+    MemberActions.fetchNotes(this.props.memberID);
     this.getMembersGroups();
     this.getAvailableGroups();
     this.getCompleteDetails();
-    this.getNotes()
+  }
+
+  componentWillUnmount() {
+    MemberStore.removeListener('change', this.updateValues);
+  }
+
+  updateValues() {
+    this.setState({
+      notes: MemberStore.getNotes(),
+    });
   }
 
   // Finds all the variable information pertaining to a user for display
