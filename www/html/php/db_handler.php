@@ -102,7 +102,7 @@ class DB_Handler
 
   // Gets all variable information about a user
   function getDetail($memberID, $query) {
-    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
+    $completeQuery = "SELECT $query FROM USER LEFT JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
     $sql = $this->db->prepare($completeQuery);
     if($sql->execute());
       return  $sql->fetchall();
@@ -111,7 +111,7 @@ class DB_Handler
 
   // Allows a standard detail to be updated for a user
   function setDetail($memberID, $value, $column, $table) {
-    $sql = $this->db->prepare("UPDATE BUSINESS JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.UserID='$memberID'");
+    $sql = $this->db->prepare("UPDATE BUSINESS LEFT JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.UserID='$memberID'");
     if($sql->execute())
       return true;
     else
