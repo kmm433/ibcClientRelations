@@ -1,7 +1,8 @@
 import React from 'react';
-import Menu from './Menu.js';
-import ReactRouter from 'react-router-dom';
 import {BrowserRouter, Route} from 'react-router-dom';
+import SideMenu from './Menu/SideMenu.js';
+import BottomMenu from './Menu/BottomMenu.js';
+import ReactRouter from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
 import MemberInformation from './MemberInformation';
@@ -27,11 +28,9 @@ class Layout extends React.Component {
 
     renderNormalUser(){
         return(
-            <div>
-              <Menu
-                user_type={this.props.user_type}
-                first_name={this.props.first_name}
-              />
+            <div id='layout'>
+              <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} />
+              <BottomMenu user_type={this.props.user_type} first_name={this.props.first_name} />
               {/*This list defines all possible location that can be navigated to*/}
               <div>
                 <Route exact={true} path='/' render={()=> <NoticeBoard user_type={this.props.user_type} />}/>

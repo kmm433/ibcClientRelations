@@ -13,6 +13,10 @@ body {
   background-color: #F5F5F5;
 }
 
+html, body, .establish-fonts, #menu, #layout {
+  height: 100%;
+}
+
 /* Overriding some boostrap colors for a custom color scheme.*/
 .panel-primary .panel-heading{
   background-color: #2462AB;
@@ -36,8 +40,6 @@ body {
   width:100%;
   background-color: red;
 }
-
-
 
 .notice {
   position: relative;
@@ -123,37 +125,6 @@ body {
     left: 0%;
 }
 
-#bottom-options {
-  position: relative;
-  bottom: 0px;
-}
-
-#menu-logo {
-  width: 50%;
-  margin-left: auto;
-   margin-right: auto;
-}
-
-#menu-logo img {
-margin-left: 8%;
-  padding-top: 20px;
-  max-width: 105px;
-  width: 100%;
-}
-
-#menu-welcome {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#menu-welcome h1 {
-text-align: center;
-text-transform: uppercase;
-  color: #FFFFFF;
-  font-size: 120%;
-}
-
 .confirmation-button {
   margin: 10px 5px;
 }
@@ -166,6 +137,7 @@ text-transform: uppercase;
   margin-left: 22%;
   margin-right: 20%;
   margin-top: 15px;
+  margin-bottom: 60px;
 }
 
 #notice-board {
@@ -684,15 +656,6 @@ margin-bottom: 2%;
 
 .react-datepicker-wrapper, .react-datepicker__input-container {
     width: 100%;
-}
-
-#member-info-settings .search {
-  min-width: 200px;
-  width: 100%;
-  border: 1px solid #BCBCBC;
-  box-shadow: none;
-  border-radius: 4px;
-  padding: 5px;
 }
 
 .emptyNotices {

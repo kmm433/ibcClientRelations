@@ -20,6 +20,15 @@
 
 /* Regarding the member list view available to executives*/
 
+#member-info-settings .search {
+  min-width: 200px;
+  width: 100%;
+  border: 1px solid #BCBCBC;
+  box-shadow: none;
+  border-radius: 4px;
+  padding: 5px;
+}
+
 .confirmation-button {
   margin: 10px 5px;
 }
