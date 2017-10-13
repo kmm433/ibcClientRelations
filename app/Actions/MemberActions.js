@@ -153,3 +153,103 @@ export function fetchNotes(memberId) {
     }
   });
 }
+
+// Allows for the retrieval of member's details from the database
+export function fetchCompleteDetails(chamberId, expiry, memberId, expiryDisabled) {
+  // Fetch the required fields for this chamber
+  $.ajax({
+    url: '/php/chamber_form.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'chamber': chamberId,
+    }, success: response => {
+      var fields = response;
+      var ignoredResults = [];
+      fields.forEach((field, i)=> {
+        fields[i]['disabled'] = false;
+        if(field['columnname'] === 'ignore' || field['displayname'] === 'Password')
+          ignoredResults.push(i);
+      });
+      ignoredResults.forEach(field => {
+        delete fields[field];
+      });
+      var expiryField = {
+        DataID:"1",
+        columnname:"expiry",
+        displayname:"Membership Expiry Date",
+        inputtype:"date",
+        mandatory:"1",
+        maximum:"",
+        minimum:"",
+        ordering:"1000000",
+        tablename:"USER",
+        value: expiry,
+        disabled: expiryDisabled,
+      };
+      fields.push(expiryField);
+      $.ajax({
+        url: "/php/get_complete_details.php",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          'fields': JSON.stringify(fields),
+          'memberID': memberId
+        }, success: response => {
+          // Match the values to their fields
+          for (var value in response) {
+            fields.forEach((field) => {
+              if(field['displayname'] === value) {
+                field['value'] = response[value];
+              }
+            });
+          }
+          // Sort the fields by their ordering value
+          fields.sort((a, b) => {
+            return(a['ordering'] - b['ordering']);
+          });
+          dispatcher.dispatch({
+            type: 'RETRIEVED_USER_DETAILS',
+            details: fields,
+          });
+        }, error: response => {
+          console.log('ERROR:', response);
+        }
+      });
+    }
+  });
+}
+
+// Allows for a member's details to be updated
+export function updateDetails(memberId, details) {
+  // Replace blank strings with null
+  var updatedDetails = details;
+  for (var detail in updatedDetails) {
+    if(updatedDetails[detail][1]['value'] === '') {
+      updatedDetails[detail][1]['value'] = null;
+    }
+  }
+
+  // Ajax call to submission function then reload...
+  $.ajax({
+    url: '/php/update_complete_details.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'member_id': memberId,
+      'details': updatedDetails
+    },
+    success: result => {
+      if (result.status === 200) {
+        if (result.value.email_syncronized) {
+          alert('Successfully updated details. Email address has been syncronized with MailChimp.');
+        }
+        else {
+          alert('Successfully updated details.');
+        }
+      }
+      fetchNotes(memberId);
+      //this.props.setEditMode();
+    }, error: result => {console.log(result);}
+  });
+}

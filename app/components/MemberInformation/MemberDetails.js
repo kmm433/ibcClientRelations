@@ -14,16 +14,12 @@ class MemberDetails extends React.Component {
       tags: [],
       suggestions: [],
       details: {},
-      complete_details: null,
-      fields: null,
       editable: false,
-      notes: []
+      notes: [],
     }
     this.updateValues = this.updateValues.bind(this);
-    this.getCompleteDetails = this.getCompleteDetails.bind(this);
     this.getMembersGroups = this.getMembersGroups.bind(this);
     this.getAvailableGroups = this.getAvailableGroups.bind(this);
-    this.getNotes = this.getNotes.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
@@ -35,9 +31,9 @@ class MemberDetails extends React.Component {
   componentWillMount(props) {
     MemberStore.on('change', this.updateValues);
     MemberActions.fetchNotes(this.props.memberID);
+    MemberActions.fetchCompleteDetails(this.props.chamber_id, this.props.expiry, this.props.memberID, false);
     this.getMembersGroups();
     this.getAvailableGroups();
-    this.getCompleteDetails();
   }
 
   componentWillUnmount() {
@@ -47,67 +43,7 @@ class MemberDetails extends React.Component {
   updateValues() {
     this.setState({
       notes: MemberStore.getNotes(),
-    });
-  }
-
-  // Finds all the variable information pertaining to a user for display
-  getCompleteDetails() {
-    // Fetch the required fields for this chamber
-    $.ajax({
-      url: '/php/chamber_form.php',
-      type: 'POST',
-      dataType: 'json',
-      data: {'chamber': this.props.chamber_id},
-      success: response => {
-        var fields = response;
-        var ignoredResults = [];
-        fields.forEach((field, i)=> {
-          if(field['columnname'] === 'ignore' || field['displayname'] === 'Password')
-            ignoredResults.push(i);
-        });
-        ignoredResults.forEach(field => {
-          delete fields[field];
-        });
-        var expiryField = {
-          DataID:"1",
-          columnname:"expiry",
-          displayname:"Membership Expiry Date",
-          inputtype:"date",
-          mandatory:"1",
-          maximum:"",
-          minimum:"",
-          ordering:"1000000",
-          tablename:"USER",
-          value:this.props.expiry
-        };
-        fields.push(expiryField);
-        this.setState({fields: fields});
-        $.ajax({
-          url: "/php/get_complete_details.php",
-          type: 'POST',
-          dataType: 'json',
-          data: {
-            'fields': JSON.stringify(fields),
-            'memberID': this.props.memberID
-          }, success: response => {
-            // Match the values to their fields
-            for (var value in response) {
-              fields.forEach((field) => {
-                if(field['displayname'] === value) {
-                  field['value'] = response[value];
-                }
-              });
-            }
-            // Sort the fields by their ordering value
-            fields.sort((a, b) => {
-              return(a['ordering'] - b['ordering']);
-            });
-            this.setState({details: fields});
-          }, error: response => {
-            console.log('ERROR:', response);
-          }
-        });
-      }
+      details: MemberStore.getCompleteDetails(),
     });
   }
 
@@ -144,22 +80,6 @@ class MemberDetails extends React.Component {
         this.setState({suggestions: groupNames});
       }
     }});
-  }
-
-  // Fetches any notes left about a member
-  getNotes() {
-    $.ajax({
-      url: "/php/get_notes.php",
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        'memberID': this.props.memberID
-      }, success: response => {
-        this.setState({notes: response});
-      }, error: response => {
-        console.log('Failed to retrieve notes.', response);
-      }
-    });
   }
 
   handleDelete(i) {
@@ -220,7 +140,7 @@ class MemberDetails extends React.Component {
     //Do nothing, function is required but there is no point to rearranging.
   }
 
-  setEditMode(event) {
+  setEditMode() {
     this.setState({editable: !this.state.editable});
   }
 
@@ -310,10 +230,7 @@ class MemberDetails extends React.Component {
           memberID={this.props.memberID}
           details={this.state.details}
           editable={this.state.editable}
-          getCompleteDetails={this.getCompleteDetails}
-          getChamberMembers={this.props.getChamberMembers}
           setEditMode={this.setEditMode}
-          getNotes={this.getNotes}
         />
         <div className='member-details-groups'>
           <h4>Manage Groups</h4>
@@ -331,7 +248,6 @@ class MemberDetails extends React.Component {
         <NotesPanel
           memberID={this.props.memberID}
           notes={this.state.notes}
-          getNotes={this.getNotes}
         />
       </div>
     );

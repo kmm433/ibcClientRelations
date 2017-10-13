@@ -14,6 +14,7 @@ class MemberStore extends EventEmitter {
     this.num_archived = null;
     this.notes = null;
     this.invoice_callback_domain = null;
+    this.complete_details = null;
   }
 
   // Allows for the list of unfiltered members to be retrieved
@@ -61,6 +62,11 @@ class MemberStore extends EventEmitter {
     return this.invoice_callback_domain;
   }
 
+  // Allows for the retrieval of a complete list of a member's details
+  getCompleteDetails() {
+    return this.complete_details;
+  }
+
   // Updates the current list of unfiltered members
   updateUnfilteredMembers(members) {
     this.unfiltered_members = members;
@@ -92,6 +98,12 @@ class MemberStore extends EventEmitter {
     this.emit('change');
   }
 
+  // Updates a list of a members details
+  updateCompleteDetails(details) {
+    this.complete_details = details;
+    this.emit('change');
+  }
+
   // The handler for any fired actions
   handleDispatchedActions(action) {
     switch(action.type) {
@@ -116,6 +128,10 @@ class MemberStore extends EventEmitter {
       }
       case 'RETRIEVED_XERO_INVOICE_CALLBACK_DOMAIN': {
         this.updateInvoiceCallbackDomain(action.domain);
+        break;
+      }
+      case 'RETRIEVED_USER_DETAILS': {
+        this.updateCompleteDetails(action.details);
         break;
       }
     }
