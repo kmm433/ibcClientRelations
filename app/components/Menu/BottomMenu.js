@@ -26,7 +26,7 @@ class BottomMenu extends React.Component {
           </ul>
           <div>
             <ul>
-              <span className='glyphicon glyphicon-log-out'><a href='/php/process_signout.php'></a></span>
+              <a href='/php/process_signout.php'><span className='glyphicon glyphicon-log-out'></span></a>
               <li>
                 <NavLink activeClassName='active-route' to='/help'>
                   <span className='glyphicon glyphicon-question-sign'></span>

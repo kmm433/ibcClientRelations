@@ -45,6 +45,10 @@
   display: inline;
 }
 
+#bottom-menu ul a {
+  color: #FFFFFF!important;
+}
+
 #bottom-menu ul li a{
   display: inline;
   color: #FFFFFF!important;
