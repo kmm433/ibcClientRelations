@@ -699,6 +699,26 @@ class DB_Handler
     return $sql->fetch(PDO::FETCH_ASSOC);
   }
 
+  // Retrieves the expiry date for a specified user
+  function getMemberExpiryDate($userId) {
+    $sql = $this->db->prepare("SELECT expiry FROM USER WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // Updates a specified user's expiry date in the database
+  function updateMemberExpiryDate($userId, $date) {
+    $sql = $this->db->prepare("UPDATE USER SET expiry=:expiry_date WHERE UserID=:user_id");
+    if($sql->execute(array(
+      'user_id' => $userId,
+      'expiry_date' => $date
+    )))
+      return true;
+    else {
+      return false;
+    }
+  }
+
   // Creates a group for a specified chamber using a specified name
   function createGroup($chamberId, $name) {
     $sql = $this->db->prepare("INSERT INTO GROUPS (name, chamberID) VALUES (:group_name, :chamber_id)");

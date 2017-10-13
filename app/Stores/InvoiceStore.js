@@ -11,6 +11,7 @@ class InvoiceStore extends EventEmitter {
     this.connection = true;
     this.createdInvoice = null;
     this.renewalPolicy = null;
+    this.expiry_date = null;
   }
 
   // Allows for the invoices to be retrieved
@@ -41,6 +42,11 @@ class InvoiceStore extends EventEmitter {
   // Allows for the connection to xero to be checked
   getConnection() {
     return this.connection;
+  }
+
+  // Allows for the retrieval of a member's expiry date
+  getExpiryDate() {
+    return this.expiry_date;
   }
 
   // Updates the current list of invoices
@@ -78,6 +84,12 @@ class InvoiceStore extends EventEmitter {
     this.emit('change');
   }
 
+  // Updates a members current expiry date
+  updateExpiryDate(date) {
+    this.expiry_date = date;
+    this.emit('change');
+  }
+
   // The handler for any fired actions
   handleDispatchedActions(action) {
     switch(action.type) {
@@ -98,6 +110,10 @@ class InvoiceStore extends EventEmitter {
       }
       case 'INVOICE_CREATED': {
         this.updateCreatedInvoice(action.invoice);
+        break;
+      }
+      case 'RETRIEVED_EXPIRY_DATE': {
+        this.updateExpiryDate(action.date);
         break;
       }
       case 'CONNECTION_CHANGE': {

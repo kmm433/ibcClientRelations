@@ -22,7 +22,6 @@ export function fetchInvoices() {
       if (JSON.stringify(result.responseText).indexOf('UnauthorizedException') !== -1) {
         unsetSession();
       }
-      console.log('Error fetching invoices... ', result);
     }
   });
 }
@@ -122,6 +121,41 @@ export function fetchRenewalPolicy() {
       else {
         alert(result.value);
       }
+    }
+  });
+}
+
+// Retireves a user's expiry date from the database
+export function fetchExpiryDate(userId) {
+  $.ajax({
+    url: "/php/get_member_expiry_date.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      user_id: userId,
+    }, success: result => {
+      dispatcher.dispatch({
+        type: 'RETRIEVED_EXPIRY_DATE',
+        date: result.value,
+      });
+    }
+  });
+}
+
+// Updates a member's expiry date in the database
+export function updateExpiryDate(userId, date) {
+  $.ajax({
+    url: "/php/update_member_expiry_date.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      user_id: userId,
+      date: date,
+    }, success: result => {
+      if (result.status === 200)
+        alert('Successfully updated membership expiry date.');
+      else
+        alert(result.value);
     }
   });
 }

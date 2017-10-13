@@ -14,16 +14,18 @@ class InvoiceManagement extends React.Component {
       invoice_creator: false,
       connection: true,
       renewal_policy: null,
+      expiry_date: null,
     };
     this.updateValues = this.updateValues.bind(this);
     this.toggleInvoiceCreator = this.toggleInvoiceCreator.bind(this);
   }
 
-  componentWillMount() {
+  componentWillMount(props) {
     InvoiceStore.on('change', this.updateValues);
     InvoiceActions.fetchUserDetails(this.props.match.params.user_id);
     InvoiceActions.fetchInvoices();
     InvoiceActions.fetchRenewalPolicy();
+    InvoiceActions.fetchExpiryDate(this.props.match.params.user_id);
     InvoiceActions.initialConnection();
   }
 
@@ -37,6 +39,7 @@ class InvoiceManagement extends React.Component {
       details: InvoiceStore.getDetails(),
       connection: InvoiceStore.getConnection(),
       renewal_policy: InvoiceStore.getRenewalPolicy(),
+      expiry_date: InvoiceStore.getExpiryDate(),
     });
   }
 
@@ -76,6 +79,7 @@ class InvoiceManagement extends React.Component {
                 details={this.state.details}
                 user_id={this.props.match.params.user_id}
                 renewal_policy={this.state.renewal_policy}
+                expiry_date={this.state.expiry_date}
               />
             </div>
           </div>

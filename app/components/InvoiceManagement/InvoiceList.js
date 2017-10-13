@@ -63,6 +63,7 @@ class InvoiceList extends React.Component {
           recent_payment={this.state.recent_payment}
           user_id={this.props.user_id}
           renewal_policy={this.props.renewal_policy}
+          expiry_date={this.props.expiry_date}
         />
         <h3>{'Existing Invoices' + (details ? ' For ' + details.firstname + ' ' + details.lastname : null)}</h3>
         <p>Click an invoice to dowload a copy.</p>

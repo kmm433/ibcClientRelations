@@ -89,7 +89,6 @@ class MemberStore extends EventEmitter {
   // Updates the call back domain for xero invoices
   updateInvoiceCallbackDomain(domain) {
     this.invoice_callback_domain = domain;
-    console.log('updated callback domain to: ', this.invoice_callback_domain);
     this.emit('change');
   }
 

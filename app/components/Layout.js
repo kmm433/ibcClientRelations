@@ -37,7 +37,7 @@ class Layout extends React.Component {
                 <Route exact={true} path='/index.php' render={()=> <NoticeBoard user_type={this.props.user_type} />}/>
                 <Route path='/profile' component={Calendar} />
                 <Route path='/member_information' render={()=> <MemberInformation user_type={this.props.user_type} chamber_id={this.props.chamber_id}/>} />
-                <Route path='/invoice/:user_id' render={() => <InvoiceManagement user_type={this.props.user_type}/>} />
+                <Route path='/invoice/:user_id' render={(props) => <InvoiceManagement {...props} user_type={this.props.user_type}/>} />
                 <Route path='/manage_groups' render={() => <GroupManagement user_type={this.props.user_type} chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' render={()=> <UpcomingEvents user_type={this.props.user_type} />} />
                 <Route path='/results' component={Results} />

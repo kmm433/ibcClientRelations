@@ -97,7 +97,6 @@ class MemberInformation extends React.Component {
   }
 
   render() {
-    console.log('VALIDATING USER OF TYPE: ', this.props.user_type);
     if (this.props.user_type !== '1') {
       return (
         <div className='main-component'>

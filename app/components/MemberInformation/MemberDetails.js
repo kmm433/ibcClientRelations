@@ -238,9 +238,6 @@ class MemberDetails extends React.Component {
     }
     // Check if in warning phase or already expired
     if(expiryDate && (expiryDate < warningWindow)) {
-      /*return (
-        <input type='button' className='btn btn-primary' value='Send Invoice Via Xero' />
-      );*/
       return (
         <a className='btn btn-primary'
           href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
@@ -251,9 +248,12 @@ class MemberDetails extends React.Component {
     else{
       warningWindow.setDate(warningWindow.getDate() + 14);
       if (expiryDate && (expiryDate < warningWindow)){
-        /*return (
-          <input type='button' className='btn btn-primary' value='Send Invoice Via Xero' />
-        );*/
+        return (
+          <a className='btn btn-primary'
+            href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
+            Manage Invoices with Xero
+          </a>
+        );
       }
     }
     return null;
