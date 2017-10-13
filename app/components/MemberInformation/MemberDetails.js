@@ -243,7 +243,7 @@ class MemberDetails extends React.Component {
       );*/
       return (
         <a className='btn btn-primary'
-          href={'/php/xero/xero_invoice.php?user_id=' + this.props.memberID}>
+          href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
           Manage Invoices with Xero
         </a>
       );

@@ -23,7 +23,8 @@ class MemberInformation extends React.Component {
       archived: false,
       num_all: null,
       num_renewals: null,
-      num_archived: null
+      num_archived: null,
+      invoice_callback_domain: null,
     };
     this.updateValues = this.updateValues.bind(this);
     this.changeSearchPhrase = this.changeSearchPhrase.bind(this);
@@ -35,6 +36,7 @@ class MemberInformation extends React.Component {
   componentWillMount(props) {
     MemberStore.on('change', this.updateValues);
     MemberActions.fetchChamberMembers();
+    MemberActions.fetchXeroInoviceCallbackDomain();
   }
 
   componentWillUnmount() {
@@ -50,6 +52,7 @@ class MemberInformation extends React.Component {
       num_all: MemberStore.getNumAll(),
       num_renewals: MemberStore.getNumRenewals(),
       num_archived: MemberStore.getNumArchived(),
+      invoice_callback_domain: MemberStore.getInvoiceCallbackDomain(),
     });
   }
 
@@ -108,6 +111,7 @@ class MemberInformation extends React.Component {
                 num_all={this.state.num_all}
                 num_renewals={this.state.num_renewals}
                 num_archived={this.state.num_archived}
+                invoice_callback_domain={this.state.invoice_callback_domain}
                 changeSearchPhrase={this.changeSearchPhrase}
                 changeViewGroup={this.changeViewGroup}
               />

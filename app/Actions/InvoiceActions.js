@@ -5,7 +5,7 @@ import dispatcher from '../dispatcher.js';
 // Used to retrieve all existing invoices from Xero
 export function fetchInvoices() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=fetch_invoices",
+    url: "/php/xero_invoice.php?operation=fetch_invoices",
     type: 'POST',
     dataType: 'json',
     success: result => {
@@ -22,6 +22,7 @@ export function fetchInvoices() {
       if (JSON.stringify(result.responseText).indexOf('UnauthorizedException') !== -1) {
         unsetSession();
       }
+      console.log('Error fetching invoices... ', result);
     }
   });
 }
@@ -29,7 +30,7 @@ export function fetchInvoices() {
 // Used to retrieve all possible invoicable items from Xero
 export function fetchItems() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=fetch_items",
+    url: "/php/xero_invoice.php?operation=fetch_items",
     type: 'POST',
     dataType: 'json',
     success: result => {
@@ -53,7 +54,7 @@ export function fetchItems() {
 // Used to create a new invoice on Xero
 export function createNewInvoice(firstname, lastname, email, listItem, dueDate) {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=create_invoice",
+    url: "/php/xero_invoice.php?operation=create_invoice",
     type: 'POST',
     dataType: 'json',
     data: {
@@ -128,7 +129,7 @@ export function fetchRenewalPolicy() {
 // When the Xero session has expired some variables will need to be unset an the user alerted
 export function unsetSession() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=unset_session",
+    url: "/php/xero_invoice.php?operation=unset_session",
     type: 'POST',
     success: result => {
       alert('Connection to Xero has been lost, you will need to reconnect.');

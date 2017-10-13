@@ -42,6 +42,8 @@ class SettingsMenu extends React.Component {
   // Allows for the user's Xero Keys to be sent to the database
   submitXeroAPIKeys() {
     MemberActions.updateXeroAPIKeys(this.state.consumer_key, this.state.consumer_secret);
+    $('#xero-manager').fadeOut('slow');
+    this.setState({key_button_text: 'Update Xero Connection'});
   }
 
   render() {
@@ -55,8 +57,9 @@ class SettingsMenu extends React.Component {
           onClick={this.toggleDisplayKeysXero}
         />
         <div id='xero-manager'>
-          <p>If you have not already, you will need to create an application on Xero by following this link:</p>
+          <p>If you have not already, you will need to create a new public application on Xero by following this link:</p>
           <p><a href='https://app.xero.com/Application' target='_blank'>https://app.xero.com/Application</a></p>
+          <p>Enter "{this.props.invoice_callback_domain}" in the OAuth Callback Domain field on Xero, without quotes.</p>
           <p>Once you have created an application copy the Consumer Key and Secret into the following fields and press submit.</p>
           <input id='xero-consumer-key'
             type='text'

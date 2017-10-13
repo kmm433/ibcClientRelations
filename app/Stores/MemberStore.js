@@ -13,6 +13,7 @@ class MemberStore extends EventEmitter {
     this.num_renewals = null;
     this.num_archived = null;
     this.notes = null;
+    this.invoice_callback_domain = null;
   }
 
   // Allows for the list of unfiltered members to be retrieved
@@ -55,6 +56,11 @@ class MemberStore extends EventEmitter {
     return this.notes;
   }
 
+  // Allows for the retrieval of the xero invoice callback domain
+  getInvoiceCallbackDomain() {
+    return this.invoice_callback_domain;
+  }
+
   // Updates the current list of unfiltered members
   updateUnfilteredMembers(members) {
     this.unfiltered_members = members;
@@ -80,6 +86,13 @@ class MemberStore extends EventEmitter {
     this.emit('change');
   }
 
+  // Updates the call back domain for xero invoices
+  updateInvoiceCallbackDomain(domain) {
+    this.invoice_callback_domain = domain;
+    console.log('updated callback domain to: ', this.invoice_callback_domain);
+    this.emit('change');
+  }
+
   // The handler for any fired actions
   handleDispatchedActions(action) {
     switch(action.type) {
@@ -100,6 +113,10 @@ class MemberStore extends EventEmitter {
       }
       case 'RETRIEVED_NOTES': {
         this.updateNotes(action.notes);
+        break;
+      }
+      case 'RETRIEVED_XERO_INVOICE_CALLBACK_DOMAIN': {
+        this.updateInvoiceCallbackDomain(action.domain);
         break;
       }
     }

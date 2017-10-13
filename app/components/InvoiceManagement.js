@@ -57,7 +57,7 @@ class InvoiceManagement extends React.Component {
             />
             {!this.state.connection ?
                 <a className='btn btn-primary'
-                  href={'/php/xero/xero_invoice.php?user_id=' + this.props.match.params.user_id}>
+                  href={'/php/xero_invoice.php?user_id=' + this.props.match.params.user_id}>
                   Reconnect to Xero
                 </a>
                 : null

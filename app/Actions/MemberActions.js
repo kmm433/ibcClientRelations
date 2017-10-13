@@ -3,7 +3,41 @@ import dispatcher from '../dispatcher.js';
 
 // Allows for a provided Xero Key and Secret to be submitted to the database
 export function updateXeroAPIKeys(xeroKey, xeroSecret) {
-  console.log('Consumer Key: ', xeroKey, ' Consumer Secret: ', xeroSecret);
+  $.ajax({
+    url: "/php/update_xero_api_keys.php",
+    type: 'POST',
+    data: {
+      'consumer_key': xeroKey,
+      'consumer_secret': xeroSecret,
+    }, success: result => {
+      alert('Xero connection details have been updated.');
+    }, error: result => {
+      console.log(result);
+    }
+  });
+}
+
+// Allows for the Xero callback domain to be retrieved for invoices
+export function fetchXeroInoviceCallbackDomain() {
+  console.log('Fetching callback domain.');
+  $.ajax({
+    url: "/php/get_xero_invoice_callback_domain.php",
+    type: 'POST',
+    dataType: 'json',
+    success: result => {
+      if (result.status === 200) {
+        console.log('domain is: ', result.value);
+        dispatcher.dispatch({
+          'type': 'RETRIEVED_XERO_INVOICE_CALLBACK_DOMAIN',
+          'domain': result.value['domain'],
+        });
+      }
+      else
+        alert(result.value);
+    }, error: result => {
+      console.log('Strange error occurred: ', result);
+    }
+  });
 }
 
 // Allows for the chamber member's to be retrieved from the database

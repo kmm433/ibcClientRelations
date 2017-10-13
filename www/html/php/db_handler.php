@@ -524,6 +524,71 @@ class DB_Handler
       return false;
   }
 
+  // Retrieves the callback domain for xero from the database
+  function getXeroInvoiceCallbackDomain() {
+    $sql = $this->db->prepare("SELECT domain from CALLBACK_URIS WHERE callback='xero_invoice'");
+    $sql->execute();
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  //Updates the Xero APIs Consumer Key and Secret for a given chamber
+  function updateXeroAPIKeys($chamberId, $consumerKey, $consumerSecret) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare( "SELECT COUNT(chamberID) FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id" );
+    $sql->execute( array(
+      'chamber_id' => $chamberId,
+    ));
+    $existing = $sql->fetch( PDO::FETCH_ASSOC );
+    // If there is an existing entry update it
+    if( $existing['COUNT(chamberID)'] > 0) {
+      $sql = $this->db->prepare("UPDATE CHAMBER_API_KEYS SET xero_key=:consumer_key, xero_secret=:consumer_secret WHERE chamberID=:chamber_id");
+      if  ( $sql->execute( array(
+        'chamber_id' => $chamberId,
+        'consumer_key' => $consumerKey,
+        'consumer_secret' => $consumerSecret,
+      )))
+      {
+        $this->db->commit();
+        return true;
+      }
+      else {
+        $this->db->rollBack();
+        return false;
+      }
+    }
+    // If there is no existing entry create one
+    else {
+      $sql = $this->db->prepare( "INSERT INTO CHAMBER_API_KEYS (chamberID, xero_key, xero_secret) VALUES (:chamber_id, :consumer_key, :consumer_secret)" );
+      if  ( $sql->execute( array(
+        'chamber_id' => $chamberId,
+        'consumer_key' => $consumerKey,
+        'consumer_secret' => $consumerSecret,
+      )))
+      {
+        $this->db->commit();
+        return true;
+      }
+      else {
+        $this->db->rollBack();
+        return false;
+      }
+    }
+  }
+
+  // Retrieves the consumer key and secret from the database
+  function getXeroConsumerDetails($chamberId) {
+    $sql = $this->db->prepare("SELECT xero_key, xero_secret FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id");
+    $sql->execute(array('chamber_id' => $chamberId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // Retrieves the callback uri for xero Invoices
+  function getXeroInvoiceCallbackURI() {
+    $sql = $this->db->prepare("SELECT uri FROM CALLBACK_URIS WHERE callback='xero_invoice'");
+    $sql->execute();
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Updates the MailChimp API key for a given chamber
   function updateMailChimpAPIKey($chamberID, $APIkey) {
     $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
