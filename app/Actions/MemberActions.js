@@ -231,25 +231,23 @@ export function updateDetails(memberId, details) {
   }
 
   // Ajax call to submission function then reload...
-  $.ajax({
-    url: '/php/update_complete_details.php',
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      'member_id': memberId,
-      'details': updatedDetails
-    },
-    success: result => {
-      if (result.status === 200) {
-        if (result.value.email_syncronized) {
-          alert('Successfully updated details. Email address has been syncronized with MailChimp.');
+  updatedDetails.forEach( detail => {
+    $.ajax({
+      url: '/php/update_complete_detail.php',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'member_id': memberId,
+        'detail': detail,
+      },
+      success: result => {
+        if (result.status === 200) {
+          if (result.value.email_syncronized === true) {
+            alert('Successfully updated details. Email address has been syncronized with MailChimp.');
+          }
+          console.log(result);
         }
-        else {
-          alert('Successfully updated details.');
-        }
-      }
-      fetchNotes(memberId);
-      //this.props.setEditMode();
-    }, error: result => {console.log(result);}
+      }, error: result => {console.log('error: ', result);}
+    });
   });
 }
