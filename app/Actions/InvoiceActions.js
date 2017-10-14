@@ -5,7 +5,7 @@ import dispatcher from '../dispatcher.js';
 // Used to retrieve all existing invoices from Xero
 export function fetchInvoices() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=fetch_invoices",
+    url: "/php/xero_invoice.php?operation=fetch_invoices",
     type: 'POST',
     dataType: 'json',
     success: result => {
@@ -29,7 +29,7 @@ export function fetchInvoices() {
 // Used to retrieve all possible invoicable items from Xero
 export function fetchItems() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=fetch_items",
+    url: "/php/xero_invoice.php?operation=fetch_items",
     type: 'POST',
     dataType: 'json',
     success: result => {
@@ -53,7 +53,7 @@ export function fetchItems() {
 // Used to create a new invoice on Xero
 export function createNewInvoice(firstname, lastname, email, listItem, dueDate) {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=create_invoice",
+    url: "/php/xero_invoice.php?operation=create_invoice",
     type: 'POST',
     dataType: 'json',
     data: {
@@ -125,10 +125,45 @@ export function fetchRenewalPolicy() {
   });
 }
 
+// Retireves a user's expiry date from the database
+export function fetchExpiryDate(userId) {
+  $.ajax({
+    url: "/php/get_member_expiry_date.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      user_id: userId,
+    }, success: result => {
+      dispatcher.dispatch({
+        type: 'RETRIEVED_EXPIRY_DATE',
+        date: result.value,
+      });
+    }
+  });
+}
+
+// Updates a member's expiry date in the database
+export function updateExpiryDate(userId, date) {
+  $.ajax({
+    url: "/php/update_member_expiry_date.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      user_id: userId,
+      date: date,
+    }, success: result => {
+      if (result.status === 200)
+        alert('Successfully updated membership expiry date.');
+      else
+        alert(result.value);
+    }
+  });
+}
+
 // When the Xero session has expired some variables will need to be unset an the user alerted
 export function unsetSession() {
   $.ajax({
-    url: "/php/xero/xero_invoice.php?operation=unset_session",
+    url: "/php/xero_invoice.php?operation=unset_session",
     type: 'POST',
     success: result => {
       alert('Connection to Xero has been lost, you will need to reconnect.');
