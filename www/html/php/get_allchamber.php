@@ -1,8 +1,11 @@
 <?php
 include 'db_handler.php';
 
+//get active chambers
 $db = new DB_Handler();
-$results = $db->getList("SELECT DISTINCT chamberID, name FROM CHAMBER");
+
+$mode = $_POST["mode"];
+$results = $db->getChamberList($mode);
 
 echo json_encode($results);
 

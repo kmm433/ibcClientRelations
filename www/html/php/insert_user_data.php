@@ -2,12 +2,17 @@
 include 'db_handler.php';
 $db = new DB_Handler();
 
+//removes HTML tags, decodes url, replaces multiple spaces and leading and trailing spaces
+function sanitise($variable){
+    $sanitised = trim(preg_replace('/ +/', ' ', html_entity_decode(strip_tags($variable))));
+    return $sanitised;
+}
 
+$error = "success";
 $chamber = $_POST["chamber"];
 
 $tablename = "BUSINESS_";
 $tablename .= $chamber;
-
 
 $answers = $_POST["answers"];
 $column = $_POST["columnname"];
@@ -18,34 +23,74 @@ $email = null;
 $password = null;
 $firstname = null;
 $lastname = null;
+$jobtitle = null;
 
 $abn = null;
 $businessname = null;
 $businessphone = null;
 $anzic = null;
+$established=null;
+$mobile=null;
+$numofemployees=null;
+$website=null;
+$addressid=null;
+$id="HELLO";
+
+$address = $_POST['address'];
+$postal = $_POST['postal'];
 
 
 $size = count($answers);
+
+
 for($i = 0; $i<($size); $i++){
-    if($table[$i]=='USER'){
-        if($column[$i] == 'email')
-            $email = $answers[$i];
+
+    if($table[$i]=='USER' && $answers[$i] != ""){
+
+        if($column[$i] == 'email'){
+            !filter_var($answers[$i], FILTER_VALIDATE_EMAIL) ? $error = "Invalid Input 1" : $email = $answers[$i];
+        }
         else if($column[$i] == 'password')
             $password = $answers[$i];
         else if($column[$i] == 'firstname')
             $firstname = $answers[$i];
         else if($column[$i] == 'lastname')
             $lastname = $answers[$i];
+        else if($column[$i] == 'jobtitle')
+            $jobtitle = $answers[$i];
+        else
+            $error = $column[$i];
     }
-    else if($table[$i]=='BUSINESS'){
-        if($column[$i] == 'ABN')
-            $abn = $answers[$i];
-        else if($column[$i] == 'businessname')
-            $businessname = $answers[$i];
-        else if($column[$i] == 'businessphone')
-            $businessphone = $answers[$i];
-        else if($column[$i] == 'anziccode')
-            $anzic = $answers[$i];
+
+    else if($table[$i]=='BUSINESS' && $answers[$i] != ""){
+        if($column[$i] == 'established')
+            $established = $answers[$i];
+
+        else if($column[$i] == 'ABN'){
+            !filter_var($answers[$i], FILTER_VALIDATE_INT) ? $error = "Invalid Input Field: ABN" : ($abn = $answers[$i]);
+        }
+        else if($column[$i] == 'businessphone'){
+            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($businessphone = $answers[$i]) : $error = "Invalid Input Field: Business Phone";
+        }
+        else if($column[$i] == 'businessname'){
+            $businessname = sanitise($answers[$i]);
+        }
+        else if($column[$i] == 'mobile'){
+            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($mobile = $answers[$i]) : $error = "Invalid Input Field: mobile";
+        }
+        else if($column[$i] == 'anziccode'){
+            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($anzic = $answers[$i]) : $error = "Invalid Input Field: Anzic Code";
+        }
+        else if($column[$i] == 'numofemployees'){
+            filter_var($answers[$i], FILTER_VALIDATE_INT) ? $numofemployees = $answers[$i] : $error = "Invalid Input Field: Number of Employees";
+        }
+        else if($column[$i] == 'website'){
+            $website = sanitise($answers[$i]);
+        }
+        else{
+            $error = "Error";
+        }
+
     }
 }
 
@@ -53,87 +98,33 @@ $options = [
     'cost' => 11,
     'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
 ];
-$password = password_hash($password, PASSWORD_BCRYPT, $options);
+$password = password_hash($password, PASSWORD_DEFAULT, $options);
 
-$id = $db->insertBusiness("INSERT INTO BUSINESS (chamberID, ABN, businessname, businessphone, anziccode)
-                    VALUES($chamber, $abn, '$businessname', $businessphone, $anzic)");
+$results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
+$addressid = $db->getLastID();
+if(!(isset($postal) || empty($postal))){
+    $postalid =  $db->insertAddress($postal->line1, $postal->line2, $postal->city, $postal->state, $postal->postcode, $postal->country);
+    $postalid = $db->getLastID();
+}
+else{
+    $postalid = $addressid;
+}
 
-$results = $db->insertUser("INSERT INTO USER (businessID, email, password, chamberID, firstname, lastname, expiry)
-                    VALUES($id,'$email', '$password', $chamber, '$firstname', '$lastname', CURRENT_TIMESTAMP + INTERVAL 1 YEAR)");
 
+$results = $db->insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
+$id = $db->getLastID();
+$results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP + INTERVAL 1 YEAR', $jobtitle, 3);
+
+$var = null;
 for($i = 0; $i<($size); $i++){
     if($table[$i]==$tablename){
-        $varC = $answers[$i];
+
+        $var = $answers[$i];
         $data = $DataID[$i];
 
-        $db->insertUser("INSERT INTO $tablename (DataID, answer, BUSINESSID)
-                            VALUES($data, '$varC', $id)");
+        $db->insertExtraUserData($tablename, $data, $var, $id);
     }
 }
 
-echo json_encode($data);
-
-
-/*
-$size = count($answers);
-
-$a=NULL;
-$col=NULL;
-$varB=NULL;
-$colB=NULL;
-$varC=NULL;
-$colC=NULL;
-
-for( $i = 0; $i<($size); $i++ ) {
-
-    if($table[$i]=='USER'){
-
-        $a .= ", '";
-        $a .= $answers[$i];
-        $a .= "'";
-
-        $col .= ", ";
-        $col .= $column[$i];
-    }
-
-    else if($table[$i]=='BUSINESS'){
-
-        if($i != 0){
-            $varB .= ", '";
-            $colB .= ", ";
-        }
-        else {
-            $varB .= "'";
-        }
-
-        $varB .= $answers[$i];
-        $varB .= "'";
-
-        $colB .= $column[$i];
-    }
-
-    else if($table[$i]==$tablename){
-
-        if($i != 0){
-            $varC .= ", '";
-            $colC .= ", ";
-        }
-        else {
-            $varC .= "'";
-        }
-
-        $varC = $answers[$i];
-        $data = $DataID[$i];
-
-        $db->insertUser("INSERT INTO $tablename (DataID, answer, BUSINESSID)
-                            VALUES($data, '$varC', 1233)");
-    }
-
-}
-$db->insertUser("INSERT INTO USER (expiry, chamberID$col)
-                    VALUES(CURRENT_TIMESTAMP + INTERVAL 1 YEAR, $chamber $a)");
-
-$db->insertUser("INSERT INTO BUSINESS (chamberID, $colB)
-                    VALUES($chamber, $varB)");
-*/
+echo json_encode($_POST['address']);
 ?>
