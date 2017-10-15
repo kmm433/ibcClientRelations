@@ -20,6 +20,7 @@ import LinkEvent from './NoticeBoard/LinkEvent';
 import DisableChamber from './Admin/DisableChamber';
 import EnableChamber from './Admin/EnableChamber';
 import ContactUs from './ContactUs/ContactUs';
+import Help from './Help'
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -51,7 +52,7 @@ class Layout extends React.Component {
                 <Route path='/edit_signup' render={()=> <EditSignup user_type={this.props.user_type} />} />
                 <Route path='/contact_us' component={ContactUs} />
                 <Route path='/create_notice' component={create_notice} />
-                <Route path='/help' component={Calendar} />
+                <Route path='/help' render={()=> <Help user_type={this.props.user_type} />}  />
               </div>
             </div>
 
