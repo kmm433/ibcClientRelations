@@ -203,84 +203,93 @@ class GroupManagement extends React.Component {
   }
 
   render() {
-    return (
-      <div className='main-component w3-row' id='group-management'>
-        <div className='w3-col s12'>
-          <div className='w3-container w3-card-4 w3-light-grey'>
-            <h2>Manage Groups</h2>
-            <div className='group-management-options'>
-              <input id='new-group-form'
-                type='text'
-                placeholder='Enter a new group name...'
-                value={this.state.new_group_name}
-                onChange={(e) => {this.updateNewGroupName(e)}}
-              />
-              <input id='submit-create-group'
-                type='button'
-                className='btn btn-success'
-                value='Create'
-                onClick={e => this.handleCreateGroup(e)}
-              />
-              <input id='create-group-button'
-                type='button'
-                className='btn btn-primary'
-                value={this.state.create_button_text}
-                onClick={() => this.toggleDisplayCreateGroup()}
-              />
-              <a className='btn btn-primary' href={'mailto:?bcc=' + this.state.group_members}>Email Selected Groups</a>
-              <input id='mailchimp-api-key-form'
-                type='text'
-                placeholder='Enter MailChimp API key...'
-                onChange={e => this.updateAPIKey(e)}
-                value={this.state.api_key_input}
-              />
-              <input id='submit-api-key'
-                type='button'
-                className='btn btn-success'
-                value='Submit'
-                onClick={e => this.handleSubmitKey(e)}
-              />
-              <input type='button'
-                className='btn btn-primary'
-                value={this.state.key_button_text}
-                onClick={() => this.toggleDisplayEnterKey()}
-              />
-              <input id='group-edit-mode'
-                type='button'
-                className='btn btn-primary'
-                value={this.state.edit_mode ? 'Stop Changing List IDs' : 'Change MailChimp List IDs'}
-                onClick={() => this.toggleEditMode()}
-              />
-              <input id='delete-group-button'
-                type='button'
-                className='btn btn-danger'
-                value='Delete Selected Groups'
-                onClick={() => this.deleteSelectedGroups()}
-              />
-            </div>
-            {(this.state.duplicate_group && this.state.duplicate_warning) ?
-              <div id='duplicate-group-warning' className='alert alert-danger'>This group name is already in use.</div> : null
-            }
-            {this.renderGroupMembers()}
-            <input id='group_search_form'
-              type='text'
-              placeholder='Search groups by name...'
-              value={this.state.search_phrase}
-              onChange={e => this.updateSearchPhrase(e)}
-            />
-            <div className='groups-table'>
-              <div className='groups-table-headers'>
-                <div className='groups-table-title'>Selected Groups</div>
-                <div className='groups-table-title'>Group Name</div>
-                <div className='groups-table-title'>Number of Members</div>
-                <div className='groups-table-title'>MailChimp List ID</div>
+    if (this.props.user_type !== '1') {
+      return (
+        <div className='main-component'>
+          <p>Error: Access not permitted.</p>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className='main-component w3-row' id='group-management'>
+          <div className='w3-col s12'>
+            <div className='w3-container w3-card-4 w3-light-grey'>
+              <h2>Manage Groups</h2>
+              <div className='group-management-options'>
+                <input id='new-group-form'
+                  type='text'
+                  placeholder='Enter a new group name...'
+                  value={this.state.new_group_name}
+                  onChange={(e) => {this.updateNewGroupName(e)}}
+                />
+                <input id='submit-create-group'
+                  type='button'
+                  className='btn btn-success'
+                  value='Create'
+                  onClick={e => this.handleCreateGroup(e)}
+                />
+                <input id='create-group-button'
+                  type='button'
+                  className='btn btn-primary'
+                  value={this.state.create_button_text}
+                  onClick={() => this.toggleDisplayCreateGroup()}
+                />
+                <a className='btn btn-primary' href={'mailto:?bcc=' + this.state.group_members}>Email Selected Groups</a>
+                <input id='mailchimp-api-key-form'
+                  type='text'
+                  placeholder='Enter MailChimp API key...'
+                  onChange={e => this.updateAPIKey(e)}
+                  value={this.state.api_key_input}
+                />
+                <input id='submit-api-key'
+                  type='button'
+                  className='btn btn-success'
+                  value='Submit'
+                  onClick={e => this.handleSubmitKey(e)}
+                />
+                <input type='button'
+                  className='btn btn-primary'
+                  value={this.state.key_button_text}
+                  onClick={() => this.toggleDisplayEnterKey()}
+                />
+                <input id='group-edit-mode'
+                  type='button'
+                  className='btn btn-primary'
+                  value={this.state.edit_mode ? 'Stop Changing List IDs' : 'Change MailChimp List IDs'}
+                  onClick={() => this.toggleEditMode()}
+                />
+                <input id='delete-group-button'
+                  type='button'
+                  className='btn btn-danger'
+                  value='Delete Selected Groups'
+                  onClick={() => this.deleteSelectedGroups()}
+                />
               </div>
-              {this.renderGroups()}
+              {(this.state.duplicate_group && this.state.duplicate_warning) ?
+                <div id='duplicate-group-warning' className='alert alert-danger'>This group name is already in use.</div> : null
+              }
+              {this.renderGroupMembers()}
+              <input id='group_search_form'
+                type='text'
+                placeholder='Search groups by name...'
+                value={this.state.search_phrase}
+                onChange={e => this.updateSearchPhrase(e)}
+              />
+              <div className='groups-table'>
+                <div className='groups-table-headers'>
+                  <div className='groups-table-title'>Selected Groups</div>
+                  <div className='groups-table-title'>Group Name</div>
+                  <div className='groups-table-title'>Number of Members</div>
+                  <div className='groups-table-title'>MailChimp List ID</div>
+                </div>
+                {this.renderGroups()}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 };
 

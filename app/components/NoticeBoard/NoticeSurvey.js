@@ -33,13 +33,17 @@ class NoticeSurvey extends React.Component {
           items: [],
           hidden: true
       };
-
       this.collapse = this.collapse.bind(this);
+      this.deleteNotice = this.deleteNotice.bind(this);
+      questions = [];
+      answers = [];
+      userAnswers = [];
     }
 
     componentWillMount(){
         /* get all Questions and Answers */
         if (this.props.Disabled == true){
+            // For use in Create Survey Page, provides a disabled preview version of component
             questions = this.props.Questions;
             answers = this.props.Answers;
         }
@@ -54,57 +58,26 @@ class NoticeSurvey extends React.Component {
         this.setData();
     }
 
-    get_SurveyQuestions(){
-      $.ajax({
-          url: '/php/get_SurveyQuestions.php',
-          type:'POST',
-          async: false,
-          dataType: "json",
-          data: {
-              'surveyID': this.props.SurveyID
-          },
-          success : function(response){
-              questions = response;
-              //console.log('get_SurveyQuestions Success')
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_SurveyQuestions Error')
-          }.bind(this)
-      });
-  }
-
-  get_SurveyAnswers(){
-        $.ajax({
-            url: '/php/get_SurveyAnswers.php',
-            type:'POST',
-            async: false,
-            dataType: "json",
-            data: {
-                'surveyID': this.props.SurveyID
-            },
-            success : function(response){
-                answers = response;
-                //console.log('get_SurveyAnswers Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_SurveyAnswers Error')
-            }.bind(this)
-        });
-    }
-        /* Format the Questions and Answers properly, push into list that will
-        be used by the slider                                               */
+    /* Format the Questions and Answers properly, push into list that will be used by the slider */
     setData(){
         var FormattedOutput = [];
         // Cycle through questions and each set of answers
         for(var i = 0; i < questions.length; i++){
 
             var tmpA = [];
-            if (questions[i].answerType == 0){ // Type is RadioButton
-                //Prepare results array
-                userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: answers[0].AnswerID, Answer: answers[0].answer});
-                //Add all potential answers
+            if (questions[i].answerType == 0 && answers.length > 0){ // Type is RadioButton
+
+                //Add all potential answers for this question
+                var firstAnswer;
+                var firstAnswerID;
+                var found = false;
                 for(var b = 0; b < answers.length; b++){
                     if (answers[b].questionNo == questions[i].questionNo){
+                        if(found == false){
+                            firstAnswer = answers[b].answer;
+                            firstAnswerID = answers[b].AnswerID;
+                            found = true;
+                        }
                         tmpA.push(
                             <RadioButton key={answers[b].AnswerID + answers[b].answer}
                                 rootColor="#4d4c4c"
@@ -113,6 +86,10 @@ class NoticeSurvey extends React.Component {
                             </RadioButton>);
                     }
                 }
+
+                //Prepare results array with the first answer
+                userAnswers.push({surveyID: this.props.SurveyID, questionNo: questions[i].questionNo, question: questions[i].question, AnswerID: firstAnswerID, Answer: firstAnswer});
+
                 // Add final question / answer pairs
                 FormattedOutput.push(<SurveyRadio
                         key={questions[i].questionNo}
@@ -133,17 +110,28 @@ class NoticeSurvey extends React.Component {
             }
         }
 
+        var disableMe = false;
+        if (this.props.Disabled == true || this.props.statPage == true){
+            disableMe = true;
+        }
         // Add the submit page
         FormattedOutput.push(<SubmitPage
                 key="Submit"
                 collapseSurvey={this.collapse}
-                disabled={this.props.Disabled}
+                disabled={disableMe}
         />)
 
         // Set the state to completed question/answer pairs + submit page
         this.setState({
             items: FormattedOutput
         });
+
+        /*
+        console.log("USERANSWERS");
+        for (var i = 0; i < userAnswers.length; i++){
+            console.log(userAnswers[i]);
+        }
+        */
     }
 
     collapse(){
@@ -161,12 +149,21 @@ class NoticeSurvey extends React.Component {
           slidesToShow: 1,
           slidesToScroll: 1
         };
+
+        let deleteBtn = null;
+        if (this.props.user_type == 1){
+            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
+        }
+
         return(
             <Collapse isOpened={this.state.hidden}>
                 <div className="notice">
                     <div className="notice-title">
-                        <h2>{"New Survey: " + this.props.title}</h2>
-                        <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
+                        <div className="w3-col s11">
+                            <h2>{"New Survey: " + this.props.title}</h2>
+                            <h2>{"Posted " + moment(this.props.DatePosted).format("Do MMM YYYY")}</h2>
+                        </div>
+                        {deleteBtn}
                     </div>
                     <div className="survey-content">
                         <Slider {...settings}>
@@ -181,6 +178,69 @@ class NoticeSurvey extends React.Component {
             </Collapse>
         );
     }
+
+  deleteNotice(){
+        if (confirm("Warning: This will permenantly remove this Survey from your chamber members and can not be undone! Are you sure?") == true){
+            $.ajax({
+                url: '/php/delete_Survey.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'SurveyID': this.props.SurveyID
+                },
+                success : function(response){
+                    //console.log('delete_Survey Success');
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('delete_Survey Error' + xhr.responseText);
+                }.bind(this)
+            });
+
+            this.setState({
+                hidden: false
+            });
+        }
+    }
+
+  get_SurveyQuestions(){
+      console.log(this.props.SurveyID);
+      $.ajax({
+          url: '/php/get_SurveyQuestions.php',
+          type:'POST',
+          async: false,
+          dataType: "json",
+          data: {
+              'surveyID': this.props.SurveyID
+          },
+          success : function(response){
+              questions = response;
+              //console.log('get_SurveyQuestions Success' + this.props.SurveyID + ' ' + response);
+          }.bind(this),
+          error: function(xhr, status, err){
+              console.log('get_SurveyQuestions Error');
+          }.bind(this)
+      });
+  }
+
+  get_SurveyAnswers(){
+        $.ajax({
+            url: '/php/get_SurveyAnswers.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            data: {
+                'surveyID': this.props.SurveyID
+            },
+            success : function(response){
+                answers = response;
+                //console.log('get_SurveyAnswers Success' + this.props.SurveyID + ' ' + response);
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_SurveyAnswers Error');
+            }.bind(this)
+        });
+    }
+
 };
 
 export default NoticeSurvey;
@@ -279,7 +339,8 @@ class SubmitPage extends React.Component {
             btnDisabled: true,
             label: "Thank you for taking the time to complete this survey"
         });
-      /*$.ajax({    //READY, UNCOMMENT WHEN RELEASE
+
+      $.ajax({
           url: '/php/insert_SurveyAnswers.php',
           type:'POST',
           dataType: "json",
@@ -295,7 +356,7 @@ class SubmitPage extends React.Component {
               //console.log(status)
           }.bind(this)
       });
-      */
+
         this.timeoutHandle = setTimeout(()=>{
               this.props.collapseSurvey();  // Add your logic for the transition
           }, 3000);

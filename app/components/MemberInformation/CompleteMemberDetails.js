@@ -1,4 +1,5 @@
 import React from 'react';
+import * as MemberActions from '../../Actions/MemberActions.js';
 import $ from 'jquery';
 import Detail from './Detail.js';
 
@@ -7,7 +8,7 @@ class CompleteMemberDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      details: null
+      details: null,
     };
     this.renderDetails = this.renderDetails.bind(this);
     this.updateDetail = this.updateDetail.bind(this);
@@ -31,45 +32,19 @@ class CompleteMemberDetails extends React.Component {
   }
 
   // Allows a detail to update the value of a detail
-  updateDetail(event, targetDetail) {
+  updateDetail(value, targetDetail) {
     var details = this.state.details;
     details.forEach((detail) => {
       if (detail[0] === targetDetail)
-        detail[1]['value'] = event.target.value;
+        detail[1]['value'] = value;
     });
     this.setState({details: details});
   }
 
   // Allows an updated set of edtails to be submitted to the datbase.
-  handleSaveChanges(event) {
-    var updatedDetails = this.state.details;
-    for (var detail in updatedDetails) {
-      if(updatedDetails[detail][1]['value'] === '') {
-        updatedDetails[detail][1]['value'] = null;
-      }
-    }
-
-    // Ajax call to submission function then reload details...
-    $.ajax({
-      url: '/php/update_complete_details.php',
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        'memberID': this.props.memberID,
-        'details': updatedDetails
-      },
-      success: response => {
-        // Re-request the complete set of details to show the changes
-        console.log(response);
-        this.props.getCompleteDetails();
-        this.props.getChamberMembers();
-        this.props.getNotes();
-        this.props.setEditMode(event);
-      },
-      error: response => {
-        console.log('Error: ', response);
-      }
-    });
+  handleSaveChanges() {
+    MemberActions.updateDetails(this.props.memberID, this.state.details);
+    this.props.setEditMode();
   }
 
   // Maps each state element to a display component
@@ -104,7 +79,7 @@ class CompleteMemberDetails extends React.Component {
             type='button'
             className='btn btn-warning'
             value='Save Changes'
-            onClick={(e) => this.handleSaveChanges(e)}
+            onClick={this.handleSaveChanges}
           />
           : null
         }

@@ -1,5 +1,6 @@
 import React from 'react';
-import $ from 'jquery';
+import MemberStore from '../Stores/MemberStore.js';
+import * as MemberActions from '../Actions/MemberActions.js';
 import SettingsMenu from './MemberInformation/SettingsMenu.js';
 import MemberList from './MemberInformation/MemberList.js';
 import MemberDetails from './MemberInformation/MemberDetails.js';
@@ -22,11 +23,10 @@ class MemberInformation extends React.Component {
       archived: false,
       num_all: null,
       num_renewals: null,
-      num_archived: null
+      num_archived: null,
+      invoice_callback_domain: null,
     };
-    this.getChamberMembers = this.getChamberMembers.bind(this);
-    this.filterMembers = this.filterMembers.bind(this);
-    this.sortMemberViewGroups = this.sortMemberViewGroups.bind(this);
+    this.updateValues = this.updateValues.bind(this);
     this.changeSearchPhrase = this.changeSearchPhrase.bind(this);
     this.changeViewGroup = this.changeViewGroup.bind(this);
     this.setMemberView = this.setMemberView.bind(this);
@@ -34,80 +34,25 @@ class MemberInformation extends React.Component {
   }
 
   componentWillMount(props) {
-    // Load all of the chamber members from the database
-    this.getChamberMembers();
+    MemberStore.on('change', this.updateValues);
+    MemberActions.fetchChamberMembers();
+    MemberActions.fetchXeroInoviceCallbackDomain();
   }
 
-  // Retrieves all members from the database
-  getChamberMembers() {
-    $.ajax({url: "/php/get_chamber_members.php", success: result => {
-        var members = JSON.parse(result);
-        this.setState({unfiltered_members: members});
-        this.filterMembers(members, this.state.search_phrase);
-    }});
+  componentWillUnmount() {
+    MemberStore.removeListener('change', this.updateValues);
   }
 
-  // Filters the members based on a provided search term
-  filterMembers(members, searchPhrase){
-    var filteredMembers = [];
-    if(searchPhrase !== '') {
-      members.forEach((member) => {
-        var foundSearchPhrase = false;
-        for(var property in member) {
-          if(member[property] && member[property].indexOf(searchPhrase) !== -1){
-            foundSearchPhrase = true;
-          }
-        }
-        if (foundSearchPhrase)
-          filteredMembers.push(member);
-      });
-    }
-    else {
-      filteredMembers = members;
-    }
-    this.sortMemberViewGroups(filteredMembers);
-  }
-
-  // Sorts the members into their respective view groups
-  sortMemberViewGroups(members) {
-    // Seperate the members into current, renewal and archived
-    var currentMembers = [];
-    var renewalMembers = [];
-    var archivedMembers = [];
-    var warningWindow = new Date();
-    warningWindow.setDate(warningWindow.getDate() + 14);
-    members.forEach((member) => {
-
-      // Splice the datestring into a usable date object
-      var expiryString = member['expiry'];
-      var expiryDateComponents;
-      var expiryDate = null;
-      if (expiryString) {
-        var date = expiryString.split(' ');
-        expiryDateComponents = date[0].split('-');
-        expiryDate = new Date(expiryDateComponents[0], parseInt(expiryDateComponents[1]) - 1, expiryDateComponents[2]);
-      }
-
-      // Add the member to their respective group
-      if (member['archived'] === '1')
-        archivedMembers.push(member);
-      else {
-        currentMembers.push(member);
-        // Check if membership is about to expire
-        if(expiryDate && (expiryDate < warningWindow)){
-          renewalMembers.push(member);
-        }
-      }
-    });
-
-    // Update all the respective states
+  updateValues() {
     this.setState({
-      member_list: currentMembers,
-      member_list_renewals: renewalMembers,
-      member_list_archived: archivedMembers,
-      num_all: currentMembers.length,
-      num_renewals: renewalMembers.length,
-      num_archived: archivedMembers.length
+      unfiltered_members: MemberStore.getUnfilteredMembers(),
+      member_list: MemberStore.getMemberList(),
+      member_list_renewals: MemberStore.getMemberListRenewals(),
+      member_list_archived: MemberStore.getMemberListArchived(),
+      num_all: MemberStore.getNumAll(),
+      num_renewals: MemberStore.getNumRenewals(),
+      num_archived: MemberStore.getNumArchived(),
+      invoice_callback_domain: MemberStore.getInvoiceCallbackDomain(),
     });
   }
 
@@ -130,7 +75,7 @@ class MemberInformation extends React.Component {
   changeSearchPhrase(event) {
     this.setState({search_phrase: event.target.value});
     // Filter the groups
-    this.filterMembers(this.state.unfiltered_members, event.target.value);
+    MemberActions.filterMembers(this.state.unfiltered_members, event.target.value);
   }
 
   // Allows for the view to be switched to rendering a single member
@@ -152,84 +97,94 @@ class MemberInformation extends React.Component {
   }
 
   render() {
-    return (
-      <div className='main-component w3-row' id='member-information'>
-        {!this.state.display_user_details ?
-          <div className='w3-col s12'>
-            <div className='w3-container w3-card-4 w3-light-grey'>
-              <h2>Member Information</h2>
-              <SettingsMenu
-                search_phrase={this.state.search_phrase}
-                all={this.state.all}
-                renewals={this.state.renewals}
-                archived={this.state.archived}
-                num_all={this.state.num_all}
-                num_renewals={this.state.num_renewals}
-                num_archived={this.state.num_archived}
-                changeSearchPhrase={this.changeSearchPhrase}
-                changeViewGroup={this.changeViewGroup}
-              />
-              <p>{this.props.search_phrase}</p>
-              {this.state.all ?
-                <MemberList
-                  member_list={this.state.member_list}
-                  chamber_id={this.props.chamber_id}
+    if (this.props.user_type !== '1') {
+      return (
+        <div className='main-component'>
+          <p>Error: Access not permitted.</p>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className='main-component w3-row' id='member-information'>
+          {!this.state.display_user_details ?
+            <div className='w3-col s12'>
+              <div className='w3-container w3-card-4 w3-light-grey'>
+                <h2>Member Information</h2>
+                <SettingsMenu
+                  search_phrase={this.state.search_phrase}
                   all={this.state.all}
                   renewals={this.state.renewals}
                   archived={this.state.archived}
-                  getChamberMembers={this.getChamberMembers}
-                  setMemberView={this.setMemberView}
+                  num_all={this.state.num_all}
+                  num_renewals={this.state.num_renewals}
+                  num_archived={this.state.num_archived}
+                  invoice_callback_domain={this.state.invoice_callback_domain}
+                  changeSearchPhrase={this.changeSearchPhrase}
+                  changeViewGroup={this.changeViewGroup}
                 />
-                : null
-              }
+                <p>{this.props.search_phrase}</p>
+                {this.state.all ?
+                  <MemberList
+                    member_list={this.state.member_list}
+                    chamber_id={this.props.chamber_id}
+                    all={this.state.all}
+                    renewals={this.state.renewals}
+                    archived={this.state.archived}
+                    getChamberMembers={this.getChamberMembers}
+                    setMemberView={this.setMemberView}
+                  />
+                  : null
+                }
 
-              {this.state.renewals ?
-                <MemberList
-                  member_list={this.state.member_list_renewals}
-                  chamber_id={this.props.chamber_id}
-                  all={this.state.all}
-                  renewals={this.state.renewals}
-                  archived={this.state.archived}
-                  getChamberMembers={this.getChamberMembers}
-                  setMemberView={this.setMemberView}
-                />
-                : null
-              }
+                {this.state.renewals ?
+                  <MemberList
+                    member_list={this.state.member_list_renewals}
+                    chamber_id={this.props.chamber_id}
+                    all={this.state.all}
+                    renewals={this.state.renewals}
+                    archived={this.state.archived}
+                    getChamberMembers={this.getChamberMembers}
+                    setMemberView={this.setMemberView}
+                  />
+                  : null
+                }
 
-              {this.state.archived ?
-                <MemberList
-                  member_list={this.state.member_list_archived}
+                {this.state.archived ?
+                  <MemberList
+                    member_list={this.state.member_list_archived}
+                    chamber_id={this.props.chamber_id}
+                    all={this.state.all}
+                    renewals={this.state.renewals}
+                    archived={this.state.archived}
+                    getChamberMembers={this.getChamberMembers}
+                    setMemberView={this.setMemberView}
+                  />
+                  : null
+                }
+              </div>
+            </div>
+          :
+            <div className='w3-col s12'>
+              <div className='details-full w3-container w3-card-4 w3-light-grey'>
+                <h2>Complete Member Details</h2>
+                <MemberDetails
+                  member={this.state.displayed_user}
+                  memberID={this.state.displayed_user_id}
+                  expiry={this.state.displayed_user_expiry}
+                  unselect={this.resetMemberView}
                   chamber_id={this.props.chamber_id}
                   all={this.state.all}
                   renewals={this.state.renewals}
                   archived={this.state.archived}
                   getChamberMembers={this.getChamberMembers}
-                  setMemberView={this.setMemberView}
                 />
-                : null
-              }
+              </div>
             </div>
-          </div>
-        :
-          <div className='w3-col s12'>
-            <div className='details-full w3-container w3-card-4 w3-light-grey'>
-              <h2>Complete Member Details</h2>
-              <MemberDetails
-                member={this.state.displayed_user}
-                memberID={this.state.displayed_user_id}
-                expiry={this.state.displayed_user_expiry}
-                unselect={this.resetMemberView}
-                chamber_id={this.props.chamber_id}
-                all={this.state.all}
-                renewals={this.state.renewals}
-                archived={this.state.archived}
-                getChamberMembers={this.getChamberMembers}
-              />
-            </div>
-          </div>
-        }
-      </div>
-    );
+          }
+        </div>
+      );
+    }
   }
 };
 

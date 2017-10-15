@@ -152,7 +152,7 @@ class CreatedInvoiceNotice extends React.Component {
       return (
         <div id='created-invoice-notice' className='alert alert-info'>
           <p>A new invoice has been created.</p>
-          <p><a href={'/php/xero/xero_invoice.php?operation=download_invoice&invoice_number=' + this.props.invoice.InvoiceNumber}>
+          <p><a href={'/php/xero_invoice.php?operation=download_invoice&invoice_number=' + this.props.invoice.InvoiceNumber}>
             Click here to download a copy as a PDF
           </a></p>
           <p><a href={'https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=' + this.props.invoice.InvoiceID} target='_blank'>

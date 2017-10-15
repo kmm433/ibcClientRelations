@@ -1,0 +1,5 @@
+/* Styling for the  input buttons so that they align right correctly*/
+
+#profile-page input {
+  margin-left: 0px;
+}

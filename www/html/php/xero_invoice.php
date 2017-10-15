@@ -1,17 +1,24 @@
 <?php
-
-require '../vendor/autoload.php';
+include 'db_handler.php';
+require 'vendor/autoload.php';
 use XeroPHP\Application\PublicApplication;
 use XeroPHP\Remote\Request;
 use XeroPHP\Remote\URL;
-// Start a session for the oauth session storage
-session_start();
+
+// Retrieve the consumer key, secret and the callback URI from the database
+$db = new DB_handler();
+$consumerDetails = $db->getXeroConsumerDetails($_SESSION['chamber']);
+$callbackURI = $db->getXeroInvoiceCallbackURI()['uri'];
+preg_match_all('[^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)]', $callbackURI, $matches);
+$websiteAddress = $matches[0][0];
+
+
 //These are the minimum settings - for more options, refer to examples/config.php
 $config = [
     'oauth' => [
-        'callback'        => 'http://localhost/php/xero/xero_invoice.php',
-        'consumer_key'    => 'C5BR3YTDOFFYQADSVTFA7FH6T45JHE',
-        'consumer_secret' => '9LHUAUXY8UMBIIWXHCQ0EOCTCPJ2L4',
+        'callback'        => $callbackURI,
+        'consumer_key'    => $consumerDetails['xero_key'],
+        'consumer_secret' => $consumerDetails['xero_secret'],
     ],
     'curl' => [
         CURLOPT_CAINFO => __DIR__.'/certs/ca-bundle.crt',
@@ -63,7 +70,7 @@ if (null === $oauth_session = getOAuthSession()) {
         //drop the qs
         $uri_parts = explode('?', $_SERVER['REQUEST_URI']);
         //Just for demo purposes
-        header('Location: http://localhost/invoice/'.$_SESSION['invoice_user_id']);
+        header('Location: '.$websiteAddress.'/invoice/'.$_SESSION['invoice_user_id']);
         exit;
     }
 }
@@ -122,7 +129,7 @@ elseif (isset($_GET['operation']) && $_GET['operation'] == 'create_invoice') {
 
   // Save the new invoice
   $invoice->save();
-  
+
   echo json_encode(array('status' => 200, 'value' => $invoice));
 }
 // Gets the available items, in this case they are membership subscriptions
@@ -149,7 +156,7 @@ elseif (isset($_GET['operation']) && $_GET['operation'] == 'download_invoice') {
   }
 }
 else {
-  header('Location: http://localhost/invoice/'.$_SESSION['invoice_user_id']);
+  header('Location: '.$websiteAddress.'/invoice/'.$_SESSION['invoice_user_id']);
 }
 
 //The following two functions are just for a demo

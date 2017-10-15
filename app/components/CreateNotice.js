@@ -37,7 +37,6 @@ class create_notice extends React.Component {
             NChambers: "off",
             NChambersChild: "off",
 
-
             ETitle: "",
             EContent: "",
             EStartDate: "",
@@ -47,11 +46,15 @@ class create_notice extends React.Component {
             Elocation: "",
             Elink: "",
             Eemail: "off",
+            EChambers: "off",
+            EChambersChild: "off",
 
             STitle: "",
             SItems: [],
             SChange: "",
-            Semail: "off"
+            Semail: "off",
+            SChambers: "off",
+            SChambersChild: "off"
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeCheckbox = this.handleChangeCheckbox.bind(this);
@@ -79,6 +82,7 @@ class create_notice extends React.Component {
 
         this.getAvailableGroups = this.getAvailableGroups.bind(this);
         this.getAllBusiness = this.getAllBusiness.bind(this);
+        this.surveyReset = this.surveyReset.bind(this);
 
 
         moment.locale("en-au");
@@ -87,8 +91,20 @@ class create_notice extends React.Component {
     componentWillMount() {
         this.getAvailableGroups();
         this.getAllBusiness();
+        this.surveyReset()
     }
 
+    surveyReset(){
+        var count = mysurveyItems.length + 1;
+        for (var i=0; i < count; i++){
+            this.remQuestion();
+        }
+        this.setState({
+            STitle: "",
+            SItems: []
+        });
+        this.updatePrev();
+    }
 
     /* Generic function for most text areas */
     handleChange(event){
@@ -275,15 +291,13 @@ class create_notice extends React.Component {
                         NTitle: "",
                         NContent: ""
                     });
-
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_notication Error ' + xhr.responseText);
                 }.bind(this)
             });
 
-
-            //If email do email blast
+            //If email option selected, do email blast
             if (this.state.Nemail == "on"){
                 var emails = [];
                 $.ajax({
@@ -297,7 +311,7 @@ class create_notice extends React.Component {
                         'business' : bus
                     },
                     success : function(response){
-                        console.log('get_Emails Success ');
+                        //console.log('get_Emails Success ');
                         emails = response;
                     }.bind(this),
                     error: function(xhr, status, err){
@@ -311,22 +325,174 @@ class create_notice extends React.Component {
 
     }
     submitEvent(){
-        // Post the Event to the DB
-        console.log(this.state.ETitle);
-        console.log(this.state.EContent);
-        console.log(this.state.EStartDate);
-        console.log(this.state.EendDate);
-        console.log(this.state.EStart);
-        console.log(this.state.Eend);
-        console.log(this.state.Elocation);
-        console.log(this.state.Elink);
-        console.log(this.state.Eemail);
+        if((this.state.ETitle == "") || (this.state.EContent == "") || (this.state.EStartDate == "") || (this.state.EendDate == "") || (this.state.Elocation == "")){
+            window.alert("That event has blank fields! Please fill in the missing fields");
+        }
+        else if ((this.state.EChambers == "off") && (this.state.EChambersChild == "off") && (this.state.GroupTags.length == 0) && (this.state.BusTags.length == 0)){
+            window.alert("Please choose at least one recipient!");
+        }
+        else{
+            var groups = [];
+            for (var i=0; i < this.state.GroupTags.length; i++){
+                for (var b=0; b < groupID.length; b++){
+                    if (this.state.GroupTags[i].text == groupID[b].name){
+                        groups.push(groupID[b].groupID);
+                    }
+                }
+            }
+            var bus = [];
+            for (var i=0; i < this.state.BusTags.length; i++){
+                for (var b=0; b < busID.length; b++){
+                    if (this.state.BusTags[i].text == busID[b].name){
+                        bus.push(busID[b].groupID);
+                    }
+                }
+            }
+
+            var sdate = moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format();
+            var edate = moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format();
+            $.ajax({
+                url: '/php/insert_event.php',
+                type:'POST',
+                //async: false,
+                dataType: "json",
+                data:{
+                    'title': this.state.ETitle,
+                    'content': this.state.EContent,
+                    'sDate' : sdate,
+                    'eDate' : edate,
+                    'location' : this.state.Elocation,
+                    'link' : this.state.Elink,
+                    'postChamber' : this.state.EChambers,
+                    'postChild' : this.state.EChambersChild,
+                    'groups' : groups,
+                    'business' : bus
+                },
+                success : function(response){
+                    //console.log('Event Success ' + response);
+                    alert("Event successfully posted");
+                    this.setState({
+                        ETitle: "",
+                        EContent: "",
+                        EStartDate: "",
+                        EendDate: "",
+                        Elocation: "",
+                        Elink: ""
+                    });
+
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('insert_event Error ' + xhr.responseText);
+                }.bind(this)
+            });
+
+            //If email option selected, do email blast
+            if (this.state.Eemail == "on"){
+                var emails = [];
+                $.ajax({
+                    url: '/php/get_Emails.php',
+                    type:'POST',
+                    async: false,
+                    dataType: "json",
+                    data:{
+                        'postChamber' : this.state.EChambers,
+                        'groups' : groups,
+                        'business' : bus
+                    },
+                    success : function(response){
+                        //console.log('get_Emails Success ');
+                        emails = response;
+                    }.bind(this),
+                    error: function(xhr, status, err){
+                        console.log('get_Emails Error ' + xhr.responseText);
+                    }.bind(this)
+                });
+                window.location = 'mailto:?bcc=' + emails
+                    + '&subject=New Chamber Event: '+ this.state.ETitle
+                    + '&body=' + 'You have a new event available, to RSVP, log in to CRM and press "Upcoming Events"' + '%0D%0A' + '%0D%0A'
+                    + 'Details: ' + this.state.EContent + '%0D%0A'
+                    + 'When: ' + moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format('dddd MMMM Do YYYY, h:mm a') + ' to ' + moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format('MMMM Do YYYY, h:mm a') + '%0D%0A'
+                    + 'Where: ' + this.state.Elocation;
+            }
+        }
     }
     submitSurvey(){
-        // Post the Sruvey to the DB
-        console.log(this.state.STitle);
-        console.log(Questions);
-        console.log(Answers);
+        if((this.state.STitle == "") || (Questions.length == 0)){
+            window.alert("That Survey has blank fields! Please ensure there is a title and at least 1 question");
+        }
+        else if ((this.state.SChambers == "off") && (this.state.SChambersChild == "off") && (this.state.GroupTags.length == 0) && (this.state.BusTags.length == 0)){
+            window.alert("Please choose at least one recipient!");
+        }
+        else{
+            var groups = [];
+            for (var i=0; i < this.state.GroupTags.length; i++){
+                for (var b=0; b < groupID.length; b++){
+                    if (this.state.GroupTags[i].text == groupID[b].name){
+                        groups.push(groupID[b].groupID);
+                    }
+                }
+            }
+            var bus = [];
+            for (var i=0; i < this.state.BusTags.length; i++){
+                for (var b=0; b < busID.length; b++){
+                    if (this.state.BusTags[i].text == busID[b].name){
+                        bus.push(busID[b].groupID);
+                    }
+                }
+            }
+            $.ajax({
+                url: '/php/insert_Survey.php',
+                type:'POST',
+                dataType: "json",
+                async: false,
+                data:{
+                    'title': this.state.STitle,
+                    'questions': Questions,
+                    'answers' : Answers,
+                    'postChamber' : this.state.SChambers,
+                    'postChild' : this.state.SChambersChild,
+                    'groups' : groups,
+                    'business' : bus
+                },
+                success : function(response){
+                    //console.log('insert_Survey Success' + response);
+                    alert("Survey successfully posted");
+                    this.surveyReset();
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('insert_Survey Error ' + xhr.responseText);
+                }.bind(this)
+            });
+
+            //If email option selected, do email blast
+            if (this.state.Semail == "on"){
+                var emails = [];
+                $.ajax({
+                    url: '/php/get_Emails.php',
+                    type:'POST',
+                    async: false,
+                    dataType: "json",
+                    data:{
+                        'postChamber' : this.state.SChambers,
+                        'groups' : groups,
+                        'business' : bus
+                    },
+                    success : function(response){
+                        //console.log('get_Emails Success ');
+                        emails = response;
+                    }.bind(this),
+                    error: function(xhr, status, err){
+                        console.log('get_Emails Error ' + xhr.responseText);
+                    }.bind(this)
+                });
+                window.location = 'mailto:?bcc=' + emails
+                    + '&subject=New Chamber Survey: '+ this.state.STitle
+                    + '&body=' + 'You have a new Survey available, to complete, log in to CRM and visit the Noticeboard on the main page';
+            }
+        }
+
+
+
     }
 
     addQuestion(){
@@ -366,7 +532,7 @@ class create_notice extends React.Component {
 
         // Find the Q# A# that matches, if no match push new
         if (index == -1){
-            Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: qNumber+value});
+            Answers.push({aNum: aNumber, questionNo: qNumber, answer: value, AnswerID: value+qNumber});
         }
         else{
             Answers[index].answer = value;
@@ -422,7 +588,8 @@ class create_notice extends React.Component {
 
     render() {
     return(
-      <div className="main-component">
+        <div className="main-component w3-row">
+        <div className='w3-container w3-card-4 w3-light-grey'>
         <h2>Create a new Notice, Event or Survey</h2>
         <Tabs>
             <TabList>
@@ -509,10 +676,10 @@ class create_notice extends React.Component {
                     <div className="w3-col s9 CreateNoticeDiv"><div><textarea rows="5" name="EContent" placeholder="My Event Details" value={this.state.EContent} onChange={this.handleChange}></textarea></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>End Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Time:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv"><div><TimePicker onChange={this.handleTimeStart} value={this.state.EStart} step={30} initialValue={61200}/></div></div>
@@ -541,6 +708,45 @@ class create_notice extends React.Component {
                         Disabled={true}
                     />
                 </div>
+                <div>
+                    <div><h3>Choose Recipients:</h3></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>My Chamber:</label></div></div>
+                    <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="EChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
+                    <div className="w3-col s2" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="EChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s7 CreateNoticeDiv"><div><label>* You can give child chambers to option to see this event, but an executive of that chamber will have to approve it before is offered to their chamber members</label></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.GroupTags}
+                          suggestions={this.state.GroupSuggestions}
+                          handleDelete={this.GrouphandleDelete}
+                          handleAddition={this.GrouphandleAddition}
+                          handleDrag={this.GrouphandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Group'}
+                        />
+                    </div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Business:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.BusTags}
+                          suggestions={this.state.BusSuggestions}
+                          handleDelete={this.BushandleDelete}
+                          handleAddition={this.BushandleAddition}
+                          handleDrag={this.BushandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Business'}
+                        />
+                    </div>
+
+                </div>
                 <div className="event-buttons">
                     <div className="w3-row">
                         <div className="w3-col s6" id="CreateNoticeEmail"><label>Email to all</label></div>
@@ -566,13 +772,12 @@ class create_notice extends React.Component {
                         <button type="button" className="btn btn-danger" id="btnRemQA" onClick={this.remQuestion}>Remove Question</button>
                     </div>
 
-
                 </div>
                 <div>
                     <div><h3>Preview:</h3></div>
                     <NoticeSurvey
-                        key={0}
-                        SurveyID={-1}
+                        key="PrevSurvey"
+                        SurveyID=""
                         title={this.state.STitle}
                         DatePosted={moment()}
                         Disabled={true}
@@ -580,6 +785,44 @@ class create_notice extends React.Component {
                         Answers={Answers}
                         Change={this.state.SChange}
                     />
+                </div>
+                <div>
+                    <div><h3>Choose Recipients:</h3></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>My Chamber:</label></div></div>
+                    <div className="w3-col s9" title="Display notice to all chamber members"><label className="switch"><input type="checkbox" name="SChambers" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Offer to child Chambers:</label></div></div>
+                    <div className="w3-col s2" title="Allow child chambers to view this notice if they choose"><label className="switch"><input type="checkbox" name="SChambersChild" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
+                    <div className="w3-col s7 CreateNoticeDiv"><div><label>* You can give child chambers to option to see this notification, but an executive of that chamber will have to approve it before is shown to their chamber members</label></div></div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Groups:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.GroupTags}
+                          suggestions={this.state.GroupSuggestions}
+                          handleDelete={this.GrouphandleDelete}
+                          handleAddition={this.GrouphandleAddition}
+                          handleDrag={this.GrouphandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Group'}
+                        />
+                    </div>
+
+                    <div className="w3-col s3 CreateNoticeDiv"><div><label>Add Business:</label></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv">
+                        <ReactTags
+                          tags={this.state.BusTags}
+                          suggestions={this.state.BusSuggestions}
+                          handleDelete={this.BushandleDelete}
+                          handleAddition={this.BushandleAddition}
+                          handleDrag={this.BushandleDrag}
+                          autocomplete={true}
+                          allowDeleteFromEmptyInput={false}
+                          placeholder={'Add Business'}
+                        />
+                    </div>
 
                 </div>
                 <div className="event-buttons">
@@ -591,6 +834,7 @@ class create_notice extends React.Component {
                 </div>
             </TabPanel>
         </Tabs>
+      </div>
       </div>
     );
   }
