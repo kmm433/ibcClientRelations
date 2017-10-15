@@ -32,11 +32,11 @@ class CompleteMemberDetails extends React.Component {
   }
 
   // Allows a detail to update the value of a detail
-  updateDetail(event, targetDetail) {
+  updateDetail(value, targetDetail) {
     var details = this.state.details;
     details.forEach((detail) => {
       if (detail[0] === targetDetail)
-        detail[1]['value'] = event.target.value;
+        detail[1]['value'] = value;
     });
     this.setState({details: details});
   }
@@ -54,6 +54,7 @@ class CompleteMemberDetails extends React.Component {
       // Map to display components
       var renderDetails = null;
       renderDetails = currentDetails.map((detail, i) => {
+        console.log(detail);
         return(
           <Detail
           key={i}
