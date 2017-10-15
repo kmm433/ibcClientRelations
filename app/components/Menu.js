@@ -46,7 +46,6 @@ class Menu extends React.Component {
     <div className='side-menu'>
       <MenuLogo/>
       <hr className = "welcome-divider" />
-  {console.log("Should have the username",this.props.first_name)}
       <MenuWelcome first_name={this.props.first_name}/>
       <ul>
         <li><NavLink exact activeClassName='active-route' to='/'>
@@ -57,6 +56,9 @@ class Menu extends React.Component {
         </NavLink></li>
         <li><NavLink activeClassName='active-route' to='/upcoming_events'>
           Upcoming Events
+        </NavLink></li>
+        <li><NavLink activeClassName='active-route' to='/contact_us'>
+          Contact Us
         </NavLink></li>
 
         {/*The exec_menu will only by created if the user is type 1*/}

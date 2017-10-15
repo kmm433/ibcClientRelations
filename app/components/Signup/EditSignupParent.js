@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import FieldTable from './EditSignupTable.js';
 import EditPayment from './EditPayment.js';
+import AddClientID from './PaypalID.js'
 
 class EditSignup extends React.Component{
 
@@ -34,7 +35,8 @@ class EditSignup extends React.Component{
              edit: false,
              currentIndex: "",
              paymentType: "",
-             expiry: ""
+             expiry: "",
+             clientID: ""
         }
         this.renderPage = this.renderPage.bind(this);
         this.sendData = this.sendData.bind(this);
@@ -44,12 +46,16 @@ class EditSignup extends React.Component{
         this.sendUpdatedField = this.sendUpdatedField.bind(this);
         this.editFalse = this.editFalse.bind(this);
         this.updatePayment = this.updatePayment.bind(this);
+        this.getClientID = this.getClientID.bind(this);
+        this.removeClientID = this.removeClientID.bind(this);
+        this.addClientID = this.addClientID.bind(this);
     }
 
     componentWillMount(){
         this.getFields();
         this.getPaymentDetails();
         this.getPaymentType();
+        this.getClientID();
 
     }
     //Retrieve all of the fields that are on the sign up form corresponding to the chamber who is logged in
@@ -91,7 +97,7 @@ class EditSignup extends React.Component{
            });
       }});
     }
-
+    
     updatePayment(type, expiry){
         if(type === 'Annual'){
             type = 'Prorata'
@@ -106,19 +112,68 @@ class EditSignup extends React.Component{
                 'type': type,
                 'expiry': expiry
             },
-        success: response => {
-            console.log("membership types: ", response)
-           this.setState({
-               paymentType: response[0].type,
-               expiry: response[0].expiry_date
-           });
-      },
-      error: response => {
-          console.log("no its not working",response)
-      }
-  }
+            success: response => {
+                console.log("membership types: ", response)
+               this.setState({
+                   paymentType: response[0].type,
+                   expiry: response[0].expiry_date
+               });
+            },
+            error: response => {
+              console.log("update membersip type",response)
+            }
+          });
+    }
 
-  );
+    //retrieve the clientID, if it doesnt exist then return null
+    getClientID(){
+        $.ajax({url: '/php/get_paypalID.php', type: 'POST',
+            dataType: 'json',
+            data: {
+                'mode': 'RETRIEVE'
+            },
+            success: response => {
+                console.log("initially getting clientID: ", response)
+               this.setState({clientID: response});
+            },
+            error: response => {
+              console.log("get paypal ID",response)
+            }
+          });
+    }
+
+    addClientID(newID){
+        console.log("ClientID is", newID)
+        $.ajax({url: '/php/get_paypalID.php', type: 'POST',
+            dataType: 'json',
+            data: {
+                'mode': 'ADD',
+                'id': newID
+            },
+            success: response => {
+                console.log("success", response)
+                this.setState({clientID: newID});
+            },
+            error: response => {
+              console.log("addclientID",response)
+            }
+          });
+    }
+
+    removeClientID(){
+        $.ajax({url: '/php/get_paypalID.php', type: 'POST',
+            dataType: 'json',
+            data: {
+                'mode': 'REMOVE'
+            },
+            success: response => {
+                console.log("success", response)
+                this.setState({clientID: null});
+            },
+            error: (xhr, status, err) => {
+              console.log("remove client D", xhr.responseText, status, err)
+            }
+          });
     }
 
 
@@ -165,7 +220,7 @@ class EditSignup extends React.Component{
                 this.getFields();
             },
             error: response => {
-                console.log("no its not working",response)
+                console.log("nupdate sign up field",response)
             }
         });
     }
@@ -247,6 +302,16 @@ class EditSignup extends React.Component{
                         paymentType={this.state.paymentType}
                         expiry={this.state.expiry}
                         updatePaymentType = {this.updatePayment}
+                    />
+                    <h3
+                        id="h3-editsignup">
+                        Add Paypal Client ID
+                    </h3>
+                    <hr className = "signup-divider" />
+                    <AddClientID
+                        token = {this.state.clientID}
+                        remove = {this.removeClientID}
+                        add = {this.addClientID}
                     />
                     <h3
                         id="h3-editsignup">

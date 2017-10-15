@@ -25,7 +25,8 @@ class ChamberDropdown extends React.Component {
                     title={this.props.selectedChamber ? this.props.selectedChamber : "Please Select a Chamber"}
                     onSelect={this.handleSelect}>
                     {Object.keys(this.props.chamber_list).map((item,index) =>
-                        <MenuItem key = {index}
+                        <MenuItem
+                            key = {index}
                             eventKey={item}>{this.props.chamber_list[item]}
                         </MenuItem>)}
                 </DropdownButton>

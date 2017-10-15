@@ -6,9 +6,12 @@ import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
 import MemberInformation from './MemberInformation';
 import EditSignup from './Signup/EditSignupParent';
-import AdminMenu from './AdminMenu'
-import NewChamber from './Admin/CreateChamber'
+import AdminMenu from './AdminMenu';
+import CreateChamber from './Admin/AdminData';
 import create_notice from './CreateNotice';
+import DisableChamber from './Admin/DisableChamber';
+import EnableChamber from './Admin/EnableChamber';
+import ContactUs from './ContactUs/ContactUs';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -21,7 +24,6 @@ class Layout extends React.Component {
     }
 
     renderNormalUser(){
-        console.log("Rendering should be normal user: ", this.props.first_name)
         return(
             <div>
               <Menu
@@ -37,6 +39,7 @@ class Layout extends React.Component {
                 <Route path='/upcoming_events' component={Calendar} />
                 <Route path='/edit_signup' render={()=> <EditSignup usertype={this.props.user_type}/>}/>
                 <Route path='/create_notice' component={create_notice} />
+                <Route path='/contact_us' component={ContactUs} />
                 <Route path='/help' component={Calendar} />
               </div>
             </div>
@@ -48,7 +51,11 @@ class Layout extends React.Component {
         return(
             <div>
                 <AdminMenu/>
-                <Route path='/create_chamber' component={NewChamber} />
+            <Route exact={true} path='/' component={Calendar}/>
+            <Route exact={true} path='/index.php' component={Calendar}/>
+            <Route path='/create_chamber' component={CreateChamber} />
+            <Route path='/delete_chamber' component={DisableChamber} />
+            <Route path='/enable_chamber' component={EnableChamber} />
             </div>
         )
 

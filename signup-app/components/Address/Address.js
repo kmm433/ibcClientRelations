@@ -1,9 +1,13 @@
 import React from 'react';
-import {Form, Col, HelpBlock, FormControl, FormGroup, ControlLabel} from 'react-bootstrap';
+import {Form, Col, HelpBlock, FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
 import Input from './../SignupInput.js';
 import Dropdown from '../../../app/components/Signup/dropdown.js';
+import Validator from '../SignupValidator.js'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import ReactConfirmAlert, { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
+/*
 class Address extends React.Component {
     constructor(){
         super()
@@ -11,124 +15,211 @@ class Address extends React.Component {
         this.state = ({
             valid: null,
             error: "",
-            address: 'Wollongong, NSW'
+            line1: null,
+            line2: null,
+            city: null,
+            postcode: null,
+            area: null,
+            country: null,
+            showDialog: false
         })
-        this.checkValid = this.checkValid.bind(this);
-        this.selectType = this.selectType.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.onChange = (address) => this.setState({ address })
+        this.validate = this.validate.bind(this);
+        this.selectType = this.selectType.bind(this);
+        this.renderMenu = this.renderMenu.bind(this);
+        this.prepareAddress = this.prepareAddress.bind(this);
+    }
+    //save the state selected from the dropdown menu
+    selectType(value){
+        console.log("selecting from menu", value)
+        //this.setState({area: value})
+        this.handleFormSubmit('area', value);
     }
 
-    handleFormSubmit(event){
-    event.preventDefault()
-
-    console.log("The address is: ", this.state.address)
-
-    geocodeByAddress(this.state.address)
-      .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
-      .catch(error => console.error('Error', error))
-  }
-
-    selectType(type){
-        console.log("is this working", type)
-        this.props.save(type, state)
+    //validate each field before saving
+    validate(name, value){
+        //make lowercase and remove whitespace so represents the name of state
+        name = name.toLowerCase();
+        name = name.replace(/\s+/g, '');
+        this.setState({[name]: value})
     }
-    checkValid(){
-        console.log("address")
+
+    //make sure all the required fields have input
+    checkSubmitReady(){
+        console.log("saved address")
+        console.log("Is this the adddress",this.state.line1, this.state.area, this.state.postcode, this.state.city, this.state.country)
+        if(this.state.line1 === null || this.state.city === null || this.state.postcode === null || this.state.area === null || this.state.country === null){
+            return false;
+        }
+        return true;
+    }
+    //validate the fields and then send the data if its all filled out appropriately
+    handleFormSubmit(name, value){
+        this.validate(name, value);
+        this.checkSubmitReady() && this.prepareAddress();
+    }
+
+    prepareAddress(){
+        var address = {
+            line1: this.state.line1,
+            line2: this.state.line2,
+            area: this.state.area,
+            city: this.state.city,
+            postcode: this.state.postcode,
+            country: this.state.country
+        }
+        console.log(address);
+        this.props.save(address);
+    }
+
+    renderMenu(){
+        const states = ['NSW', 'VIC', 'ACT', 'QLD', 'SA', 'WA', 'NT', 'TAS']
+        return(
+            <FormGroup
+                method='POST'
+                validationState={this.props.valid}>
+            <Col sm={3}>
+                <ControlLabel>
+                    State <a id="asterisk">*</a>
+                </ControlLabel>
+            </Col>
+                <Col sm={9}>
+                    <Dropdown
+                        typeOptions={states}
+                        selecting = {this.selectType}
+                        default = {"Select State"}
+                    />
+                </Col>
+            </FormGroup>
+        )
     }
 
 render(){
 
 
-    const inputProps = {
-      value: this.state.address,
-      onChange: this.onChange,
-    }
-
-    const options = {
-        location: new google.maps.LatLng(-34.42, 150.89),
-        radius: 10000,
-        types: ['address']
-}
-
-    //const type = ['ACT', 'NSW', 'NT', 'QLD','SA', 'VIC', 'WA'];
-
     return(
         <div>
-            <FormGroup
-
-                method='POST'
-                validationState={this.props.valid}>
-            <Col sm={3}>
-                    <ControlLabel>
-                        Address
-                        {this.props.mandatory === '1' && <a id="asterisk">*</a>}
-                </ControlLabel>
-            </Col>
-                <Col sm={9}>
-                    <PlacesAutocomplete
-                        id="google-address-box"
-                        inputProps={inputProps}
-                        onBlur={this.handleFormSubmit}
-                        options={options}/>
-                </Col>
-            </FormGroup>
-
-            {/*
             <Input
                 type = "text"
                 displayName = "Line 1"
-                mandatory = {1}
-                userAnswer = {this.storeUserData}
+                mandatory = {'1'}
+                check = {this.handleFormSubmit}
                 valid = {this.state.valid}
                 error = {this.state.error}
-                check = {this.checkValid}
             />
             <Input
                 type = "text"
                 displayName = "Line 2"
                 mandatory = {0}
-                userAnswer = {this.storeUserData}
+                check = {this.handleFormSubmit}
                 valid = {this.state.valid}
                 error = {this.state.error}
-                check = {this.checkValid}
             />
             <Input
                 type = "text"
                 displayName = "City"
-                mandatory = {0}
-                userAnswer = {this.storeUserData}
+                mandatory = {'1'}
+                check = {this.handleFormSubmit}
                 valid = {this.state.valid}
                 error = {this.state.error}
-                check = {this.checkValid}
             />
-            <Dropdown
-                typeOptions={type}
-                selecting = {this.selectType}
-                default = {"Select State"}
-            />
+            {this.renderMenu()}
             <Input
                 type = "number"
-                displayName = "City"
-                mandatory = {1}
-                userAnswer = {this.storeUserData}
+                displayName = "Postcode"
+                mandatory = {'1'}
+                check = {this.handleFormSubmit}
                 valid = {this.state.valid}
                 error = {this.state.error}
-                check = {this.checkValid}
             />
             <Input
                 type = "text"
                 displayName = "Country"
-                mandatory = {0}
-                userAnswer = {this.storeUserData}
+                mandatory = {'1'}
+                check = {this.handleFormSubmit}
                 valid = {this.state.valid}
                 error = {this.state.error}
-                check = {this.checkValid}
-            />*/}
+            />
         </div>
     )
 }
-}
+}*/
 
+
+class Address extends React.Component{
+    constructor(props){
+        super(props)
+
+        this.state = ({
+            line1: null,
+            line2: null,
+            city: null,
+            postcode: null,
+            state: null,
+            country: null
+        })
+
+        this.storeAddress = this.storeAddress.bind(this);
+        this.renderMenu = this.renderMenu.bind(this);
+    }
+
+    storeAddress(value, index){
+        var array = ['line1', 'line2', 'city','state', 'postcode', 'country'];
+        name = array[index];
+        console.log(value, index)
+        console.log(this.props.name, name, value)
+        this.props.save(this.props.name, name, value);
+    }
+
+
+    renderMenu(){
+        const states = ['NSW', 'VIC', 'ACT', 'QLD', 'SA', 'WA', 'NT', 'TAS']
+        return(
+            <div>
+            <Col sm={3}>
+                <ControlLabel>
+                    State <a id="asterisk">*</a>
+                </ControlLabel>
+            </Col>
+                <Col sm={9}>
+                    <Dropdown
+                        typeOptions={states}
+                        selecting = {this.selectType}
+                        default = {"Select State"}
+                    />
+                </Col>
+            </div>
+        )
+    }
+
+
+
+    render(){
+
+        var name = ['line1', 'line2', 'city','state', 'postcode', 'country'];
+        var displayName = ['Line1', 'Line2', 'City', 'State', 'Postcode', 'Country'];
+        var min = [1, 1, 1, 2, 4, 1];
+        var max = [255, 255, 320, 30, 4, 255];
+        var mand = ['1', '0', '1', '1', '1', '1'];
+
+        return(
+            <div>
+                    <div id="signup-headings">{this.props.name}</div>
+
+                        {name.map((item, i) =>
+                                <Validator
+                                    key = {i}
+                                    type = {name[i]}
+                                    displayName = {displayName[i]}
+                                    minimum = {min[i]}
+                                    maximum = {max[i]}
+                                    mandatory = {mand[i]}
+                                    userAnswer = {this.storeAddress}
+                                    index = {i}/>
+                            )}
+            </div>
+        );
+    }
+
+}
 export default Address;

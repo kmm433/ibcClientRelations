@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
 import Layout from './components/Layout.js';
-import Admin from './components/Admin.js'
 import $ from 'jquery';
 
 class App extends React.Component {
