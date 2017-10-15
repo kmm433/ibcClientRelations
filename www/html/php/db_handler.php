@@ -1341,5 +1341,34 @@ class DB_Handler
       }
   }
 
+  function get_UserConfirmSurvey($SurveyID){
+      $sql = $this->db->prepare("CALL SPconfirmUserSurvey(:survey,:user);");
+      $result = $sql->execute(array(
+        "survey" => $SurveyID,
+        "user" =>$_SESSION['userid']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  function get_UserConfirmEvent($EventID){
+      $sql = $this->db->prepare("CALL SPconfirmUserEvent(:event,:user);");
+      $result = $sql->execute(array(
+        "event" => $EventID,
+        "user" =>$_SESSION['userid']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+
 }
 ?>
