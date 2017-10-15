@@ -15,6 +15,8 @@ import create_notice from './CreateNotice';
 import UpcomingEvents from './UpcomingEvents';
 import Results from './Results'
 import Profile from './Profile'
+import LinkSurvey from './NoticeBoard/LinkSurvey';
+import LinkEvent from './NoticeBoard/LinkEvent';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -38,6 +40,8 @@ class Layout extends React.Component {
                 <Route path='/profile' render={() => <Profile user_id={this.props.user_id} />}/>
                 <Route path='/member_information' render={()=> <MemberInformation user_type={this.props.user_type} chamber_id={this.props.chamber_id}/>} />
                 <Route path='/invoice/:user_id' render={(props) => <InvoiceManagement {...props} user_type={this.props.user_type}/>} />
+                <Route path='/survey/:SurveyID' render={(props) => <LinkSurvey {...props} user_id={this.props.user_id}/>} />
+                <Route path='/event/:EventID' render={(props) => <LinkEvent {...props} user_id={this.props.user_id}/>} />
                 <Route path='/manage_groups' render={() => <GroupManagement user_type={this.props.user_type} chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' render={()=> <UpcomingEvents user_type={this.props.user_type} />} />
                 <Route path='/results' component={Results} />

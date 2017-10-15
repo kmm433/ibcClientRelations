@@ -291,7 +291,6 @@ class create_notice extends React.Component {
                         NTitle: "",
                         NContent: ""
                     });
-
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_notication Error ' + xhr.responseText);
@@ -326,19 +325,6 @@ class create_notice extends React.Component {
 
     }
     submitEvent(){
-        // Post the Event to the DB
-        /*console.log(this.state.ETitle);
-        console.log(this.state.EContent);
-        console.log(this.state.EStartDate);
-        console.log(this.state.EendDate);
-        console.log(this.state.EStart);
-        console.log(this.state.Eend);
-        console.log(this.state.Elocation);
-        console.log(this.state.Elink);
-        console.log(this.state.Eemail);
-        console.log(this.state.EChambers);
-        console.log(this.state.EChambersChild);*/
-
         if((this.state.ETitle == "") || (this.state.EContent == "") || (this.state.EStartDate == "") || (this.state.EendDate == "") || (this.state.Elocation == "")){
             window.alert("That event has blank fields! Please fill in the missing fields");
         }
@@ -431,7 +417,6 @@ class create_notice extends React.Component {
         }
     }
     submitSurvey(){
-
         if((this.state.STitle == "") || (Questions.length == 0)){
             window.alert("That Survey has blank fields! Please ensure there is a title and at least 1 question");
         }
@@ -455,11 +440,11 @@ class create_notice extends React.Component {
                     }
                 }
             }
-
             $.ajax({
                 url: '/php/insert_Survey.php',
                 type:'POST',
                 dataType: "json",
+                async: false,
                 data:{
                     'title': this.state.STitle,
                     'questions': Questions,
@@ -691,10 +676,10 @@ class create_notice extends React.Component {
                     <div className="w3-col s9 CreateNoticeDiv"><div><textarea rows="5" name="EContent" placeholder="My Event Details" value={this.state.EContent} onChange={this.handleChange}></textarea></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>End Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Time:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv"><div><TimePicker onChange={this.handleTimeStart} value={this.state.EStart} step={30} initialValue={61200}/></div></div>

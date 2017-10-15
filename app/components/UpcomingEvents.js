@@ -162,6 +162,7 @@ class EmptyNotification extends React.Component {
         }
         return(
             <div className="emptyNotices">
+                <h4>Theres nothing to display!</h4>
                 <h4>{txt}</h4>
             </div>
         );
