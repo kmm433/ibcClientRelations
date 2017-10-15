@@ -9,6 +9,7 @@ class CompleteMemberDetails extends React.Component {
     super(props);
     this.state = {
       details: null,
+      errors: [],
     };
     this.renderDetails = this.renderDetails.bind(this);
     this.updateDetail = this.updateDetail.bind(this);
@@ -40,6 +41,9 @@ class CompleteMemberDetails extends React.Component {
     });
     this.setState({details: details});
   }
+
+  // Allows a detail to update it's error status
+
 
   // Allows an updated set of edtails to be submitted to the datbase.
   handleSaveChanges() {
