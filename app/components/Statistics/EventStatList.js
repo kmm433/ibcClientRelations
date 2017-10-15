@@ -8,7 +8,7 @@ class EventStatList extends React.Component {
     this.generateEventList = this.generateEventList.bind(this);
   }
 
-  // Maps all retrieved members to a row in the table
+
   generateEventList() {
     const eventList = this.props.event_list;
     var list = null;
@@ -25,6 +25,7 @@ class EventStatList extends React.Component {
             location={x['Location']}
             EventURL={x['EventURL']}
             DatePosted={x['DatePosted']}
+            reload={this.props.reload}
           />
         );
       })

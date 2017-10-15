@@ -2,7 +2,6 @@ import React from 'react';
 import $ from 'jquery';                                     /* For ajax query */
 import Collapsible from 'react-collapsible';                /* https://www.npmjs.com/package/react-collapsible */
 import PieChart from 'react-minimal-pie-chart';             /* https://github.com/toomuchdesign/react-minimal-pie-chart */
-//import PieChart from "react-svg-piechart"                   /* https://www.npmjs.com/package/react-svg-piechart */
 import NoticeEvent from '../NoticeBoard/NoticeEvent.js';
 
 
@@ -30,6 +29,7 @@ class EventStat extends React.Component {
             going: 0,
             notGoing: 0
         };
+        this.deleteNotice = this.deleteNotice.bind(this);
     }
 
     componentWillMount(){
@@ -47,6 +47,21 @@ class EventStat extends React.Component {
         else {
             var noResponse = 0;
         }
+
+        var emptyGroup = ""
+        var pieChart = ""
+        if (this.state.total == 0){
+            emptyGroup = <div style={{marginTop: '16%',textAlign: 'center'}}><h4>It appears nobody was invited! This is usually caused by the event only being offered to empty groups</h4></div>
+        }else {
+            pieChart = <PieChart
+                  data={[
+                    { value: parseInt(noResponse), key: 1, color: '#676d75' },
+                    { value: parseInt(going), key: 2, color: '#2462AB' },
+                    { value: parseInt(notGoing), key: 3, color: '#cb2027' },
+                  ]}
+            />
+        }
+
         return(
             <div className='event-list-item'>
                 <Collapsible trigger={<div className="w3-row">
@@ -71,13 +86,8 @@ class EventStat extends React.Component {
                     <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px'}}>
                         <div><h4>Results:</h4></div>
                         <div className="w3-col s6">
-                            <PieChart
-                                  data={[
-                                    { value: parseInt(noResponse), key: 1, color: '#676d75' },
-                                    { value: parseInt(going), key: 2, color: '#2462AB' },
-                                    { value: parseInt(notGoing), key: 3, color: '#cb2027' },
-                                  ]}
-                            />
+                            {emptyGroup}
+                            {pieChart}
                         </div>
                         <div className="w3-col s6" style={{marginTop: '15%'}}>
                             <div>
@@ -95,6 +105,9 @@ class EventStat extends React.Component {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px', textAlign: 'center'}}>
+                        <div><button type="button" className="btn btn-primary" id="btnDeleteEvent" onClick={this.deleteNotice}>Delete Event</button></div>
                     </div>
                 </Collapsible>
             </div>
@@ -147,6 +160,27 @@ class EventStat extends React.Component {
                      console.log('get_EventCount Error' + xhr.responseText);
                  }.bind(this)
              });
+    }
+    deleteNotice(){
+        if (confirm("Warning: This will permenantly remove this event from your chamber members and can not be undone! Are you sure?") == true){
+            $.ajax({
+                url: '/php/delete_Event.php',
+                type:'POST',
+                dataType: "json",
+                data:{
+                    'eventID': this.props.ID
+                },
+                success : function(response){
+                    console.log('delete_Event Success');
+                }.bind(this),
+                error: function(xhr, status, err){
+                    console.log('delete_Event Error' + xhr.responseText);
+                }.bind(this)
+            });
+
+            // Reload Parent Component
+            this.props.reload();
+        }
     }
 };
 

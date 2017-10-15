@@ -52,7 +52,7 @@ class NoticeEvent extends React.Component {
     }
 
     deleteNotice(){
-        if (confirm("Warning: This will remove this event from your chamber members and can not be undone! Are you sure?") == true){
+        if (confirm("Warning: This will permenantly remove this event from your chamber members and can not be undone! Are you sure?") == true){
             $.ajax({
                 url: '/php/delete_Event.php',
                 type:'POST',

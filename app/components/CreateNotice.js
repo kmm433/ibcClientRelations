@@ -326,19 +326,6 @@ class create_notice extends React.Component {
 
     }
     submitEvent(){
-        // Post the Event to the DB
-        /*console.log(this.state.ETitle);
-        console.log(this.state.EContent);
-        console.log(this.state.EStartDate);
-        console.log(this.state.EendDate);
-        console.log(this.state.EStart);
-        console.log(this.state.Eend);
-        console.log(this.state.Elocation);
-        console.log(this.state.Elink);
-        console.log(this.state.Eemail);
-        console.log(this.state.EChambers);
-        console.log(this.state.EChambersChild);*/
-
         if((this.state.ETitle == "") || (this.state.EContent == "") || (this.state.EStartDate == "") || (this.state.EendDate == "") || (this.state.Elocation == "")){
             window.alert("That event has blank fields! Please fill in the missing fields");
         }
@@ -431,7 +418,6 @@ class create_notice extends React.Component {
         }
     }
     submitSurvey(){
-
         if((this.state.STitle == "") || (Questions.length == 0)){
             window.alert("That Survey has blank fields! Please ensure there is a title and at least 1 question");
         }
@@ -455,11 +441,11 @@ class create_notice extends React.Component {
                     }
                 }
             }
-
             $.ajax({
                 url: '/php/insert_Survey.php',
                 type:'POST',
                 dataType: "json",
+                async: false,
                 data:{
                     'title': this.state.STitle,
                     'questions': Questions,
@@ -470,7 +456,7 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    //console.log('insert_Survey Success' + response);
+                    console.log('insert_Survey Success' + response);
                     alert("Survey successfully posted");
                     this.surveyReset();
                 }.bind(this),
