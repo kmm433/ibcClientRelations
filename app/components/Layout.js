@@ -10,13 +10,16 @@ import InvoiceManagement from './InvoiceManagement';
 import GroupManagement from './GroupManagement';
 import EditSignup from './Signup/EditSignupParent';
 import AdminMenu from './AdminMenu'
-import NewChamber from './Admin/CreateChamber'
+import CreateChamber from './Admin/AdminData';
 import create_notice from './CreateNotice';
 import UpcomingEvents from './UpcomingEvents';
 import Results from './Results'
 import Profile from './Profile'
 import LinkSurvey from './NoticeBoard/LinkSurvey';
 import LinkEvent from './NoticeBoard/LinkEvent';
+import DisableChamber from './Admin/DisableChamber';
+import EnableChamber from './Admin/EnableChamber';
+import ContactUs from './ContactUs/ContactUs';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -45,7 +48,8 @@ class Layout extends React.Component {
                 <Route path='/manage_groups' render={() => <GroupManagement user_type={this.props.user_type} chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' render={()=> <UpcomingEvents user_type={this.props.user_type} />} />
                 <Route path='/results' component={Results} />
-                <Route path='/edit_signup' component={EditSignup} />
+                <Route path='/edit_signup' render={()=> <EditSignup user_type={this.props.user_type} />} />
+                <Route path='/contact_us' component={ContactUs} />
                 <Route path='/create_notice' component={create_notice} />
                 <Route path='/help' component={Calendar} />
               </div>
@@ -58,7 +62,9 @@ class Layout extends React.Component {
         return(
             <div>
                 <AdminMenu/>
-                <Route path='/create_chamber' component={NewChamber} />
+                <Route path='/create_chamber' component={CreateChamber} />
+                <Route path='/delete_chamber' component={DisableChamber} />
+                <Route path='/enable_chamber' component={EnableChamber} />
             </div>
         )
 

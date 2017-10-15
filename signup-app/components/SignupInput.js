@@ -1,37 +1,42 @@
 import React from 'react';
 import {FormControl, ControlLabel, FormGroup, Col, HelpBlock} from 'react-bootstrap';
+import {isEmail, isLength, isAlphanumeric, isUppercase, isInt} from 'validator';
 
-class GetData extends React.Component{
+class Input extends React.Component{
 
     constructor(props){
         super(props)
+
+        this.state = {
+            value: ""
+        }
 
         this.handleChange = this.handleChange.bind(this);
         this.renderForm = this.renderForm.bind(this);
     }
 
     handleChange(event){
-        console.log("The data is: ", event.target.value)
-        //this.props.checkValid(event.target.value, this.props.type, "")
-        this.props.userAnswer(event.target.value, this.props.index)
+        console.log("handling change: ", event.target.value)
+        this.props.check(event.target.name, event.target.value);
     }
 
     renderForm(){
         return(
-            <FormGroup method='POST'>
+            <FormGroup
+                method='POST'
+                validationState={this.props.valid}>
             <Col sm={3}>
-                    <ControlLabel>
-                        {this.props.displayName}
-                        {this.props.mandatory === '1' && <a id="asterisk">*</a>}
+                <ControlLabel>
+                    {this.props.displayName}
+                    {this.props.mandatory == '1' && <a id="asterisk">*</a>}
                 </ControlLabel>
             </Col>
                 <Col sm={9}>
                     <FormControl
                         type = {this.props.type}
                         name = {this.props.displayName}
-                        onBlur={this.handleChange} />
-                    <FormControl.Feedback />
-                <HelpBlock></HelpBlock>
+                        onChange={this.handleChange} />
+                <HelpBlock>{this.props.error}</HelpBlock>
                 </Col>
             </FormGroup>
         )
@@ -42,7 +47,6 @@ render(){
         this.props.displayName ? this.renderForm() : null
     );
 }
-
 }
 
-export default GetData;
+export default Input;

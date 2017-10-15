@@ -32,7 +32,10 @@ class FieldTable extends React.Component {
         this.handleEnable = this.handleEnable.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.outputDisabled = this.outputDisabled.bind(this);
+        this.renderSubmitDisabled = this.renderSubmitDisabled.bind(this);
+        this.renderSubmitEnabled = this.renderSubmitEnabled.bind(this);
 
     }
 
@@ -42,7 +45,7 @@ class FieldTable extends React.Component {
         this.setState({
             newDisplayname: nextProps.signupFields[i].displayname,
             newOptional: nextProps.signupFields[i].mandatory,
-            newType: nextProps.signupFields[i].type,
+            newType: nextProps.signupFields[i].inputtype,
             newMin: nextProps.signupFields[i].minimum,
             newMax: nextProps.signupFields[i].maximum
         })
@@ -160,7 +163,7 @@ class FieldTable extends React.Component {
 
     renderAddField(){
         const typeOptions = ['email', 'password', 'text', 'number', 'menu'];
-
+        const isDisabled = "disabled";
         return(
             <tr className = "edit-signup-input">
                 <td><input
@@ -187,12 +190,45 @@ class FieldTable extends React.Component {
                     name = "newMax"
                     value={this.state.newMax}
                     onChange={this.handleChange}/></td>
-                <td><Button
-                    bsSize="small"
-                    bsStyle="primary"
-                    onClick={this.handleSubmit}>{this.state.addfield ? "Add Another Field" : "Add New Field"}
-                </Button></td>
+                <td>
+                    {this.checkSubmitReady() ? this.renderSubmitEnabled() : this.renderSubmitDisabled()}
+                </td>
             </tr>
+        )
+    }
+
+    checkSubmitReady(){
+        var ready = false;
+        if(this.state.newDisplayname &&
+        this.state.newOptional &&
+        this.state.newType &&
+        this.state.newMin &&
+        this.state.newMax){
+            ready = true;
+        }
+        return(ready)
+    }
+
+    renderSubmitDisabled(){
+        return(
+            <Button
+                bsSize="small"
+                bsStyle="primary"
+                onClick={this.handleSubmit}
+                disabled>
+                {this.state.addfield ? "Add Another Field" : "Add New Field"}
+            </Button>
+        )
+    }
+
+    renderSubmitEnabled(){
+        return(
+            <Button
+                bsSize="small"
+                bsStyle="primary"
+                onClick={this.handleSubmit}>
+                {this.state.addfield ? "Add Another Field" : "Add New Field"}
+            </Button>
         )
     }
 
@@ -217,7 +253,7 @@ class FieldTable extends React.Component {
                 <td><DropDown
                     typeOptions={typeOptions}
                     selecting = {this.selectType}
-                    default={this.state.newType ? this.state.newType : "text"}/></td>
+                    default={this.state.newType}/></td>
                 <td><input
                     type = "number"
                     name = "newMin"
@@ -228,11 +264,23 @@ class FieldTable extends React.Component {
                     name = "newMax"
                     value={this.state.newMax}
                     onChange={this.handleChange}/></td>
-                <td><Button bsSize="small"
-                    bsStyle="primary"
-                    onClick={this.handleEditSubmit}>
-                    Confirm Changes
-                </Button></td>
+                <td>
+                    <ButtonGroup>
+                        <Button
+                            bsSize="small"
+                            bsStyle="primary"
+                            onClick={this.handleEditSubmit}>
+                            Confirm
+                        </Button>
+                            <Button
+                                bsStyle="danger"
+                                bsSize="small"
+                                onClick={this.handleCancel}>
+                                Cancel
+                            </Button>
+                    </ButtonGroup>
+
+                    </td>
             </tr>
         )
     }
@@ -297,6 +345,19 @@ class FieldTable extends React.Component {
     handleEdit(event){
         var index = event.target.name;
         this.props.updateEdit(index)
+    }
+
+    handleCancel(event){
+        console.log("Updating:")
+        this.setState({
+            newDisplayname: "",
+            newOptional: false,
+            newType: "Choose Type",
+            newMin: "",
+            newMax: "",
+            addfield: true
+        })
+        this.props.editFalse();
     }
 
 
