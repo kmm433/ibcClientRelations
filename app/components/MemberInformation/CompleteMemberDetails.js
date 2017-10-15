@@ -54,7 +54,6 @@ class CompleteMemberDetails extends React.Component {
       // Map to display components
       var renderDetails = null;
       renderDetails = currentDetails.map((detail, i) => {
-        console.log(detail);
         return(
           <Detail
           key={i}
