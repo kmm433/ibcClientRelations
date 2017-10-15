@@ -28,7 +28,7 @@ class Notice extends React.Component {
                     'notifID': this.props.NotificationID
                 },
                 success : function(response){
-                    console.log('delete_Notification Success');
+                    //console.log('delete_Notification Success');
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('delete_Notification Error' + xhr.responseText);

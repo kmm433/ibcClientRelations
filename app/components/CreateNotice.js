@@ -291,7 +291,6 @@ class create_notice extends React.Component {
                         NTitle: "",
                         NContent: ""
                     });
-
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_notication Error ' + xhr.responseText);
@@ -456,7 +455,7 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    console.log('insert_Survey Success' + response);
+                    //console.log('insert_Survey Success' + response);
                     alert("Survey successfully posted");
                     this.surveyReset();
                 }.bind(this),
@@ -677,10 +676,10 @@ class create_notice extends React.Component {
                     <div className="w3-col s9 CreateNoticeDiv"><div><textarea rows="5" name="EContent" placeholder="My Event Details" value={this.state.EContent} onChange={this.handleChange}></textarea></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EStartDate" placeholderText="DD/MM/YYYY" selected={this.state.EStartDate} onChange={this.handleDayStart} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>End Date:</label></div></div>
-                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd}/></div></div>
+                    <div className="w3-col s9 CreateNoticeDiv"><div><DatePicker name="EendDate" placeholderText="DD/MM/YYYY" selected={this.state.EendDate} onChange={this.handleDayEnd} minDate={moment()} maxDate={moment().add(5, "years")}/></div></div>
 
                     <div className="w3-col s3 CreateNoticeDiv"><div><label>Start Time:</label></div></div>
                     <div className="w3-col s9 CreateNoticeDiv"><div><TimePicker onChange={this.handleTimeStart} value={this.state.EStart} step={30} initialValue={61200}/></div></div>

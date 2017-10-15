@@ -27,13 +27,18 @@ class EventStat extends React.Component {
         this.state = {
             total: 1,
             going: 0,
-            notGoing: 0
+            notGoing: 0,
+            attendingList: [],
+            notgoingList: []
         };
         this.deleteNotice = this.deleteNotice.bind(this);
+        this.get_eventNames = this.get_eventNames.bind(this);
+        this.get_eventResults = this.get_eventResults.bind(this);
     }
 
     componentWillMount(){
       this.get_eventResults();
+      this.get_eventNames();
     }
 
 
@@ -106,6 +111,14 @@ class EventStat extends React.Component {
                             </div>
                         </div>
                     </div>
+                    <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px'}}>
+                        <div><h4>Attending:</h4></div>
+                        <div>{this.generateAttendingList()}</div>
+                    </div>
+                    <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px'}}>
+                        <div><h4>Unable to Attend:</h4></div>
+                        <div>{this.generateNotGoingList()}</div>
+                    </div>
                     <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px', textAlign: 'center'}}>
                         <div><button type="button" className="btn btn-primary" id="btnDeleteEvent" onClick={this.deleteNotice}>Delete Event</button></div>
                     </div>
@@ -159,7 +172,7 @@ class EventStat extends React.Component {
                  error: function(xhr, status, err, response){
                      console.log('get_EventCount Error' + xhr.responseText);
                  }.bind(this)
-             });
+            });
     }
     deleteNotice(){
         if (confirm("Warning: This will permenantly remove this event from your chamber members and can not be undone! Are you sure?") == true){
@@ -171,7 +184,7 @@ class EventStat extends React.Component {
                     'eventID': this.props.ID
                 },
                 success : function(response){
-                    console.log('delete_Event Success');
+                    //console.log('delete_Event Success');
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('delete_Event Error' + xhr.responseText);
@@ -182,6 +195,66 @@ class EventStat extends React.Component {
             this.props.reload();
         }
     }
+    get_eventNames(){
+        $.ajax({
+              url: '/php/get_eventNames.php',
+              type:'POST',
+              dataType: "json",
+              data:{
+                  'EventID': this.props.ID
+              },
+              success : function(response){
+                  this.setState({
+                      attendingList: response[0],
+                      notgoingList: response[1]
+                  });
+              }.bind(this),
+              error: function(xhr, status, err, response){
+                  console.log('get_eventNames Error' + xhr.responseText);
+              }.bind(this)
+         });
+    }
+    generateAttendingList() {
+      const aList = this.state.attendingList;
+      var list = null;
+      if (aList) {
+        list = aList.map((x) => {
+          return(
+            <Person
+              key={x['firstname'] + x['lastname']}
+              name={x['firstname'] + " " + x['lastname']}
+            />
+          );
+        })
+      }
+      return list;
+    }
+    generateNotGoingList() {
+      const nList = this.state.notgoingList;
+      var list = null;
+      if (nList) {
+        list = nList.map((x) => {
+          return(
+            <Person
+              key={x['firstname'] + x['lastname']}
+              name={x['firstname'] + " " + x['lastname']}
+            />
+          );
+        })
+      }
+      return list;
+    }
+
 };
 
 export default EventStat;
+
+class Person extends React.Component {
+    render(){
+    return(
+        <div className="w3-row" style={{marginBottom: '5px'}}>
+            <div><span>- {this.props.name}</span></div>
+        </div>
+        );
+    }
+};

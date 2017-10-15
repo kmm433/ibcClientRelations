@@ -61,7 +61,7 @@ class NoticeEvent extends React.Component {
                     'eventID': this.props.eventID
                 },
                 success : function(response){
-                    console.log('delete_Event Success');
+                    //console.log('delete_Event Success');
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('delete_Event Error' + xhr.responseText);
@@ -87,7 +87,7 @@ class NoticeEvent extends React.Component {
                 'EventID': this.props.eventID
             },
             success : function(response){
-                console.log('get_EventStatusGoing Success')
+                //console.log('get_EventStatusGoing Success')
                 going = response;
             }.bind(this),
             error: function(xhr, status, err){
@@ -114,7 +114,7 @@ class NoticeEvent extends React.Component {
                     'EventID': this.props.eventID
                 },
                 success : function(response){
-                    console.log('get_EventStatusCantGo Success')
+                    //console.log('get_EventStatusCantGo Success')
                     cantgo = response;
                 }.bind(this),
                 error: function(xhr, status, err){
@@ -134,7 +134,6 @@ class NoticeEvent extends React.Component {
 
     hide(){
         // Remove the display then mark the event as hidden for this user
-        console.log(this.props.eventID);
         this.setState({
             hidden: false
         });
@@ -212,6 +211,19 @@ class NoticeEvent extends React.Component {
             deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
         }
 
+        var url = "";
+        if(this.props.EventURL != ""){
+            var link = this.props.EventURL;
+            if (link.includes("https://")){
+                link = link.replace('https://', '');
+            }
+            if (link.includes("http://")){
+                link = link.replace('http://', '');
+            }
+            link = "https://" + link;
+            url = <div className="eventDiv"><i>URL: </i><a href={link}>{link}</a></div>
+        }
+
         return(
             <Collapse isOpened={this.state.hidden}>
               <div className="notice">
@@ -226,6 +238,7 @@ class NoticeEvent extends React.Component {
                         </span>
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
+                  {url}
                   <div><p>{this.props.message}</p></div>
                 </div>
                 <div className="event-buttons">

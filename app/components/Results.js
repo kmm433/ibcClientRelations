@@ -21,6 +21,16 @@ class Results extends React.Component {
     }
 
     render() {
+
+    var noEventsMessage = ""
+    var noSurveyMessage = ""
+    if (this.state.events.length == 0){
+        noEventsMessage = <div style={{textAlign: 'center', marginTop:'50px', marginBottom:'50px'}}><h4>Theres nothing to display!</h4>As an Executive, you can create Notices, Events and Surveys to display to your chamber by using the Create New Notice Page</div>
+    }
+    if (this.state.surveys.length == 0){
+        noSurveyMessage = <div style={{textAlign: 'center', marginTop:'50px', marginBottom:'50px'}}><h4>Theres nothing to display!</h4>As an Executive, you can create Notices, Events and Surveys to display to your chamber by using the Create New Notice Page</div>
+    }
+
     return(
     <div className="main-component w3-row">
         <div className='w3-container w3-card-4 w3-light-grey'>
@@ -39,6 +49,7 @@ class Results extends React.Component {
                       reload={this.reload}
                     />
                 </div>
+                {noEventsMessage}
             </TabPanel>
             <TabPanel>  {/******************************************** Surveys *********************************************************************** */}
                 <div><h3>Click on a survey to view details:</h3></div>
@@ -48,6 +59,7 @@ class Results extends React.Component {
                       reload={this.reload}
                     />
                 </div>
+                {noSurveyMessage}
             </TabPanel>
         </Tabs>
       </div>
@@ -79,7 +91,7 @@ class Results extends React.Component {
              dataType: "json",
              success : function(response){
                  this.setState({surveys: response});
-                 console.log('get_AllSurveys Success')
+                 //console.log('get_AllSurveys Success')
              }.bind(this),
              error: function(xhr, status, err, response){
                  console.log('get_AllSurveys Error' + xhr.responseText);
@@ -88,7 +100,7 @@ class Results extends React.Component {
     }
 
     reload(){
-        console.log("reload");
+        //console.log("reload");
         if(this.state.Reload == false){
             this.setState({
                 Reload: true

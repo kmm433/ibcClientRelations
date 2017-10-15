@@ -316,8 +316,6 @@ class NoticeBoard extends React.Component {
 
         }
 
-
-
         // Nothing to display message
         if(emptyNotifications == true){
             console.log("EMPTY");

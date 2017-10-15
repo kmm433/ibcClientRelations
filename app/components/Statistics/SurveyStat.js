@@ -37,15 +37,6 @@ class SurveyStat extends React.Component {
         });
         this.get_SurveyQuestions()
         this.get_SurveyAnswers()
-
-        console.log(this.state.questions.length);
-        for(var i=0; i< this.state.questions.length; i++){
-            console.log(this.state.questions[i]);
-        }
-        console.log(this.state.answers.length);
-        for(var i=0; i< this.state.answers.length; i++){
-            console.log(this.state.answers[i]);
-        }
     }
 
 
@@ -127,9 +118,6 @@ class SurveyStat extends React.Component {
             success : function(response){
                 this.setState({questions: response});
                 //console.log('get_SurveyQuestions Success' + this.props.ID + ' ' + response);
-                for(var i=0; i< response.length; i++){
-                    console.log(response[i]);
-                }
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_SurveyQuestions Error');
@@ -148,9 +136,6 @@ class SurveyStat extends React.Component {
                 success : function(response){
                     this.setState({answers: response});
                     //console.log('get_SurveyAnswers Success' + this.props.ID + ' ' + response);
-                    for(var i=0; i< response.length; i++){
-                        console.log(response[i]);
-                    }
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('get_SurveyAnswers Error');
@@ -158,26 +143,26 @@ class SurveyStat extends React.Component {
             });
         }
         deleteNotice(){
-              if (confirm("Warning: This will permenantly remove this Survey from your chamber members and can not be undone! Are you sure?") == true){
-                  $.ajax({
-                      url: '/php/delete_Survey.php',
-                      type:'POST',
-                      dataType: "json",
-                      data:{
-                          'SurveyID': this.state.ID
-                      },
-                      success : function(response){
-                          console.log('delete_Survey Success');
-                      }.bind(this),
-                      error: function(xhr, status, err){
-                          console.log('delete_Survey Error' + xhr.responseText);
-                      }.bind(this)
-                  });
+          if (confirm("Warning: This will permenantly remove this Survey from your chamber members and can not be undone! Are you sure?") == true){
+              $.ajax({
+                  url: '/php/delete_Survey.php',
+                  type:'POST',
+                  dataType: "json",
+                  data:{
+                      'SurveyID': this.state.ID
+                  },
+                  success : function(response){
+                      //console.log('delete_Survey Success');
+                  }.bind(this),
+                  error: function(xhr, status, err){
+                      console.log('delete_Survey Error' + xhr.responseText);
+                  }.bind(this)
+              });
 
-                  // Reload Parent Component
-                  this.props.reload();
-              }
+              // Reload Parent Component
+              this.props.reload();
           }
+        }
 
 
 };

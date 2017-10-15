@@ -12,7 +12,8 @@ import AdminMenu from './AdminMenu'
 import NewChamber from './Admin/CreateChamber'
 import create_notice from './CreateNotice';
 import UpcomingEvents from './UpcomingEvents';
-import Results from './Results'
+import Results from './Results';
+import LinkSurvey from './NoticeBoard/LinkSurvey';
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -38,6 +39,7 @@ class Layout extends React.Component {
                 <Route path='/profile' component={Calendar} />
                 <Route path='/member_information' render={()=> <MemberInformation chamber_id={this.props.chamber_id}/>} />
                 <Route path='/invoice/:user_id' component={InvoiceManagement} />
+                <Route path='/survey/:SurveyID' render={(props) => <LinkSurvey {...props}/>} />
                 <Route path='/manage_groups' render={() => <GroupManagement chamber_id={this.props.chamber_id}/>} />
                 <Route path='/upcoming_events' render={()=> <UpcomingEvents user_type={this.props.user_type} />} />
                 <Route path='/results' component={Results} />

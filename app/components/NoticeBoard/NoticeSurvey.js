@@ -126,10 +126,12 @@ class NoticeSurvey extends React.Component {
             items: FormattedOutput
         });
 
+        /*
         console.log("USERANSWERS");
         for (var i = 0; i < userAnswers.length; i++){
             console.log(userAnswers[i]);
         }
+        */
     }
 
     collapse(){
@@ -187,7 +189,7 @@ class NoticeSurvey extends React.Component {
                     'SurveyID': this.props.SurveyID
                 },
                 success : function(response){
-                    console.log('delete_Survey Success');
+                    //console.log('delete_Survey Success');
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('delete_Survey Error' + xhr.responseText);
@@ -201,6 +203,7 @@ class NoticeSurvey extends React.Component {
     }
 
   get_SurveyQuestions(){
+      console.log(this.props.SurveyID);
       $.ajax({
           url: '/php/get_SurveyQuestions.php',
           type:'POST',
@@ -294,11 +297,10 @@ class SurveyText extends React.Component {
         }
     }
     onChange(value) {
-        console.log(value);
+        //console.log(value);
         // Set result
         var index = this.getIndex(this.props.qID);
         userAnswers[index].Answer = value;
-        console.log(this.props.qID);
     }
     render(){
         return(
@@ -337,10 +339,6 @@ class SubmitPage extends React.Component {
             btnDisabled: true,
             label: "Thank you for taking the time to complete this survey"
         });
-        console.log("USER ANSWERS SUBMITTING NOW");
-        for (var i = 0; i < userAnswers.length; i++){
-            console.log(userAnswers[i]);
-        }
 
       $.ajax({
           url: '/php/insert_SurveyAnswers.php',

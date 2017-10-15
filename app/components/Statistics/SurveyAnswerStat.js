@@ -97,10 +97,7 @@ class SurveyAnswerStat extends React.Component {    // Represents each question
               'questionNo': this.props.ID
           },
           success : function(response){
-              console.log('get_QuestionResult Success');
-              for(var i=0; i< response.length; i++){
-                  console.log(response[i]);
-              }
+              //console.log('get_QuestionResult Success');
               this.setupPieChart(response);
           }.bind(this),
           error: function(xhr, status, err){
@@ -143,7 +140,6 @@ class Answer extends React.Component {
                 return this.props.results[i].Count;
             }
         }
-        console.log("ERROR IN GETCOUNT, RESULT NOT FOUND");
     }
 
     render(){

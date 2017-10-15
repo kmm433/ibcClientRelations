@@ -283,12 +283,15 @@ class DB_Handler
 
    // NoticeBoard: Hide Events (from the noticeboard)
    function hide_Events($EventID) {
-     $userid =  $_SESSION['userid'];
-     $sql = $this->db->prepare("INSERT INTO MYEVENTHIDDEN (`EventID`, `UserID`) VALUES ('$EventID','$userid')");
-     if ($sql->execute()) {
-       return true;
-     }
-     return false;
+     $sql = $this->db->prepare("INSERT INTO MYEVENTHIDDEN (`EventID`, `UserID`) VALUES (:event,:user)");
+     $result = $sql->execute(array(
+       "user" => $_SESSION['userid'],
+       "event" => $EventID
+     ));
+     if ($result)
+        return true;
+     else
+         return false;
    }
 
    // Event Page: Return Events
@@ -347,48 +350,58 @@ class DB_Handler
 
    // Events: Mark Event as Going
    function set_EventGoing($EventID) {
-     $userid =  $_SESSION['userid'];
      $going = $this->get_EventStatusGoing($EventID);
      if (count($going) == 0) {
-         $sql = $this->db->prepare("CALL SPsetEventGoing('$EventID', '$userid');");
-         if ($sql->execute()) {
-             return true;
-         }
-         return false;
+         $sql = $this->db->prepare("CALL SPsetEventGoing(:event, :user);");
+         $result = $sql->execute(array(
+           "event" => $EventID,
+           "user" => $_SESSION['userid']
+         ));
+         if ($result)
+            return true;
+         else
+             return false;
      }
    }
 
    // Events: Mark Event as Cant Go
    function set_EventCantgo($EventID) {
-     $userid =  $_SESSION['userid'];
      $notGoing = $this->get_EventStatusCantGo($EventID);
      if (count($notGoing) == 0) {
-        $sql = $this->db->prepare("CALL SPsetEventCantgo('$EventID', '$userid');");
-        if ($sql->execute()) {
-        return true;
-        }
-        return false;
+        $sql = $this->db->prepare("CALL SPsetEventCantgo(:event, :user);");
+        $result = $sql->execute(array(
+          "event" => $EventID,
+          "user" => $_SESSION['userid']
+        ));
+        if ($result)
+            return true;
+        else
+            return false;
       }
    }
 
    function get_EventStatusGoing($EventID){
-     $userid =  $_SESSION['userid'];
-     $sql = $this->db->prepare("SELECT GoingID FROM MYEVENTGOING WHERE EventID = $EventID and UserID = $userid;");
-     if ($sql->execute()) {
-        $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-        return $row;
-     }
-     return false;
+     $sql = $this->db->prepare("SELECT GoingID FROM MYEVENTGOING WHERE EventID = :event and UserID = :user;");
+     $result = $sql->execute(array(
+       "event" => $EventID,
+       "user" => $_SESSION['userid']
+     ));
+     if ($result)
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+     else
+        return false;
    }
 
    function get_EventStatusCantGo($EventID){
-       $userid =  $_SESSION['userid'];
-       $sql = $this->db->prepare("SELECT CantgoID FROM MYEVENTCANTGO WHERE EventID = $EventID and UserID = $userid;");
-       if ($sql->execute()) {
-          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-          return $row;
-       }
-       return false;
+       $sql = $this->db->prepare("SELECT CantgoID FROM MYEVENTCANTGO WHERE EventID = :event and UserID = :user;");
+       $result = $sql->execute(array(
+         "event" => $EventID,
+         "user" => $_SESSION['userid']
+       ));
+       if ($result)
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+       else
+          return false;
    }
 
     // NoticeBoard: Return Surveys (only ID's and titles)
@@ -451,9 +464,19 @@ class DB_Handler
 
    // NoticeBoard Surveys: submit Survey Answers
   function insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer){
-    $userid =  $_SESSION['userid'];
-    $sql = $this->db->prepare("CALL SPinsertSurveyAnswers($userid,$surveyID,$questionNo,'$question',$AnswerID,'$Answer');");
-    $sql->execute();
+    $sql = $this->db->prepare("CALL SPinsertSurveyAnswers(:user,:survey,:qNo,:q,:aID,:a);");
+    $result = $sql->execute(array(
+      "user" => $_SESSION['userid'],
+      "survey" => $surveyID,
+      "qNo" => $questionNo,
+      "q" => $question,
+      "aID" => $AnswerID,
+      "a" => $Answer
+    ));
+    if ($result)
+       return true;
+    else
+       return false;
   }
 
   //return a column
@@ -1171,6 +1194,36 @@ class DB_Handler
 
       if ($result){
           return $sql->fetchColumn(0);
+      }
+      else{
+          return false;
+      }
+  }
+  // Returns a list of names of people marked attending an event
+  function get_EventNamesAttending($EventID){
+      $sql = $this->db->prepare("SELECT u.firstname, u.lastname, e.EventID FROM MYEVENTGOING e
+                                LEFT JOIN USER u on e.UserID = u.UserID WHERE e.EventID = :event;");
+      $result = $sql->execute(array(
+        "event" => $EventID
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  // Returns a list of names of people marked NOT attending an event
+  function get_EventNamesNotGoing($EventID){
+      $sql = $this->db->prepare("SELECT u.firstname, u.lastname, e.EventID FROM MYEVENTCANTGO e
+                                LEFT JOIN USER u on e.UserID = u.UserID WHERE e.EventID = :event;");
+      $result = $sql->execute(array(
+        "event" => $EventID
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
       }
       else{
           return false;
