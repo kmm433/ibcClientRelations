@@ -17,11 +17,13 @@ class Detail extends React.Component {
         return (<i>No Record</i>);
     }
     else {
+      console.log('DISABLED STATUS IS: ', this.props.details['disabled']);
       return (
           <input
             type='text'
             value={this.props.details['value']}
             onChange={(e) => this.props.updateDetail(e, this.props.displayname)}
+            disabled={this.props.details['disabled']? true:null}
           />
       );
     }

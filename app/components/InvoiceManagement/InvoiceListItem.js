@@ -25,7 +25,7 @@ class InvoiceListItem extends React.Component {
   render() {
     return (
       <a className={'invoice-list-item' + this.determinePaymentStatus()}
-        href={'/php/xero/xero_invoice.php?operation=download_invoice&invoice_number=' + this.props.invoice.InvoiceNumber}
+        href={'/php/xero_invoice.php?operation=download_invoice&invoice_number=' + this.props.invoice.InvoiceNumber}
       >
         <div className='invoice-list-item-cell'>{this.props.invoice.InvoiceNumber}</div>
         <div className='invoice-list-item-cell'>{this.props.invoice.Date}</div>

@@ -1,12 +1,15 @@
 import React from 'react';
 import $ from 'jquery';
 import Note from './Note.js';
+import * as MemberActions from '../../Actions/MemberActions.js';
 
 class NotesPanel extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {users_note: ''};
+    this.state = {
+      users_note: ''
+    };
     this.updateNote = this.updateNote.bind(this);
     this.handleSubmitNote = this.handleSubmitNote.bind(this);
     this.renderNotes = this.renderNotes.bind(this);
@@ -18,24 +21,11 @@ class NotesPanel extends React.Component {
   }
 
   // Submits a user's note to the database.
-  handleSubmitNote(event) {
-    const note = this.state.users_note;
-    if(note !== '') {
-      $.ajax({
-        url: "/php/add_note.php",
-        type: 'POST',
-        dataType: 'json',
-        data: {
-          'memberID': this.props.memberID,
-          'note': note
-        }, success: response => {
-          this.setState({users_note: ''});
-          this.props.getNotes();
-        }, error: response => {
-          console.log('ERROR:', response);
-        }
-      });
-    }
+  handleSubmitNote() {
+    MemberActions.submitNote(this.props.memberID, this.state.users_note);
+    this.setState({
+      users_note: '',
+    });
   }
 
   // Renders each individaul note that is passed in via props.
@@ -71,7 +61,7 @@ class NotesPanel extends React.Component {
           type='button'
           className='btn btn-primary'
           value='Submit Note'
-          onClick={(e) => this.handleSubmitNote(e)}
+          onClick={this.handleSubmitNote}
         />
       </div>
     );

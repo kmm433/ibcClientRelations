@@ -7,7 +7,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Illawarra Business Chamber | Home</title>
+    <title>Slater Chamber</title>
+    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -20,8 +21,11 @@
     <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/theme.css" />
     <link rel="stylesheet" href="/css/side_menu.css" />
+    <link rel="stylesheet" href="/css/bottom_menu.css" />
+    <link rel="stylesheet" href="/css/member_management.css" />
     <link rel="stylesheet" href="/css/group_management.css" />
     <link rel="stylesheet" href="/css/invoice_management.css" />
+    <link rel="stylesheet" href="/css/profile.css" />
   </head>
   <body>
     <base href="/" />

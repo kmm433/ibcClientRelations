@@ -13,6 +13,10 @@ body {
   background-color: #F5F5F5;
 }
 
+html, body, .establish-fonts, #menu, #layout {
+  height: 100%;
+}
+
 /* Overriding some boostrap colors for a custom color scheme.*/
 .panel-primary .panel-heading{
   background-color: #2462AB;
@@ -36,8 +40,6 @@ body {
   width:100%;
   background-color: red;
 }
-
-
 
 .notice {
   position: relative;
@@ -123,37 +125,6 @@ body {
     left: 0%;
 }
 
-#bottom-options {
-  position: relative;
-  bottom: 0px;
-}
-
-#menu-logo {
-  width: 50%;
-  margin-left: auto;
-   margin-right: auto;
-}
-
-#menu-logo img {
-margin-left: 8%;
-  padding-top: 20px;
-  max-width: 105px;
-  width: 100%;
-}
-
-#menu-welcome {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#menu-welcome h1 {
-text-align: center;
-text-transform: uppercase;
-  color: #FFFFFF;
-  font-size: 120%;
-}
-
 .confirmation-button {
   margin: 10px 5px;
 }
@@ -166,220 +137,13 @@ text-transform: uppercase;
   margin-left: 22%;
   margin-right: 20%;
   margin-top: 15px;
+  margin-bottom: 60px;
 }
 
 #notice-board {
   margin-left: 20%;
   margin-right: 5%;
   padding-top: 15px;
-}
-
-/* Regarding the member list view available to executives*/
-
-.confirmation-button {
-  margin: 10px 5px;
-}
-
-#member-info-settings {
-  background-color: #FFFFFF;
-  border: 0px;
-}
-
-#member-info-settings .panel-body {
-  background-color: #F5F5F5;
-  border: 0px;
-}
-
-#member-info-settings ul {
-  list-style: none;
-  padding-left: 0px;
-  margin-top: 5px;
-}
-
-#member-info-settings ul li label input {
-  margin-right: 10px;
-  margin-left: 2px;
-}
-
-#member-info-settings input {
-  margin-left: 0px;
-}
-
-#member-list {
-  width: 100%;
-  word-wrap: break-word;
-}
-
-#member-list-headers {
-  width: 100%;
-  background-color: #2462AB;
-  overflow: auto;
-}
-
-#member-list .table-header {
-  background-color: #2462AB;
-  border: none;
-  color: #FFFFFF;
-  font-weight: bold;
-  float: left;
-  padding: 5px;
-  width: 20%;
-}
-
-.member-list-item {
-  width: 100%;
-  overflow: auto;
-  border-top: 1px solid #BCBCBC;
-  color: DimGrey!important;
-}
-
-.member-list-item .alert {
-  margin-bottom: 0px;
-  border-radius: 0px;
-}
-
-.member-list-item-field {
-  border: none;
-  float: left;
-  padding: 5px;
-  width: 20%;
-}
-
-#member-list .member-details-block {
-  background-color: #FFFFFF;
-}
-
-.member-details {
-  width: 100%;
-  min-height: 300px;
-  float: none;
-  display: inline-block;
-  padding-top: 5px;
-}
-
-.member-details h4 {
-  margin-left: 0%;
-}
-
-.member-details h5 {
-  font-weight: bold;
-}
-
-.member-details-text {
-  border-top: 1px solid #BCBCBC;
-  padding-top: 10px;
-}
-
-.member-details-controls {
-  padding: 0px 0px 20px 0px;
-  display: inline-block;
-  width: 100%;
-}
-
-.member-details-controls-buttons {
-  width: 100%;
-}
-
-.member-details-groups {
-  width: 100%;
-  display: inline-block;
-  margin: 10px 0px 20px 0px;
-  border-top: 1px solid #BCBCBC;
-  padding-top: 10px;
-}
-
-.notes-panel {
-  border-top: 1px solid #BCBCBC;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  padding-top: 10px;
-}
-
-.notes-panel textarea {
-  width: 100%;
-  height: 100px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #BCBCBC;
-  border-radius: 5px;
-  resize: none;
-  padding: 5px;
-}
-
-.member-details input, .member-details a {
-  margin-left: 0px;
-}
-
-.member-details-controls input, .member-details-controls a {
-  margin-right: 10px;
-  padding-top: 10px;
-}
-
-.complete-member-details {
-  border-top: 1px solid #BCBCBC;
-  width: 100%;
-  display: table;
-  margin-bottom: 20px;
-  padding: 20px 0px 10px 0px;
-}
-
-.detail {
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-  background-color: grey;
-  display: table-row;
-}
-
-.detail:nth-child(odd) {
-  background-color: #FBFBFB;
-}
-
-.detail:nth-child(even) {
-  background-color: #FFFFFF;
-}
-
-.detail .member-detail {
-  padding: 0px 20px 0px 10px;
-  background-color: inherit;
-  word-wrap: break-word;
-  display: table-cell;
-  vertical-align: top;
-}
-.detail .member-detail-value {
-  padding: 0px 0px 0px 10px;
-  background-color: inherit;
-  word-wrap: break-word;
-  display: table-cell;
-  vertical-align: top;
-}
-
-.note h5 {
-  margin-left: 0%;
-}
-
-.ReactTags__tag {
-  background-color: #5bc0de;
-}
-
-.ReactTags__tagInput {
-  margin: 5px;
-}
-
-div.ReactTags__selected span.ReactTags__tag {
-    background: #2462ab;
-    color: #FFFFFF;
-    border-radius: 5px;
-    margin-left: 0px;
-    margin-right: 10px;
-}
-
-/* Used to allocate screenspace to the main component */
-.main-component {
-  float: left;
-  width: 75%;
-  margin-left: 22%;
-  margin-right: 3%;
 }
 
 
@@ -779,6 +543,26 @@ margin-bottom: 2%;
     }
 }
 
+@media (min-width: 720px) {
+  /* Used to allocate screenspace to the main component */
+  .main-component {
+    float: left;
+    width: 75%;
+    margin-left: 22%;
+    margin-right: 3%;
+  }
+}
+
+@media (max-width: 720px) {
+  /* Used to allocate screenspace to the main component */
+  .main-component {
+    float: left;
+    width: 94%;
+    margin-left: 3%;
+    margin-right: 3%;
+  }
+}
+
 #h2-editsignup{
   padding-top: 1%;
   padding-left: 2%;
@@ -874,15 +658,6 @@ margin-bottom: 2%;
     width: 100%;
 }
 
-#member-info-settings .search {
-  min-width: 200px;
-  width: 100%;
-  border: 1px solid #BCBCBC;
-  box-shadow: none;
-  border-radius: 4px;
-  padding: 5px;
-}
-
 .emptyNotices {
     text-align: center;
     margin-top: 60px;
@@ -904,7 +679,7 @@ margin-bottom: 2%;
    border-bottom: 1px solid #BCBCBC;
    color: DimGrey!important;
  }
- 
+
  .event-list-item .alert {
    margin-bottom: 0px;
    border-radius: 0px;

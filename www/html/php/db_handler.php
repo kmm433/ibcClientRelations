@@ -71,10 +71,9 @@ class DB_Handler
 
   // Get the user's metadata
   function getUserData($email_addr) {
-    $sql = $this->db->prepare("SELECT firstname, lastname, type, chamberID, businessID FROM USER WHERE email='$email_addr'");
-    if ($sql->execute()) {
-      $row = $sql->fetch( PDO::FETCH_ASSOC );
-      $results = array ('firstname'=>$row['firstname'],'lastname'=>$row['lastname'], 'type'=>$row['type'], 'chamberID'=>$row['chamberID'], 'businessID'=>$row['businessID']);
+    $sql = $this->db->prepare("SELECT UserID, firstname, lastname, type, chamberID, businessID FROM USER WHERE email=:email_address");
+    if ($sql->execute(array('email_address' => $email_addr))) {
+      $results = $sql->fetch( PDO::FETCH_ASSOC );
       return $results;
     }
     return false;
@@ -100,9 +99,31 @@ class DB_Handler
     return false;
   }
 
+  // Creates a dummy business for a user if for some reason one hasn't been provided
+  function createEmptyBusiness($chamberId, $userId) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare("INSERT INTO BUSINESS (chamberID, businessname, businessphone) VALUES (:chamber_id, '', 0)");
+    if ($sql->execute(array('chamber_id' => $chamberId))) {
+      $sql = $this->db->prepare("SELECT LAST_INSERT_ID()");
+      if ($sql->execute()) {
+        $businessId = $sql->fetch(PDO::FETCH_NUM)[0];
+        $sql = $this->db->prepare("UPDATE USER SET businessID=:business_id WHERE UserID=:user_id");
+        if ($sql->execute(array(
+          'business_id' => $businessId,
+          'user_id' => $userId
+        ))) {
+          $this->db->commit();
+          return $businessId;
+        }
+      }
+    }
+    $this->db->rollBack();
+    return false;
+  }
+
   // Gets all variable information about a user
   function getDetail($memberID, $query) {
-    $completeQuery = "SELECT $query FROM USER JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
+    $completeQuery = "SELECT $query FROM USER LEFT JOIN BUSINESS on USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID'";
     $sql = $this->db->prepare($completeQuery);
     if($sql->execute());
       return  $sql->fetchall();
@@ -111,7 +132,9 @@ class DB_Handler
 
   // Allows a standard detail to be updated for a user
   function setDetail($memberID, $value, $column, $table) {
-    $sql = $this->db->prepare("UPDATE BUSINESS JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column='$value' WHERE USER.UserID='$memberID'");
+    // Quote the input strings best we can do here
+    $value = $this->db->quote($value);
+    $sql = $this->db->prepare("UPDATE BUSINESS LEFT JOIN USER ON BUSINESS.businessID=USER.businessId SET $table.$column=$value WHERE USER.UserID='$memberID'");
     if($sql->execute())
       return true;
     else
@@ -120,23 +143,26 @@ class DB_Handler
 
   // Allows a chamber specific detail to be updated for a user
   function setChamberSpecificDetail($memberID, $dataID, $businessID, $value, $column, $table) {
+    //Quote the input strings best we can do here
+    $value = $this->db->quote($value);
     // Check if there is s preexisting value
     $queryString = "SELECT * FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID='$dataID'";
     $sql = $this->db->prepare($queryString);
     if ($sql->execute()) {
-      if ($sql->rowCount() > 0)
-        $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID";
-      else
-        $queryString = "INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, '$value', $businessID)";
-      $sql = $this->db->prepare($queryString);
-      if ($sql->execute())
-        return true;
-      else
-        return false;
+      if ($sql->rowCount() > 0) {
+        $sql = $this->db->prepare("UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID");
+        if ($sql->execute()) {
+          return true;
+        }
+      }
+      else {
+        $sql = $this->db->prepare("INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, $value, $businessID)");
+        if ($sql->execute()) {
+          return true;
+        }
+      }
     }
-    else {
-      return ('Failed to check for existing entry.');
-    }
+    return false;
   }
 
   // Gets chamber specific information about a user
@@ -587,6 +613,71 @@ class DB_Handler
       return false;
   }
 
+  // Retrieves the callback domain for xero from the database
+  function getXeroInvoiceCallbackDomain() {
+    $sql = $this->db->prepare("SELECT domain from CALLBACK_URIS WHERE callback='xero_invoice'");
+    $sql->execute();
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  //Updates the Xero APIs Consumer Key and Secret for a given chamber
+  function updateXeroAPIKeys($chamberId, $consumerKey, $consumerSecret) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare( "SELECT COUNT(chamberID) FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id" );
+    $sql->execute( array(
+      'chamber_id' => $chamberId,
+    ));
+    $existing = $sql->fetch( PDO::FETCH_ASSOC );
+    // If there is an existing entry update it
+    if( $existing['COUNT(chamberID)'] > 0) {
+      $sql = $this->db->prepare("UPDATE CHAMBER_API_KEYS SET xero_key=:consumer_key, xero_secret=:consumer_secret WHERE chamberID=:chamber_id");
+      if  ( $sql->execute( array(
+        'chamber_id' => $chamberId,
+        'consumer_key' => $consumerKey,
+        'consumer_secret' => $consumerSecret,
+      )))
+      {
+        $this->db->commit();
+        return true;
+      }
+      else {
+        $this->db->rollBack();
+        return false;
+      }
+    }
+    // If there is no existing entry create one
+    else {
+      $sql = $this->db->prepare( "INSERT INTO CHAMBER_API_KEYS (chamberID, xero_key, xero_secret) VALUES (:chamber_id, :consumer_key, :consumer_secret)" );
+      if  ( $sql->execute( array(
+        'chamber_id' => $chamberId,
+        'consumer_key' => $consumerKey,
+        'consumer_secret' => $consumerSecret,
+      )))
+      {
+        $this->db->commit();
+        return true;
+      }
+      else {
+        $this->db->rollBack();
+        return false;
+      }
+    }
+  }
+
+  // Retrieves the consumer key and secret from the database
+  function getXeroConsumerDetails($chamberId) {
+    $sql = $this->db->prepare("SELECT xero_key, xero_secret FROM CHAMBER_API_KEYS WHERE chamberID=:chamber_id");
+    $sql->execute(array('chamber_id' => $chamberId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // Retrieves the callback uri for xero Invoices
+  function getXeroInvoiceCallbackURI() {
+    $sql = $this->db->prepare("SELECT uri FROM CALLBACK_URIS WHERE callback='xero_invoice'");
+    $sql->execute();
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Updates the MailChimp API key for a given chamber
   function updateMailChimpAPIKey($chamberID, $APIkey) {
     $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -695,6 +786,26 @@ class DB_Handler
     $sql = $this->db->prepare("SELECT type, expiry_date FROM PAYMENTTYPES WHERE chamberid=:chamber_id");
     $sql->execute(array('chamber_id' => $chamberId));
     return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // Retrieves the expiry date for a specified user
+  function getMemberExpiryDate($userId) {
+    $sql = $this->db->prepare("SELECT expiry FROM USER WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // Updates a specified user's expiry date in the database
+  function updateMemberExpiryDate($userId, $date) {
+    $sql = $this->db->prepare("UPDATE USER SET expiry=:expiry_date WHERE UserID=:user_id");
+    if($sql->execute(array(
+      'user_id' => $userId,
+      'expiry_date' => $date
+    )))
+      return true;
+    else {
+      return false;
+    }
   }
 
   // Creates a group for a specified chamber using a specified name

@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import $ from 'jquery';
 import 'react-datepicker/dist/react-datepicker.css'
 import * as InvoiceActions from '../../Actions/InvoiceActions.js';
 
@@ -14,19 +15,34 @@ class InvoicePaidOptions extends React.Component {
 
     this.getNewExpiryDate = this.getNewExpiryDate.bind(this);
     this.updateExpiryDate = this.updateExpiryDate.bind(this);
+    this.handleUpdateExpiry = this.handleUpdateExpiry.bind(this);
 
     moment.locale('en-au');
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      expiry_date: this.getNewExpiryDate(nextProps.recent_payment, nextProps.renewal_policy),
+      expiry_date: this.getNewExpiryDate(nextProps.recent_payment, nextProps.renewal_policy, nextProps.expiry_date),
     });
   }
 
-// TODO: Calculate the new expiry date based on the renewal policy and whether the member has already expired...
-  getNewExpiryDate(dateParts, policy) {
-    return moment();
+  getNewExpiryDate(dateParts, policy, expiry_date) {
+    var newDate = moment();
+    if (policy && policy.type === 'Annual') {
+      if (dateParts && expiry_date) {
+        var expiry = moment(expiry_date);
+        if (expiry < newDate) {
+          newDate = moment(dateParts[0]+'/'+dateParts[1]+'/'+dateParts[2], 'YYYY/MM/DD').add(1, 'years');
+        }
+        else {
+          newDate = expiry.add(1, 'years');
+        }
+      }
+    }
+    else if(policy) {
+        newDate = moment(policy.expiry_date);
+    }
+    return newDate;
   }
 
   updateExpiryDate(date) {
@@ -35,9 +51,13 @@ class InvoicePaidOptions extends React.Component {
     });
   }
 
+  handleUpdateExpiry() {
+    InvoiceActions.updateExpiryDate(this.props.user_id, this.state.expiry_date.format());
+    $('#invoice-paid-options').fadeOut('slow');
+  }
+
   render() {
     const recent_payment = this.props.recent_payment;
-    console.log(this.props);
     if (recent_payment) {
       return (
         <div id='invoice-paid-options' className='alert alert-info'>
@@ -53,7 +73,9 @@ class InvoicePaidOptions extends React.Component {
             <div className='input-group'>
               <input className='btn btn-primary'
                 type='button'
-                value='Update Membership Expiry'/>
+                value='Update Membership Expiry'
+                onClick={this.handleUpdateExpiry}
+              />
             </div>
           </div>
         </div>
