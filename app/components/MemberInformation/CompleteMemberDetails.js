@@ -13,7 +13,9 @@ class CompleteMemberDetails extends React.Component {
     };
     this.renderDetails = this.renderDetails.bind(this);
     this.updateDetail = this.updateDetail.bind(this);
+    this.updateError = this.updateError.bind(this);
     this.handleSaveChanges = this.handleSaveChanges.bind(this);
+    this.checkErrors = this.checkErrors.bind(this);
   }
 
   // Update the state fo the details
@@ -43,7 +45,30 @@ class CompleteMemberDetails extends React.Component {
   }
 
   // Allows a detail to update it's error status
+  updateError(detail, errorStatus) {
+    var errors = this.state.errors;
+    var existing = false;
+    errors.forEach((error, index) => {
+      if (error.detail === detail) {
+        errors[index].status = errorStatus;
+        existing = true;
+      }
+    });
+    if (!existing)
+      errors.push({detail: detail, status: errorStatus});
+    this.setState({errors: errors});
+  }
 
+  // Checks if there are any errors in the current inputs
+  checkErrors() {
+    const errors = this.state.errors;
+    for (var index in errors) {
+      if (errors[index].status === true){
+        return true;
+      }
+    }
+    return false;
+  }
 
   // Allows an updated set of edtails to be submitted to the datbase.
   handleSaveChanges() {
@@ -65,6 +90,7 @@ class CompleteMemberDetails extends React.Component {
           details={detail[1]}
           editable={this.props.editable}
           updateDetail={this.updateDetail}
+          updateError={this.updateError}
           />
         );
       });
@@ -84,6 +110,7 @@ class CompleteMemberDetails extends React.Component {
             className='btn btn-warning'
             value='Save Changes'
             onClick={this.handleSaveChanges}
+            disabled={this.checkErrors()}
           />
           : null
         }
