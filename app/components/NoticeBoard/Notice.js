@@ -1,6 +1,8 @@
 import React from 'react';
 import {Collapse} from 'react-collapse';                    /* https://www.npmjs.com/package/react-collapse */
 import $ from 'jquery';                                     /* For ajax query */
+import SkyLight from 'react-skylight';                      /* http://marcio.github.io/react-skylight/ */
+import EditNotice from './EditNotice.js'
 
 /*
 key={notifs[i].NotificationID}
@@ -43,9 +45,12 @@ class Notice extends React.Component {
 
     render(){
 
-        let deleteBtn = null;
+        let ExecBtns = null;
         if (this.props.user_type == 1){
-            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
+            ExecBtns = <div className="w3-col s1">
+                {<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}
+                {<button type="button" onClick={() => this.simpleDialog.show()} className="notificationDeleteBtn" id="btnEdit"><span className="glyphicon glyphicon-pencil" style={{color: 'white'}}></span></button>}
+            </div>;
         }
 
         return(
@@ -53,12 +58,15 @@ class Notice extends React.Component {
                 <div className="notice">
                     <div className="notice-title">
                         <div className="w3-col s11"><h2>{this.props.title}</h2></div>
-                        {deleteBtn}
+                        {ExecBtns}
                     </div>
                     <div className="notice-content" style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}>
                         <p>{this.props.message}</p>
                     </div>
                 </div>
+                <SkyLight hideOnOverlayClicked ref={ref => this.simpleDialog = ref} title="Edit Notification">
+                    <EditNotice title={this.props.title} message={this.props.message} id={this.props.NotificationID} reload={this.props.reload}/>
+                </SkyLight>
             </Collapse>
         );
     }

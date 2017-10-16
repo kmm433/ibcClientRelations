@@ -1671,6 +1671,42 @@ function updatePayment($payment, $expiry, $chamber){
       return false;
   }
 
+  function modify_Notification($notifID,$title,$message){
+      $sql = $this->db->prepare("UPDATE NOTIFICATION SET `NoticeTitle`=:thisTitle, `Notice`=:thisMessage WHERE `NotificationID`=:id;");
+      $result = $sql->execute(array(
+        ":id" => $notifID,
+        ":thisTitle" => $title,
+        ":thisMessage" => $message
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
+  function modify_Event($EventID,$EventTitle,$Event,$EventDate,$endTime,$Location,$EventURL){
+      $sql = $this->db->prepare("UPDATE MYEVENT SET `EventTitle`=:thisTitle, `Event`=:thisEvent, `EventDate`=:thisEventDate, `endTime`=:thisendTime, `Location`=:thislocation, `EventURL`=:thisUrl WHERE `EventID`=:id;");
+      $result = $sql->execute(array(
+        ":id" => $EventID,
+        ":thisTitle" => $EventTitle,
+        ":thisEvent" => $Event,
+        ":thisEventDate" => $EventDate,
+        ":thisendTime" => $endTime,
+        ":thislocation" => $Location,
+        ":thisUrl" => $EventURL
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
   }
 
 
