@@ -91,7 +91,7 @@ class NoticeEvent extends React.Component {
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
                   {url}
-                  <div><p>{this.props.message}</p></div>
+                  <div style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}><p>{this.props.message}</p></div>
                 </div>
                 <div className="event-buttons">
                     {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}

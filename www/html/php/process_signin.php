@@ -15,9 +15,15 @@ if($user) {
   $_SESSION['userid'] = $db->getUserID($user);
   $_SESSION['businessid'] = $db->getBusinessID($_SESSION['userid']);
   echo $_SESSION['chamber'];
-  header('Location: ../index.php');
-}
-else {
+  if (isset($_SESSION['survey'])) {
+      header('Location: ../index.php?survey='.$_SESSION['survey']);
+  }
+  elseif (isset($_SESSION['event'])) {
+      header('Location: ../index.php?event='.$_SESSION['event']);
+  }else {
+     header('Location: ../index.php');
+  }
+} else {
   header('Location: ../signin.php?status=invalid');
 }
 

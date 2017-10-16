@@ -73,7 +73,7 @@ class TmpNoticeEvent extends React.Component {
                         </span>
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
-                  <div><p>{this.props.message}</p></div>
+                  <div style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}><p>{this.props.message}</p></div>
                 </div>
                 <div className="event-buttons">
                     {<button type="button" disabled={true} className="btn btn-default" id="btnRSVPGoing">RSVP Going"</button>}
