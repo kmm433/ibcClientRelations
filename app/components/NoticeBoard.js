@@ -171,7 +171,7 @@ class NoticeBoard extends React.Component {
               dataType: "json",
               success : function(response){
                   events = response;
-                  console.log('get_EventsNoticeBoardTEMP Success');
+                  //console.log('get_EventsNoticeBoardTEMP Success');
               }.bind(this),
               error: function(xhr, status, err, response){
                   console.log('get_EventsNoticeBoardTEMP Error' + xhr.responseText);
@@ -190,7 +190,7 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 surveys = response;
-                console.log('get_Surveys Success')
+                //console.log('get_Surveys Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_Surveys Error')
@@ -206,7 +206,7 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 surveys = response;
-                console.log('get_surveysTEMP Success')
+                //console.log('get_surveysTEMP Success')
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_surveysTEMP Error')
@@ -318,7 +318,6 @@ class NoticeBoard extends React.Component {
 
         // Nothing to display message
         if(emptyNotifications == true){
-            console.log("EMPTY");
             messages.push(<EmptyNotification
                 key="EmptyNotification"
                 user_type={this.props.user_type}
