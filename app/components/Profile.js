@@ -2,6 +2,7 @@ import React from 'react';
 import MemberStore from '../Stores/MemberStore.js';
 import * as MemberActions from '../Actions/MemberActions.js';
 import CompleteMemberDetails from './MemberInformation/CompleteMemberDetails';
+import PasswordReset from './Profile/PasswordReset.js';
 
 class Profile extends React.Component {
 
@@ -54,6 +55,7 @@ class Profile extends React.Component {
               editable={this.state.editable}
               setEditMode={this.setEditMode}
             />
+            <PasswordReset user_id={this.props.user_id}/>
           </div>
         </div>
       </div>

@@ -27,20 +27,24 @@ class Detail extends React.Component {
       if(!isEmail(value)) {
         valid = 'error';
         this.setState({error_message: 'Invalid email address'});
+        this.props.updateError(this.props.details.columnname, true);
       }
     }
     if (this.props.details.inputtype == 'number') {
       if(!isNumeric(value)) {
         valid = 'error';
         this.setState({error_message: 'Invalid value. Must be a number'});
+        this.props.updateError(this.props.details.columnname, true);
       }
     }
     if (!isLength(value, {min:this.props.details.minimim, max:this.props.details.maximum})) {
       valid = 'error';
       this.setState({error_message: 'Invalid value. Length is not acceptable.'});
+      this.props.updateError(this.props.details.columnname, true);
     }
     if (valid === 'success') {
       this.setState({error_message: ''});
+      this.props.updateError(this.props.details.columnname, false);
     }
     this.setState({valid_state: valid});
   }
