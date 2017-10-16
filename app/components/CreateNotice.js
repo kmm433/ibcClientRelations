@@ -371,51 +371,63 @@ class create_notice extends React.Component {
                 success : function(response){
                     //console.log('Event Success ' + response);
                     alert("Event successfully posted");
-                    this.setState({
-                        ETitle: "",
-                        EContent: "",
-                        EStartDate: "",
-                        EendDate: "",
-                        Elocation: "",
-                        Elink: ""
-                    });
-
+                    //If email option selected, do email blast
+                    if (this.state.Eemail == "on"){
+                        this.emailEvent(response, groups, bus)
+                    }else {
+                        this.setState({
+                            ETitle: "",
+                            EContent: "",
+                            EStartDate: "",
+                            EendDate: "",
+                            Elocation: "",
+                            Elink: ""
+                        });
+                    }
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_event Error ' + xhr.responseText);
                 }.bind(this)
             });
-
-            //If email option selected, do email blast
-            if (this.state.Eemail == "on"){
-                var emails = [];
-                $.ajax({
-                    url: '/php/get_Emails.php',
-                    type:'POST',
-                    async: false,
-                    dataType: "json",
-                    data:{
-                        'postChamber' : this.state.EChambers,
-                        'groups' : groups,
-                        'business' : bus
-                    },
-                    success : function(response){
-                        //console.log('get_Emails Success ');
-                        emails = response;
-                    }.bind(this),
-                    error: function(xhr, status, err){
-                        console.log('get_Emails Error ' + xhr.responseText);
-                    }.bind(this)
-                });
-                window.location = 'mailto:?bcc=' + emails
-                    + '&subject=New Chamber Event: '+ this.state.ETitle
-                    + '&body=' + 'You have a new event available, to RSVP, log in to CRM and press "Upcoming Events"' + '%0D%0A' + '%0D%0A'
-                    + 'Details: ' + this.state.EContent + '%0D%0A'
-                    + 'When: ' + moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format('dddd MMMM Do YYYY, h:mm a') + ' to ' + moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format('MMMM Do YYYY, h:mm a') + '%0D%0A'
-                    + 'Where: ' + this.state.Elocation;
-            }
         }
     }
+    emailEvent(eventID, groups, bus){
+        var emails = [];
+        $.ajax({
+            url: '/php/get_Emails.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            data:{
+                'postChamber' : this.state.EChambers,
+                'groups' : groups,
+                'business' : bus
+            },
+            success : function(response){
+                //console.log('get_Emails Success ');
+                emails = response;
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_Emails Error ' + xhr.responseText);
+            }.bind(this)
+        });
+        window.location = 'mailto:?bcc=' + emails
+            + '&subject=New Chamber Event: '+ this.state.ETitle
+            + '&body=' + 'You have a new event available, to RSVP, go to https://www.slaterchamber.com?event=' + eventID + '%0D%0A' + '%0D%0A'
+            + 'Details: ' + this.state.EContent + '%0D%0A'
+            + 'When: ' + moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format('dddd MMMM Do YYYY, h:mm a') + ' to ' + moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format('MMMM Do YYYY, h:mm a') + '%0D%0A'
+            + 'Where: ' + this.state.Elocation + '%0D%0A'
+            + 'Link: ' + this.state.Elink;
+        this.setState({
+            ETitle: "",
+            EContent: "",
+            EStartDate: "",
+            EendDate: "",
+            Elocation: "",
+            Elink: ""
+        });
+    }
+
     submitSurvey(){
         if((this.state.STitle == "") || (Questions.length == 0)){
             window.alert("That Survey has blank fields! Please ensure there is a title and at least 1 question");
@@ -457,42 +469,42 @@ class create_notice extends React.Component {
                 success : function(response){
                     //console.log('insert_Survey Success' + response);
                     alert("Survey successfully posted");
-                    this.surveyReset();
+                    //If email option selected, do email blast
+                    if (this.state.Semail == "on"){
+                        this.emailSurvey(response, groups, bus)
+                    }else {
+                        this.surveyReset();
+                    }
                 }.bind(this),
                 error: function(xhr, status, err){
                     console.log('insert_Survey Error ' + xhr.responseText);
                 }.bind(this)
             });
-
-            //If email option selected, do email blast
-            if (this.state.Semail == "on"){
-                var emails = [];
-                $.ajax({
-                    url: '/php/get_Emails.php',
-                    type:'POST',
-                    async: false,
-                    dataType: "json",
-                    data:{
-                        'postChamber' : this.state.SChambers,
-                        'groups' : groups,
-                        'business' : bus
-                    },
-                    success : function(response){
-                        //console.log('get_Emails Success ');
-                        emails = response;
-                    }.bind(this),
-                    error: function(xhr, status, err){
-                        console.log('get_Emails Error ' + xhr.responseText);
-                    }.bind(this)
-                });
-                window.location = 'mailto:?bcc=' + emails
-                    + '&subject=New Chamber Survey: '+ this.state.STitle
-                    + '&body=' + 'You have a new Survey available, to complete, log in to CRM and visit the Noticeboard on the main page';
-            }
         }
-
-
-
+    }
+    emailSurvey(surveyID, groups, bus){
+        var emails = [];
+        $.ajax({
+            url: '/php/get_Emails.php',
+            type:'POST',
+            async: false,
+            dataType: "json",
+            data:{
+                'postChamber' : this.state.SChambers,
+                'groups' : groups,
+                'business' : bus
+            },
+            success : function(response){
+                //console.log('get_Emails Success ');
+                emails = response;
+            }.bind(this),
+            error: function(xhr, status, err){
+                console.log('get_Emails Error ' + xhr.responseText);
+            }.bind(this)
+        });
+        window.location = 'mailto:?bcc=' + emails
+            + '&subject=New Chamber Survey: '+ this.state.STitle
+            + '&body=' + 'You have a new Survey available, to complete, go to https://www.slaterchamber.com?survey=' + surveyID;
     }
 
     addQuestion(){
