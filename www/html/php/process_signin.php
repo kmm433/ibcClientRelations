@@ -16,7 +16,8 @@ if($user) {
   $_SESSION['businessid'] = $db->getBusinessID($_SESSION['userid']);
   echo $_SESSION['chamber'];
   header('Location: ../index.php');
-} else {
+}
+else {
   header('Location: ../signin.php?status=invalid');
 }
 
