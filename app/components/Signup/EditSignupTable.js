@@ -130,12 +130,13 @@ class FieldTable extends React.Component {
         const tables = ["BUSINESS", 'USER', "ignore"];
 
         return (
+            <div className="table-responsive">
                 <Table striped bordered condensed hover>
                   <thead>
                       <tr>
                         <th> Name of Field </th>
-                        <th id="columnWidth"> Optional </th>
-                        <th style={{'width': '20%'}}> Type </th>
+                        <th style={{'width': '20%'}}> Optional </th>
+                        <th style={{'width': '10%'}}> Type </th>
                         <th id="columnWidth"> Minimum Value </th>
                         <th id="columnWidth"> Maximum Value </th>
                         <th id="columnWidth"> </th>
@@ -158,6 +159,7 @@ class FieldTable extends React.Component {
                       {this.props.edit ? this.renderEditField() : this.renderAddField()}
                   </tbody>
               </Table>
+          </div>
         );
     }
 
@@ -233,9 +235,8 @@ class FieldTable extends React.Component {
     }
 
     renderEditField(){
-        const typeOptions = ['email', 'text', 'number', 'menu'];
+        const typeOptions = ['email', 'text', 'number'];
         var i = this.props.currentIndex;
-        console.log(i)
         console.log("What is the new type",this.state.newType)
 
         return(
@@ -279,7 +280,6 @@ class FieldTable extends React.Component {
                                 Cancel
                             </Button>
                     </ButtonGroup>
-
                     </td>
             </tr>
         )

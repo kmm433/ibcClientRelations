@@ -6,30 +6,27 @@ class DropDown extends React.Component {
         super(props);
 
         this.state = {
-            display: this.props.default
+            display: ""
         }
 
         this.handleSelect = this.handleSelect.bind(this);
     }
+    componentWillReceiveProps(nextProps){
+        this.setState({display: nextProps.default})
+    }
 
     handleSelect(evt){
-        this.setState({
-            display: evt
-        })
-        console.log(evt);
-        var type = evt;
-        this.props.selecting(type);
+        this.props.selecting(evt);
     }
 
     render(){
         return(
 
             <ButtonGroup>
-
                 <DropdownButton
                     id="dropdown-btn"
                     bsSize="xsmall"
-                    title="menu"
+                    title={this.state.display}
                     onSelect={this.handleSelect}>
                         {this.props.typeOptions.map((item,index) =>
                         <MenuItem

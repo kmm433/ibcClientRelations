@@ -9,5 +9,5 @@
   $d = $db->updatePayment($payment, $expiry, $chamber);
   $results = $db->getFields("SELECT type, expiry_date FROM PAYMENTTYPES where chamberID=$chamber");
 
-  echo json_encode($d);
+  echo json_encode($results);
 ?>

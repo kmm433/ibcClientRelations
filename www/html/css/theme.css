@@ -614,6 +614,26 @@ margin-bottom: 2%;
     margin-left: 20%;
 }
 
+@media (min-width: 768px) {
+    #edit-signup-table {
+        width: 100%;
+    }
+}
+
+@media (min-width: 369px) {
+    #edit-signup-table {
+        width: 100%;
+    }
+}
+
+@media (max-width: 369px) {
+    #edit-signup-table {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 100%;
+    }
+}
+
 #signup-container{
     margin-left: 10%;
     margin-right: 10%;
