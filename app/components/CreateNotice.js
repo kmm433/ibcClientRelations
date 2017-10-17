@@ -413,7 +413,7 @@ class create_notice extends React.Component {
         });
         window.location = 'mailto:?bcc=' + emails
             + '&subject=New Chamber Event: '+ this.state.ETitle
-            + '&body=' + 'You have a new event available, to RSVP, go to https://www.slaterchamber.com?event=' + eventID + '%0D%0A' + '%0D%0A'
+            + '&body=' + 'You have a new event available, to RSVP, go to https://slaterchamber.com?event=' + eventID + '%0D%0A' + '%0D%0A'
             + 'Details: ' + this.state.EContent + '%0D%0A'
             + 'When: ' + moment(moment(this.state.EStartDate).add(this.state.EStart, 'seconds')).format('dddd MMMM Do YYYY, h:mm a') + ' to ' + moment(moment(this.state.EendDate).add(this.state.Eend, 'seconds')).format('MMMM Do YYYY, h:mm a') + '%0D%0A'
             + 'Where: ' + this.state.Elocation + '%0D%0A'
@@ -504,7 +504,7 @@ class create_notice extends React.Component {
         });
         window.location = 'mailto:?bcc=' + emails
             + '&subject=New Chamber Survey: '+ this.state.STitle
-            + '&body=' + 'You have a new Survey available, to complete, go to https://www.slaterchamber.com?survey=' + surveyID;
+            + '&body=' + 'You have a new Survey available, to complete, go to https://slaterchamber.com?survey=' + surveyID;
     }
 
     addQuestion(){
