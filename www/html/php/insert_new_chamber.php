@@ -78,6 +78,11 @@ $db->justExecute("CREATE TABLE $businesstable (
                       PRIMARY KEY (`answerID`)
                     )");
 
+//default settings to automatically expire new members a year from sign up date
+$db->addPayment("Annual", null, $id);
+//default settings to automatcally approve new users
+$db->justExecute("INSERT INTO APPROVAL (chamberID) VALUES ($id)");
+
 
 echo json_encode($results);
 

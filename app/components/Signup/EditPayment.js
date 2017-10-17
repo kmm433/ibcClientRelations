@@ -12,10 +12,10 @@ class EditPayment extends React.Component {
         }
 
         this.state = ({
-            edit: false,
             newMembershipType: "",
             newInfo: "",
-            newAmount: ""
+            newAmount: "",
+            membershipID: ""
         })
 
         this.renderTable = this.renderTable.bind(this);
@@ -33,26 +33,47 @@ class EditPayment extends React.Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.updateParentPaymentType = this.updateParentPaymentType.bind(this);
-
+        this.outputDisabled = this.outputDisabled.bind(this);
 
     }
+
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps.paymentFields, nextProps.paymentIndex)
+        console.log(nextProps.paymentFields[0].name)
+        var i = nextProps.paymentIndex;
+        nextProps.editPayment &&
+        this.setState({
+            newMembershipType: nextProps.paymentFields[i].name,
+            newInfo: nextProps.paymentFields[i].info,
+            newAmount: nextProps.paymentFields[i].amount,
+            membershipID: nextProps.paymentFields[i].membershipID
+        })
+        }
 
     updateParentPaymentType(paymentType, expiry){
         this.props.updatePaymentType(paymentType, expiry);
-
     }
 
     handleChange(event){
-        console.log(event.target.value)
+        console.log(event.target.name, event.target.value)
         var name = event.target.name;
         var value = event.target.value;;
         this.setState({
             [name]: value
         })
+        console.log(this.state)
     }
 
+    outputDisabled(){
+        return(
+            <text style={{'fontStyle': 'italic', 'color': 'red', 'padding': '2%'}}>Disabled</text>
+        )
+    }
+
+    //this table displays all the membership payment info for the chamber
     renderTable(){
         return (
+            <div className="table-responsive">
                 <Table striped bordered condensed hover>
                   <thead>
                       <tr>
@@ -65,21 +86,22 @@ class EditPayment extends React.Component {
                   <tbody>
                      {this.props.paymentFields.map((item, i) =>
                           <tr key = {this.props.paymentFields[i].name}>
-                            <td>{this.props.paymentFields[i].disabled==='1' ? this.outputDisabled() : ""}
+                            <td>{this.props.paymentFields[i].disabled==='1' && this.outputDisabled()}
                                 {this.props.paymentFields[i].name}</td>
                             <td>{this.props.paymentFields[i].info}</td>
                             <td>${this.props.paymentFields[i].amount}</td>
                             <td> {this.editBtn(i)}</td>
                       </tr>)}
-                      {this.props.edit ? this.renderEditField() : this.renderAddField()}
+                      {this.props.editPayment ? this.renderEditField() : this.renderAddField()}
                   </tbody>
               </Table>
+          </div>
         );
     }
 
+    //if the user presses the edit field button, render input fields full of the corresponding field they selected
     renderEditField(){
-        var i = this.props.currentIndex;
-        console.log(i)
+        var i = this.props.paymentIndex;
 
         return(
             <tr className = "edit-signup-input">
@@ -118,6 +140,7 @@ class EditPayment extends React.Component {
         )
     }
 
+    //add a new field
     renderAddField(){
         return(
             <tr className = "edit-signup-input">
@@ -174,12 +197,14 @@ class EditPayment extends React.Component {
     }
 
     handleEditSubmit(){
-        //this.props.sendUpdatedField(this.state.Membership, this.state.newOptional, this.state.newType, this.state.newMin, this.state.newMax);
-
+        console.log(this.state)
+        console.log(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
+        this.props.updateMembership(this.state.membershipID, this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
             newInfo: "",
-            newAmount: ""
+            newAmount: "",
+            membershipID: ""
         })
     }
 
@@ -188,25 +213,28 @@ class EditPayment extends React.Component {
         this.setState({
             newMembershipType: "",
             newInfo: "",
-            newAmount: ""
+            newAmount: "",
+            membershipID: ""
         })
+        this.props.editPaymentFalse()
     }
-
+    //if edit has been enabled then update the edit field
     handleEdit(event){
+        console.log("index is: ", event.target.name)
         var index = event.target.name;
-        //this.props.updateEdit(index)
+        this.props.updateEdit(index)
     }
 
     handleRemove(event){
-        var index = event.target.name;
+        var i = event.target.name;
         console.log("removing", event.target.name);
-        //this.props.disableField(this.props.signupFields[index].displayname);
+        this.props.disableMembership(this.props.paymentFields[i].name);
     }
 
     handleEnable(event){
-        var index = event.target.name;
-        console.log("editing")
-        //this.props.enableField(this.props.signupFields[index].displayname);
+        var i = event.target.name;
+        console.log("editing", event)
+        this.props.enableMembership(this.props.paymentFields[i].name);
     }
 
     checkSubmitReady(){
@@ -243,10 +271,12 @@ class EditPayment extends React.Component {
     }
 
     handleSubmit(){
+        this.addPaymentField(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
             newInfo: "",
-            newAmount: ""
+            newAmount: "",
+            membershipID: ""
         })
     }
 

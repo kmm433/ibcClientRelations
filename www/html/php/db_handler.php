@@ -1301,6 +1301,7 @@ function getFields($query){
   }
 //updates changes made to a field on the sign up form
   function updateField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $dataID){
+
       $sql = $this->db->prepare("UPDATE $inserttable SET displayname = :name, mandatory = :optional, inputtype=:type,
            tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID");
 
@@ -1642,15 +1643,41 @@ function getFields($query){
 
     }
 
+//update the payment type (switch to annual or pro rata) if annual expiry is null
 function updatePayment($payment, $expiry, $chamber){
 
     if(!isset($expiry) || empty($expiry)) { $expiry = null; }
 
-    $sql = $this->db->prepare("UPDATE PAYMENTTYPES SET type='$payment', expiry_date=$expiry where chamberid=$chamber");
-    if($sql->execute()){
+    $sql = $this->db->prepare("UPDATE PAYMENTTYPES SET type= :type, expiry_date=:expiry_date where chamberid=:chamber");
+    if($sql->execute(array(
+      "type" => $payment,
+      "expiry_date" => $expiry,
+      "chamber" => $chamber
+    ))){
         return true;
     }
     return false;
+}
+
+
+//add default payment type upon creating a chamber
+function addPayment($payment, $expiry, $chamber){
+    try{
+        if(!isset($expiry) || empty($expiry)) { $expiry = null; }
+
+        $sql = $this->db->prepare("INSERT INTO PAYMENTTYPES (chamberid, type, expiry_date) VALUES (:chamber, :type, :expiry_date)");
+        if($sql->execute(array(
+          "type" => $payment,
+          "expiry_date" => $expiry,
+          "chamberid" => $chamber
+        ))){
+            return true;
+        }
+        return false;
+    }
+    catch(PDOExecption $e) {
+        echo $e->getMessage();
+    }
 }
 
   function justExecute($query){
@@ -1661,7 +1688,7 @@ function updatePayment($payment, $expiry, $chamber){
       return false;
   }
 
-  //count how many users exists with this value
+  //count how many users exists with this value (to check for email or name duplicates)
   function countUser($query){
       $sql = $this->db->prepare($query);
       if ($sql->execute()) {
@@ -1670,6 +1697,95 @@ function updatePayment($payment, $expiry, $chamber){
       }
       return false;
   }
+
+  function enableSignupField($chamber, $name, $able){
+      try{
+
+          $sql = $this->db->prepare("UPDATE MEMBERSHIPS SET disabled=:disabled WHERE name = :name AND chamberID = :chamberID");
+          if($sql->execute(array(
+            "disabled" => $able,
+            "name" => $name,
+            "chamberID" => $chamber
+          ))){
+              return true;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+  }
+
+  function insertNewMembership($chamber, $name, $info, $amount){
+      try{
+          $sql = $this->db->prepare("INSERT INTO MEMBERSHIPS (chamberID, name, info, amount, 1) SET disabled=0 WHERE displayname = '$name'");
+          if($sql->execute(array(
+            "type" => $payment,
+            "expiry_date" => $expiry,
+            "chamberid" => $chamber
+          ))){
+              return true;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+  }
+
+
+    function updateMembership($membershipID, $name, $info, $amount){
+        try{
+            $sql = $this->db->prepare("UPDATE MEMBERSHIPS SET name = :name, info = :info, amount = :amount WHERE membershipID = :membershipID");
+            if($sql->execute(array(
+              "membershipID" => $membershipID,
+              "name" => $name,
+              "info" => $info,
+              "amount" => $amount
+            ))){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+
+    }
+
+
+    function getApproval($chamber){
+        try{
+            $sql = $this->db->prepare("SELECT approval FROM APPROVAL WHERE chamberID = :chamber");
+            $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
+
+            if($sql->execute()){
+                return $sql->fetchColumn(0);
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+
+    }
+
+    function updateApproval($chamber, $approval){
+        try{
+            $sql = $this->db->prepare("UPDATE APPROVAL SET approval = :approval WHERE chamberID = :chamber");
+            $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
+            $sql->bindParam(':approval', $approval, PDO::PARAM_INT);
+
+            if($sql->execute()){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+    }
+
 
   }
 

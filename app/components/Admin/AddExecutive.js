@@ -19,6 +19,7 @@ class AddExecutive extends React.Component{
     storeChamberData(value, index){
         var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle'];
         var name = array[index];
+        console.log(name, value)
         this.props.save(name, value)
     }
 
