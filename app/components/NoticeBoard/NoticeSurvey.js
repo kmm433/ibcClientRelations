@@ -203,7 +203,6 @@ class NoticeSurvey extends React.Component {
     }
 
   get_SurveyQuestions(){
-      console.log(this.props.SurveyID);
       $.ajax({
           url: '/php/get_SurveyQuestions.php',
           type:'POST',

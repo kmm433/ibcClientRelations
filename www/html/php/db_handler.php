@@ -29,12 +29,42 @@ class DB_Handler
 
 // Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
-    $sql = $this->db->prepare("SELECT password FROM USER WHERE email='$username'");
-    if($sql->execute()) {
+    $sql = $this->db->prepare("SELECT password FROM USER WHERE email=:user_name");
+    if($sql->execute(array('user_name' => $username))) {
       $row = $sql->fetch(PDO::FETCH_ASSOC);
       if(password_verify($password, $row['password']))
         return $username;
     }
+    return false;
+  }
+
+  // Changes a current user's password
+  function changePassword($userId, $currentPassword, $newPassword) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare("SELECT password from USER where UserID=:user_id");
+    if ($sql->execute(array('user_id' => $userId))) {
+      $datatbasePassword = $sql->fetch(PDO::FETCH_ASSOC)['password'];
+      if(password_verify($currentPassword, $datatbasePassword)) {
+        $options = [
+            'cost' => 11,
+            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+        ];
+        $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT, $options);
+        $sql = $this->db->prepare("UPDATE USER SET password=:new_password WHERE UserID=:user_id");
+        if ($sql->execute(array(
+          'new_password' => $passwordHashed,
+          'user_id' => $userId
+        ))) {
+          $this->db->commit();
+          return 'success';
+        }
+      }
+      else {
+        $this->db->rollBack();
+        return 'unauthorized';
+      }
+    }
+    $this->db->rollBack();
     return false;
   }
 
@@ -1786,6 +1816,42 @@ function addPayment($payment, $expiry, $chamber){
         }
     }
 
+
+  function modify_Notification($notifID,$title,$message){
+      $sql = $this->db->prepare("UPDATE NOTIFICATION SET `NoticeTitle`=:thisTitle, `Notice`=:thisMessage WHERE `NotificationID`=:id;");
+      $result = $sql->execute(array(
+        ":id" => $notifID,
+        ":thisTitle" => $title,
+        ":thisMessage" => $message
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
+  function modify_Event($EventID,$EventTitle,$Event,$EventDate,$endTime,$Location,$EventURL){
+      $sql = $this->db->prepare("UPDATE MYEVENT SET `EventTitle`=:thisTitle, `Event`=:thisEvent, `EventDate`=:thisEventDate, `endTime`=:thisendTime, `Location`=:thislocation, `EventURL`=:thisUrl WHERE `EventID`=:id;");
+      $result = $sql->execute(array(
+        ":id" => $EventID,
+        ":thisTitle" => $EventTitle,
+        ":thisEvent" => $Event,
+        ":thisEventDate" => $EventDate,
+        ":thisendTime" => $endTime,
+        ":thislocation" => $Location,
+        ":thisUrl" => $EventURL
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
 
   }
 

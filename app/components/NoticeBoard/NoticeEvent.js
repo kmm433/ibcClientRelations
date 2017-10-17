@@ -2,6 +2,8 @@ import React from 'react';
 import moment from "moment";                        /* https://momentjs.com/ */
 import {Collapse} from 'react-collapse';            /* https://www.npmjs.com/package/react-collapse */
 import $ from 'jquery';                             /* For ajax query */
+import SkyLight from 'react-skylight';                      /* http://marcio.github.io/react-skylight/ */
+import EditEvent from './EditEvent.js'
 
 /*
 key={events[i].EventID}
@@ -49,6 +51,67 @@ class NoticeEvent extends React.Component {
             this.setEventStatus(); // Set the buttons to pre-fill attending or not
         }
 
+    }
+
+    render(){
+
+        let ExecBtns = null;
+        if (this.props.user_type == 1){
+            ExecBtns = <div className="w3-col s1">
+                {<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}
+                {<button type="button" onClick={() => this.simpleDialog.show()} className="notificationDeleteBtn" id="btnEdit"><span className="glyphicon glyphicon-pencil" style={{color: 'white'}}></span></button>}
+            </div>;
+        }
+
+        var url = "";
+        if(this.props.EventURL != ""){
+            var link = this.props.EventURL;
+            if (link.includes("https://")){
+                link = link.replace('https://', '');
+            }
+            if (link.includes("http://")){
+                link = link.replace('http://', '');
+            }
+            link = "https://" + link;
+            url = <div className="eventDiv"><i>URL: </i><a href={link}>{link}</a></div>
+        }
+
+        return(
+            <Collapse isOpened={this.state.hidden}>
+              <div className="notice">
+                <div className="notice-title">
+                  <div className="w3-col s11"><h2>{"Upcoming event: " + this.props.title}</h2></div>
+                  {ExecBtns}
+                </div>
+                <div className="notice-content">
+                  <div className="eventDiv"> <i>When: </i>
+                        <span>
+                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')}
+                        </span>
+                  </div>
+                  <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
+                  {url}
+                  <div style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}><p>{this.props.message}</p></div>
+                </div>
+                <div className="event-buttons">
+                    {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
+                    {<button type="button" disabled={this.state.Disabled} className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
+                    {this.state.remHide ? null : <button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button> }
+                </div>
+              </div>
+              <SkyLight hideOnOverlayClicked ref={ref => this.simpleDialog = ref} title="Edit Event">
+                  <EditEvent eventID={this.props.eventID}
+                             title={this.props.title}
+                             message={this.props.message}
+                             eventdate={this.props.eventdate}
+                             endTime={this.props.endTime}
+                             location={this.props.location}
+                             EventURL={this.props.EventURL}
+                             reload={this.props.reload}
+                  />
+              </SkyLight>
+          </Collapse>
+        );
     }
 
     deleteNotice(){
@@ -202,53 +265,6 @@ class NoticeEvent extends React.Component {
             }.bind(this)
         });
 
-    }
-
-    render(){
-
-        let deleteBtn = null;
-        if (this.props.user_type == 1){
-            deleteBtn = <div className="w3-col s1">{<button type="button" onClick={this.deleteNotice} className="notificationDeleteBtn" id="btnDelete"><span className="glyphicon glyphicon-trash" style={{color: 'white'}}></span></button>}</div>;
-        }
-
-        var url = "";
-        if(this.props.EventURL != ""){
-            var link = this.props.EventURL;
-            if (link.includes("https://")){
-                link = link.replace('https://', '');
-            }
-            if (link.includes("http://")){
-                link = link.replace('http://', '');
-            }
-            link = "https://" + link;
-            url = <div className="eventDiv"><i>URL: </i><a href={link}>{link}</a></div>
-        }
-
-        return(
-            <Collapse isOpened={this.state.hidden}>
-              <div className="notice">
-                <div className="notice-title">
-                  <div className="w3-col s11"><h2>{"Upcoming event: " + this.props.title}</h2></div>
-                  {deleteBtn}
-                </div>
-                <div className="notice-content">
-                  <div className="eventDiv"> <i>When: </i>
-                        <span>
-                            {moment(this.props.eventdate).format('dddd MMMM Do YYYY, h:mm a')} to {moment(this.props.endTime).format('MMMM Do YYYY, h:mm a')}
-                        </span>
-                  </div>
-                  <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
-                  {url}
-                  <div><p>{this.props.message}</p></div>
-                </div>
-                <div className="event-buttons">
-                    {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
-                    {<button type="button" disabled={this.state.Disabled} className={this.state.cantgo} onClick={this.cantgo} id="btnRSVPGoing">{this.state.cantgoText}</button>}
-                    {this.state.remHide ? null : <button type="button" disabled={this.state.Disabled} className="btn btn-warning" onClick={this.hide} id="btnHide">Hide Event</button> }
-                </div>
-              </div>
-          </Collapse>
-        );
     }
 };
 

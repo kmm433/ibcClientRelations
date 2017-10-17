@@ -1,8 +1,22 @@
 <?php
   session_start();
+
   // Verify that the user has signed in and enforce if they have not
-  if(!$_SESSION['user'])
-    header('Location: signin.php');
+  if(!$_SESSION['user']){
+      if (isset($_GET['survey'])) {
+          $_SESSION['survey'] = $_GET['survey'];
+      }
+      if (isset($_GET['event'])) {
+          $_SESSION['event'] = $_GET['event'];
+      }
+      header('Location: ../signin.php');
+  }
+  if (isset($_GET['survey'])) {
+      header('Location: /survey/'.$_GET['survey']);
+  }
+  if (isset($_GET['event'])) {
+      header('Location: /event/'.$_GET['event']);
+  }
 ?>
 <!DOCTYPE html>
 <html>
