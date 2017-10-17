@@ -27,7 +27,7 @@ class DB_Handler
     $this->db=null;
   }
 
-// Request validation of a user profile return ID if successful
+  // Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
     $sql = $this->db->prepare("SELECT password FROM USER WHERE email=:user_name");
     if($sql->execute(array('user_name' => $username))) {
@@ -35,6 +35,45 @@ class DB_Handler
       if(password_verify($password, $row['password']))
         return $username;
     }
+    return false;
+  }
+
+  // Checks that an email account exists in the users table, used for password reset
+  function createPasswordToken($email) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare("SELECT UserID FROM USER WHERE email=:email_address");
+    $sql->execute(array('email_address' => $email));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if($userId) {
+      $sql = $this->db->prepare("SELECT token, expiry FROM RESET_TOKEN");
+      $sql->execute();
+      $existingTokens = $sql->fetchAll(PDO::FETCH_ASSOC);
+      $token = '';
+      do {
+        for($i = 0; $i < 16; $i++) {
+          $token .= mt_rand(0, 9);
+        }
+      } while(in_array($token, $existingTokens['token']));
+      // Delete any existing tokens that have expired
+      $now = date('Y-m-d H:i:s');
+      foreach ($existingTokens as $existingToken ) {
+        if ($existingToken['expiry'] > $now) {
+          $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
+          $sql->execute(array('token' => $existingToken['token']));
+        }
+      }
+      // New tokens are valid for one hour
+      $date = date('Y-m-d H:i:s', strtotime('+1 hours'));
+      $sql = $this->db->prepare("INSERT INTO RESET_TOKENS (UserID, token, expiry) VALUES (:user_id, :token, :expiry)");
+      $sql->execute(array(
+        'user_id' => $userId,
+        'token' => $token,
+        'expiry' => $date,
+      ));
+      $this->db->commit();
+      return $token;
+    }
+    $this->db->rollBack();
     return false;
   }
 
