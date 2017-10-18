@@ -314,7 +314,7 @@ class DB_Handler
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
+      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived, type
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=:chamber_id
           ORDER BY lastname;");
     if ($sql->execute(array(

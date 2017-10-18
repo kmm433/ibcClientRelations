@@ -17,13 +17,16 @@ class MemberInformation extends React.Component {
       member_list: null,
       member_list_renewals: null,
       member_list_archived: null,
+      member_list_approvals: null,
       search_phrase: '',
       all: true,
       renewals: false,
       archived: false,
+      approvals: false,
       num_all: null,
       num_renewals: null,
       num_archived: null,
+      num_approvals: null,
       invoice_callback_domain: null,
     };
     this.updateValues = this.updateValues.bind(this);
@@ -49,9 +52,11 @@ class MemberInformation extends React.Component {
       member_list: MemberStore.getMemberList(),
       member_list_renewals: MemberStore.getMemberListRenewals(),
       member_list_archived: MemberStore.getMemberListArchived(),
+      member_list_approvals: MemberStore.getMemberListApprovals(),
       num_all: MemberStore.getNumAll(),
       num_renewals: MemberStore.getNumRenewals(),
       num_archived: MemberStore.getNumArchived(),
+      num_approvals: MemberStore.getNumApprovals(),
       invoice_callback_domain: MemberStore.getInvoiceCallbackDomain(),
     });
   }
@@ -61,12 +66,15 @@ class MemberInformation extends React.Component {
     this.setState({
       all: false,
       renewals: false,
-      archived: false
+      archived: false,
+      approvals: false,
     });
     if (event.target.id === 'view-group-renewals')
       this.setState({renewals: true});
     else if (event.target.id === 'view-group-archived')
       this.setState({archived: true});
+    else if (event.target.id === 'view-group-approvals')
+      this.setState({approvals: true});
     else
       this.setState({all: true});
   }
@@ -116,9 +124,11 @@ class MemberInformation extends React.Component {
                   all={this.state.all}
                   renewals={this.state.renewals}
                   archived={this.state.archived}
+                  approvals={this.state.approvals}
                   num_all={this.state.num_all}
                   num_renewals={this.state.num_renewals}
                   num_archived={this.state.num_archived}
+                  num_approvals={this.state.num_approvals}
                   invoice_callback_domain={this.state.invoice_callback_domain}
                   changeSearchPhrase={this.changeSearchPhrase}
                   changeViewGroup={this.changeViewGroup}
@@ -153,6 +163,19 @@ class MemberInformation extends React.Component {
                 {this.state.archived ?
                   <MemberList
                     member_list={this.state.member_list_archived}
+                    chamber_id={this.props.chamber_id}
+                    all={this.state.all}
+                    renewals={this.state.renewals}
+                    archived={this.state.archived}
+                    getChamberMembers={this.getChamberMembers}
+                    setMemberView={this.setMemberView}
+                  />
+                  : null
+                }
+
+                {this.state.approvals ?
+                  <MemberList
+                    member_list={this.state.member_list_approvals}
                     chamber_id={this.props.chamber_id}
                     all={this.state.all}
                     renewals={this.state.renewals}

@@ -78,9 +78,11 @@ export function filterMembers(members, searchPhrase) {
   var currentMembers = [];
   var renewalMembers = [];
   var archivedMembers = [];
+  var approvalMembers = [];
   var warningWindow = new Date();
   warningWindow.setDate(warningWindow.getDate() + 14);
   filteredMembers.forEach((member) => {
+    console.log('Member: ', member);
 
     // Splice the datestring into a usable date object
     var expiryString = member['expiry'];
@@ -93,13 +95,18 @@ export function filterMembers(members, searchPhrase) {
     }
 
     // Add the member to their respective group
-    if (member['archived'] === '1')
+    if (member['archived'] === '1' && member['type'] < 3)
       archivedMembers.push(member);
     else {
-      currentMembers.push(member);
-      // Check if membership is about to expire
-      if(expiryDate && (expiryDate < warningWindow)){
-        renewalMembers.push(member);
+      if (member['type'] < 3) {
+        currentMembers.push(member);
+        // Check if membership is about to expire
+        if(expiryDate && (expiryDate < warningWindow)){
+          renewalMembers.push(member);
+        }
+      }
+      else {
+        approvalMembers.push(member);
       }
     }
   });
@@ -108,9 +115,11 @@ export function filterMembers(members, searchPhrase) {
     member_list: currentMembers,
     member_list_renewals: renewalMembers,
     member_list_archived: archivedMembers,
+    member_list_approvals: approvalMembers,
     num_all: currentMembers.length,
     num_renewals: renewalMembers.length,
     num_archived: archivedMembers.length,
+    num_approvals: approvalMembers.length,
   });
 }
 
