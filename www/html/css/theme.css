@@ -561,6 +561,14 @@ margin-bottom: 2%;
     margin-left: 3%;
     margin-right: 3%;
   }
+  #notice-board{
+      margin-left: 3%;
+      margin-right: 3%;
+  }
+  .notice{
+      margin-left: 3%;
+      margin-right: 3%;
+  }
 }
 
 #h2-editsignup{
@@ -724,4 +732,7 @@ margin-bottom: 2%;
      display: inline-table !important;
      top: 38% !important;
      left: 58% !important;
+ }
+ .transparent {
+     background-color: transparent !important;
  }
