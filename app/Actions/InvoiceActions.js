@@ -157,7 +157,7 @@ export function updateExpiryDate(userId, date) {
       else
         alert(result.value);
     }
-  });
+  });  
 }
 
 // When the Xero session has expired some variables will need to be unset an the user alerted

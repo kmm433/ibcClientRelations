@@ -1853,6 +1853,61 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
+  function get_StatReview(){
+      $sql = $this->db->prepare("SELECT * FROM STAT_RENEW WHERE ChamberID = :chamber ORDER BY RenewDate;");
+      $result = $sql->execute(array(
+        ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  function insert_StatReview(){
+      $sql = $this->db->prepare("INSERT INTO STAT_RENEW (UserID, ChamberID, RenewDate) VALUES (:user,:chamber,NOW());");
+      $result = $sql->execute(array(
+          ":user" => $_SESSION['userid'],
+          ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+  function get_StatNewMember(){
+      $sql = $this->db->prepare("SELECT * FROM STAT_NEWMEMBER WHERE ChamberID = :chamber ORDER BY MemberDate;");
+      $result = $sql->execute(array(
+        ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  function insert_StatNewMember($userID,$chamber){
+      $sql = $this->db->prepare("INSERT INTO STAT_NEWMEMBER (UserID, ChamberID, MemberDate) VALUES (:user,:chamber,NOW());");
+      $result = $sql->execute(array(
+          ":user" => $userID,
+          ":chamber" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+
   }
 
 

@@ -114,6 +114,7 @@ else{
 $results = $db->insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
 $id = $db->getLastID();
 $results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP + INTERVAL 1 YEAR', $jobtitle, 3);
+$userID = $db->getLastID();
 
 $var = null;
 for($i = 0; $i<($size); $i++){
@@ -125,6 +126,8 @@ for($i = 0; $i<($size); $i++){
         $db->insertExtraUserData($tablename, $data, $var, $id);
     }
 }
+
+$db->insert_StatNewMember($userID,$chamber);
 
 echo json_encode($_POST['address']);
 ?>
