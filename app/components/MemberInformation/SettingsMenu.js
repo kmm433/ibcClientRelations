@@ -108,6 +108,15 @@ class SettingsMenu extends React.Component {
             />
             Show all {this.props.num_archived} archived members
           </label></li>
+          <li><label>
+            <input
+              id='view-group-approvals'
+              type='radio'
+              checked={this.props.approvals}
+              onChange={(e) => this.props.changeViewGroup(e)}
+            />
+            Show all {this.props.num_approvals} members of this chamber with awaiting approval.
+          </label></li>
         </ul>
         <input
           type='text'
