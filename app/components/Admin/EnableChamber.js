@@ -37,14 +37,14 @@ class DropDown extends React.Component {
               data: {'chamber': this.state.chamber},
           success: response => {
               console.log(response)
-              var mess = this.state.display + " was successfully disabled";
+              var mess = this.state.display + " was successfully enabled";
               this.setState({display: "Please Select a Chamber"})
-              this.props.message(mess);
+              this.props.message(mess, true);
           },
           error: (xhr, status, err) => {
               console.log("error",xhr.responseText, status, err)
-              var mess = this.state.display + " an error occured, the chamber was no disabled";
-              this.props.message(mess);
+              var mess = this.state.display + " an error occured, the chamber was not enabled";
+              this.props.message(mess, false);
           }
           });
       }
@@ -75,8 +75,8 @@ class DropDown extends React.Component {
                                     eventKey={item}>{this.props.chamber_list[item]}
                                 </MenuItem>)}
                         </DropdownButton>
-                        <Button bsStyle='danger' onClick={this.handleSubmit}>
-                            Disable
+                        <Button bsStyle='success' onClick={this.handleSubmit}>
+                            Enable
                         </Button>
                         </ButtonGroup>
                 </Col>
@@ -99,8 +99,9 @@ class EnableChamber extends React.Component{
             chamberList: "",
             chamber: null,
             successMessage: "",
+            execAsk: false, //if this is true then show the check box to give user option to add an exec account
             btnDisplay: "",
-            addExec: 0,
+            addExec: 0, //if this is 1 then show the form to fill out to add exec
             email: null,
             confirmemail: null,
             password: null,
@@ -126,13 +127,13 @@ class EnableChamber extends React.Component{
     }
 
     //display a message for if th chamber was successfull/unsuccessfully enabled
-    //get the new chamber list of disabled chambers
-    wasEnabled(message){
-        this.setState({successMessage: message});
+    //get the new chamber list of enabled chambers
+    wasEnabled(message, success){
+        this.setState({successMessage: message, execAsk: success});
         this.getChamberList();
     }
 
-    //ajax call to get the list of disabled chambers from the database
+    //ajax call to get the list of enabled chambers from the database
     getChamberList(){
         console.log("Getting here?")
         $.ajax({url: '/php/get_allchamber.php', type: 'POST',
@@ -185,11 +186,7 @@ class EnableChamber extends React.Component{
 
      }
      checkValid(){
-         if(this.state.chamber == null){
-             this.setState({error: "Please Select a Chamber"})
-             return false;
-         }
-         else if(this.state.email !== this.state.confirmemail){
+         if(this.state.email !== this.state.confirmemail){
              this.setState({error: "Emails do not Match"})
              return false;
          }
@@ -218,7 +215,7 @@ class EnableChamber extends React.Component{
              }
          }
          else{
-
+             return false;
          }
 
      }
@@ -279,17 +276,17 @@ class EnableChamber extends React.Component{
                         You must go to the Edit Signup Form once logged in and finalise settings.
                     </div>
                     <hr className = "signup-divider" style={{'paddingBotton': '0%'}}/>
-                <div style={{'marginLeft': '5%', 'paddingTop': '2%'}}>
+                    <div style={{'marginLeft': '5%', 'paddingTop': '2%'}}>
                         {this.state.loaded == true && <DropDown
                             save = {this.getSelectedChamber}
                             chamber_list={this.state.chamberList}
                             label="Select a Chamber:"
-                            message={this.wasDisabled}
+                            message={this.wasEnabled}
                         />}
                         <div style={{'fontSize': 'medium', 'marginLeft': '3%'}}>
                             {this.state.successMessage}
                         </div>
-                        {this.checkbox()}
+                        {this.state.execAsk && this.checkbox()}
                         {this.state.addExec == 1 &&
                             <div>
                                 <AddExecutive

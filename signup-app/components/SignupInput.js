@@ -8,7 +8,7 @@ class Input extends React.Component{
         super(props)
 
         this.state = {
-            value: ""
+            value: this.props.value
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -16,6 +16,7 @@ class Input extends React.Component{
     }
 
     handleChange(event){
+        this.setState({value: event.target.value})
         console.log("handling change: ", event.target.value)
         this.props.check(event.target.name, event.target.value);
     }
@@ -35,6 +36,7 @@ class Input extends React.Component{
                     <FormControl
                         type = {this.props.type}
                         name = {this.props.displayName}
+                        value = {this.state.value}
                         onChange={this.handleChange} />
                 <HelpBlock>{this.props.error}</HelpBlock>
                 </Col>

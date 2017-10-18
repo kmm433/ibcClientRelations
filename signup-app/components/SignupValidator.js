@@ -10,9 +10,7 @@ class Validator extends React.Component{
 
         this.state = {
             valid: null,
-            error: "",
-            email: "",
-            password: "",
+            error: ""
         }
 
         this.checkValid = this.checkValid.bind(this);
@@ -74,6 +72,8 @@ checkValid(name, value){
                 error: "Invalid Email",
                 valid: "error"
             })
+            this.props.userAnswer(null, this.props.index)
+
         }
         else {
              if(this.duplicate(value) == 1){
@@ -81,11 +81,12 @@ checkValid(name, value){
                      error: "This email already exists",
                      valid: "error"
                      })
+                  this.props.userAnswer(null, this.props.index)
              }
              else{
                  this.setState({
                      error: "",
-                     valid: "success"
+                     valid: null
                      })
 
                  console.log("displayname",this.props.displayName, this.props.displayName === "Email")
@@ -100,12 +101,12 @@ checkValid(name, value){
                 error: "Must be at least 6 characters long and contain at least one number and one upper case letter",
                 valid: "error"
             })
+        this.props.userAnswer(null, this.props.index)
         }
         else{
             this.setState({
                 error: "",
-                valid: "success",
-                password: value
+                valid: null
             })
             this.props.userAnswer(value, this.props.index)
         }
@@ -116,7 +117,7 @@ checkValid(name, value){
         if(isLength(value, options)){
             this.setState({
                 error: "",
-                valid: "success"
+                valid: null
             })
             this.props.userAnswer(value, this.props.index)
         }
@@ -125,6 +126,7 @@ checkValid(name, value){
                 error: "Invalid Input",
                 valid: "error"
             })
+            this.props.userAnswer(null, this.props.index)
         }
     }
 
@@ -137,6 +139,7 @@ checkValid(name, value){
                 mandatory = {this.props.mandatory}
                 userAnswer = {this.storeUserData}
                 valid = {this.state.valid}
+                value = {this.props.value}
                 error = {this.state.error}
                 index = {this.props.index}
                 check = {this.checkValid}

@@ -5,12 +5,29 @@ import PaypalButton from './Button.js';
 export default class Payment extends React.Component {
     constructor(props){
         super(props)
+        console.log("payment getting", this.props.amount, this.props.token)
     }
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
-            		console.log("The payment was succeeded!", payment);
-            		// You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
+            console.log("The payment was succeeded!", payment);
+
+            $.ajax({url: '/php/approve_payment.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'userid': this.props.userid,
+                    'amount': this.props.amount
+                },
+            success: response => {
+              console.log('Ajax call occured', response);
+
+            },
+            error: (xhr, status, err) => {
+                console.log("error",xhr, status, err)
+                alert("An error occured, your payment was not ")
+            }});
+            // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         }
 
         const onCancel = (data) => {
@@ -22,12 +39,14 @@ export default class Payment extends React.Component {
         const onError = (err) => {
             // The main Paypal's script cannot be loaded or somethings block the loading of that script!
             console.log("Error!", err);
+            alert("An error occured, the payment did not go through.")
             // Because the Paypal's main script is loaded asynchronously from "https://www.paypalobjects.com/api/checkout.js"
             // => sometimes it may take about 0.5 second for everything to get set, or for the button to appear
         }
         let shipping = '1';//shipping address set to 1 (not required)
         let env = 'sandbox'; // you can set here to 'production' for production
-        let currency = 'USD'; // or you can set this value from your props or state
+        let currency = 'AUD'; // or you can set this value from your props or state
+        let total = this.props.amount;
         //let total = {this.props.amount}; // same as above, this is the total amount (based on currency) to be paid by using Paypal express checkout
         // Document on Paypal's currency code: https://developer.paypal.com/docs/classic/api/currency_codes/
 
@@ -47,7 +66,7 @@ export default class Payment extends React.Component {
                 env={env}
                 client={client}
                 currency={currency}
-                total={56.98}
+                total={58}
                 onError={onError}
                 onSuccess={onSuccess}
                 onCancel={onCancel} />

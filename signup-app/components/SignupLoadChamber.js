@@ -3,6 +3,7 @@ import Logo from './LogoHeader.js'
 import SignupData from './SignupDataHandler.js';
 import $ from 'jquery';
 import {ButtonToolbar, Button, ButtonGroup, DropdownButton, MenuItem} from 'react-bootstrap';
+import Payment from './Payment/Paypal.js'
 
 class ChamberDropdown extends React.Component {
   constructor(props) {
@@ -44,10 +45,16 @@ class Main extends React.Component {
       this.state = {
           chamber_list: [],
           chamber: "Please Select a Chamber",
-          selected: false
+          selected: false,
+          finish: false,
+          userid: null,
+          amount: null,
+          requireApproval: null,
+          clientID: null
         };
 
         this.getChamber = this.getChamber.bind(this);
+        this.handleFinish = this.handleFinish.bind(this);
     }
 
     /*ajax call to get list of chambers to display*/
@@ -67,6 +74,18 @@ class Main extends React.Component {
         })
     }
 
+    handleFinish(requireApproval, amount, userid, clientID){
+        console.log(requireApproval, amount, userid, clientID)
+        this.setState({
+            finish: true,
+            selected: false,
+            userid: userid,
+            amount: amount,
+            requireApproval: requireApproval,
+            clientID: clientID
+        })
+    }
+
 
   render() {
     return(
@@ -74,6 +93,7 @@ class Main extends React.Component {
           <div className="w3-panel w3-blue">
               <Logo/>
           </div>
+          {this.state.finish == false &&
           <ButtonToolbar>
               <Button style={{'marginLeft': '3%'}}>
                      <a href="/signin.php">Back to Login</a>
@@ -82,8 +102,12 @@ class Main extends React.Component {
                   selectedChamber={this.state.chamber_list[this.state.chamber]}
                   chamber_list={this.state.chamber_list}
                   sendChamber={this.getChamber}/>
-          </ButtonToolbar>
-          {this.state.selected && <SignupData chamberID={this.state.chamber}/>}
+          </ButtonToolbar>}
+          {this.state.selected && <SignupData chamberID={this.state.chamber} handleFinish={this.handleFinish}/>}
+          {this.state.finish == true && <Payment
+                                            userid = {this.state.userid}
+                                            amount = {this.state.amount}
+                                            token = {this.state.clientID}/>}
       </div>
     )
   }

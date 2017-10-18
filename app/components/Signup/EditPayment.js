@@ -271,7 +271,7 @@ class EditPayment extends React.Component {
     }
 
     handleSubmit(){
-        this.addPaymentField(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
+        this.props.addPaymentField(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
             newInfo: "",
