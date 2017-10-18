@@ -39,7 +39,7 @@ class UpcomingEvents extends React.Component {
         //<div className="main-component w3-row">
             //<div className='w3-container w3-card-4 w3-light-grey'>
             <div className="main-component">
-                <h2>Upcoming Events</h2>
+                <div className="transparent w3-light-grey" style={{marginLeft:'20px'}}><h2>Upcoming Events</h2></div>
                 <div id="UpcomingEvents">
                   <Infinite callback={this.request} disabled={this.state.loading}>
                     {this.state.items.map((item, i) =>
