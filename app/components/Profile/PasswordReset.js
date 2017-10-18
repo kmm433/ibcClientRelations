@@ -49,7 +49,10 @@ class PasswordReset extends React.Component {
       });
     }
     else {
-      this.setState({valid_state_new: 'success'});
+      this.setState({
+        valid_state_new: 'success',
+        error_message: '',
+    });
     }
     this.setState({new_password: event.target.value});
   }

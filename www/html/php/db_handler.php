@@ -27,7 +27,7 @@ class DB_Handler
     $this->db=null;
   }
 
-// Request validation of a user profile return ID if successful
+  // Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
     $sql = $this->db->prepare("SELECT password FROM USER WHERE email=:user_name");
     if($sql->execute(array('user_name' => $username))) {
@@ -36,6 +36,64 @@ class DB_Handler
         return $username;
     }
     return false;
+  }
+
+  // Checks that an email account exists in the users table, used for password reset
+  function createPasswordToken($email) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare("SELECT UserID FROM USER WHERE email=:email_address");
+    $sql->execute(array('email_address' => $email));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if($userId) {
+      $sql = $this->db->prepare("SELECT token, expiry FROM RESET_TOKEN");
+      $sql->execute();
+      $existingTokens = $sql->fetchAll(PDO::FETCH_ASSOC);
+      $token = '';
+      do {
+        for($i = 0; $i < 16; $i++) {
+          $token .= mt_rand(0, 9);
+        }
+      } while(in_array($token, $existingTokens['token']));
+      // Delete any existing tokens that have expired
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE expiry < NOW()");
+      $sql->execute();
+      // New tokens are valid for one hour
+      $sql = $this->db->prepare("INSERT INTO RESET_TOKENS (UserID, token, expiry) VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
+      $sql->execute(array(
+        'user_id' => $userId,
+        'token' => $token
+      ));
+      $this->db->commit();
+      return $token;
+    }
+    $this->db->rollBack();
+    return false;
+  }
+
+  // Checks that a provided password reset token both exists and is not expired
+  // If succes returns the associated userid
+  function resetPassword($token, $password) {
+    $sql = $this->db->prepare("SELECT UserID FROM RESET_TOKENS WHERE token=:token AND expiry > NOW()");
+    $sql->execute(array('token' => $token));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if ($userId) {
+
+      $options = [
+          'cost' => 11,
+          'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+      ];
+      $passwordHashed = password_hash($password, PASSWORD_DEFAULT, $options);
+
+      $sql = $this->db->prepare("UPDATE USER SET password=:new_password WHERE UserID=:user_id");
+      $sql->execute(array(
+        'new_password' => $passwordHashed,
+        'user_id' => $userId,
+      ));
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
+      $sql->execute(array('token' => $token));
+      return 'success';
+    }
+    return 'invalid';
   }
 
   // Changes a current user's password
