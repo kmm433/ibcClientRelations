@@ -1368,12 +1368,16 @@ function getList($query) {
 }
 
 function getFields($query){
-    $sql = $this->db->prepare($query);
-    if ($sql->execute()) {
-      $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-      return $row;
+    try{
+        $sql = $this->db->prepare($query);
+        if ($sql->execute()) {
+          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+          return $row;
+        }
+        return false;
+    } catch(PDOExecption $e) {
+        echo $e->getMessage();
     }
-    return false;
 }
 
 //inserts a new field for the sign up form
@@ -2060,7 +2064,7 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
-  function insertUserTransaction($name, $email, $password, $firstname, $lastname, $abn, $businessphone,$mobilephone, $anziccode,$website, $parentID, $jobtitle,$chamberemail, $address, $postal){
+  function insertChamberTransaction($name, $email, $password, $firstname, $lastname, $abn, $businessphone,$mobilephone, $anziccode,$website, $parentID, $jobtitle,$chamberemail, $address, $postal){
       try{
           $this->db->beginTransaction();
 
@@ -2071,13 +2075,9 @@ function addPayment($payment, $expiry, $chamber){
           $results =  $this->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
           $addressid = $this->getLastID();
 
-          if(!(isset($postal) || empty($postal))){
-              $results =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
-              $postalid = $this->getLastID();
-          }
-          else{
-              $postalid = $addressid;
-          }
+          $results =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
+          $postalid = $this->getLastID();
+
 
           $results = $this->insertChamber($established, $addressid, $postalid, $abn, $parentID, $name, $businessphone, $mobilephone, $anziccode, $website, $chamberemail);
           $id = $this->getLastID();
@@ -2128,6 +2128,53 @@ function addPayment($payment, $expiry, $chamber){
           $this->pdo->rollBack();
           echo $e->getMessage();
       }
+  }
+
+  function insertUserTransaction($password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
+
+      $this->db->beginTransaction();
+
+      try{
+          $results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
+          $addressid = $db->getLastID();
+
+          $postalid =  $db->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
+          $postalid = $db->getLastID();
+
+          $results = $db->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $email, $password, $id, $firstname, $lastname, $jobtitle, $tablename, $table);
+          $id = $db->getLastID();
+
+          //if requires approval then assign user type as 3 otherwise as 2
+          $usertype = 2;
+          if($requireApproval == 1){
+              $usertype = 3;
+          }
+
+          $results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
+          $userid = $db->getLastID();
+
+
+          $var = null;
+          for($i = 0; $i<($size); $i++){
+              if($table[$i]==$tablename){
+
+                  $var = $answers[$i];
+                  $data = $DataID[$i];
+
+                  $db->insertExtraUserData($tablename, $data, $var, $id);
+              }
+          }
+
+          $db->insert_StatNewMember($userID,$chamber);
+
+          $this->pdo->commit();
+          echo json_encode($userid);
+
+      } catch(PDOExecption $e) {
+          $this->pdo->rollBack();
+          echo $e->getMessage();
+      }
+
   }
 
   function get_StatReview(){

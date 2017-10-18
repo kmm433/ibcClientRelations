@@ -9,16 +9,18 @@ function sanitise($variable){
 }
 
 $error = "success";
-$chamber = $_POST["chamber"];
+if(!isset($_POST['chamber']) || empty($_POST['chamber'])) {
+    $chamber = $_SESSION['chamber'];
+} else {
+    $chamber = $_POST['chamber'];
+}
 
 $tablename = "BUSINESS_";
 $tablename .= $chamber;
-
 $answers = $_POST["answers"];
 $column = $_POST["columnname"];
 $table = $_POST["tablename"];
 $DataID = $_POST["DataID"];
-$membershipID = $_POST["membershipID"];
 
 $email = null;
 $password = null;
@@ -35,14 +37,14 @@ $mobile=null;
 $numofemployees=null;
 $website=null;
 $addressid=null;
+$postalid = null;
 $id="HELLO";
 
 $address = $_POST['address'];
 $postal = $_POST['postal'];
 
-
+$requireApproval = $_POST['requireApproval'];
 $size = count($answers);
-
 
 for($i = 0; $i<($size); $i++){
 
@@ -101,36 +103,6 @@ $options = [
 ];
 $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
-$results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
-$addressid = $db->getLastID();
-if(!isset($postal) || empty($postal)){
-    $postalid =  $db->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
-    $postalid = $db->getLastID();
-}
-else{
-    $postalid = $addressid;
-}
-
-
-$results = $db->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
-$id = $db->getLastID();
-
-$results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, 3);
-$userid = $db->getLastID();
-
-
-$var = null;
-for($i = 0; $i<($size); $i++){
-    if($table[$i]==$tablename){
-
-        $var = $answers[$i];
-        $data = $DataID[$i];
-
-        $db->insertExtraUserData($tablename, $data, $var, $id);
-    }
-}
-
-echo json_encode($userid);
-$db->insert_StatNewMember($userID,$chamber);
+$userid = $db->insertUserTransaction($password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
 
 ?>

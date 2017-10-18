@@ -25,7 +25,7 @@ $options = [
 ];
 $password = password_hash($password, PASSWORD_BCRYPT, $options);
 
-$results = $db->insertUserTransaction($name, $email, $password, $firstname, $lastname, $abn, $businessphone,$mobilephone, $anziccode,$website, $parentID, $jobtitle,$chamberemail, $address, $postal);
+$results = $db->insertChamberTransaction($name, $email, $password, $firstname, $lastname, $abn, $businessphone,$mobilephone, $anziccode,$website, $parentID, $jobtitle,$chamberemail, $address, $postal);
 
 echo json_encode($results);
 

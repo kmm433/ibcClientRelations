@@ -55,7 +55,7 @@ class UploadLogo extends React.Component{
 
         return(
             <form action='/php/insert_logo.php' method="POST" id="myForm" encType="multipart/form-data">
-                <div className="w3-panel w3-blue">
+                <div id="edit-signup-panel" className="w3-panel w3-blue">
                     <ButtonToolbar style={{'padding': '2%'}}>
                         <Col sm={3}>
                             <input type="file" name="image"/>

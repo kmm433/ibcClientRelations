@@ -141,7 +141,8 @@ class SignupData extends React.Component {
                 'columnname': columnname,
                 'address': address,
                 'postal': address,
-                'membershipID': membershipID
+                'membershipID': membershipID,
+                'requireApproval': this.state.requireApproval
             },
             success: response => {
                 console.log("success",response)

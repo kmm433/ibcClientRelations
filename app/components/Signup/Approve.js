@@ -51,7 +51,7 @@ class ApproveUser extends React.Component {
     //if the payment settings are set to manual then render information about the user flow and give them the option to switch to automatic
     renderManual(){
         return(
-            <div className="w3-panel w3-blue" >
+            <div className="w3-panel w3-blue" id="edit-signup-panel">
                 <div style={{'padding': '2%'}}>
                     <Col sm={12}>
                         <div>

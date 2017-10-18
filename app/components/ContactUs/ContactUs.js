@@ -77,6 +77,8 @@ class ChamberDetails extends React.Component{
             values.push(response[0].anziccode)
             values.push(response[0].website)
             values.push(response[0].chamberemail)
+            values.push(response[0].abn)
+
 
             this.setState({
                 info: response,
@@ -119,6 +121,7 @@ class ChamberDetails extends React.Component{
         this.setState({edit: true})
     }
 
+
     render(){
 
         return(
@@ -133,7 +136,13 @@ class ChamberDetails extends React.Component{
                         />
                     }
                     {this.props.user_type == 1 && <Button onClick={this.handleEdit}>Edit Chamber Information</Button>}
-                    {this.state.edit == true && <EditChamber addressid={this.state.addressid} postalid={this.state.postalid} chamberData={this.state.values} address={this.state.address}/>}
+                    {this.state.edit == true &&
+                        <EditChamber
+                            addressid={this.state.addressid}
+                            postalid={this.state.postalid}
+                            chamberData={this.state.info}
+                            address={this.state.address}
+                            changePostal={this.changePostal}/>}
 
                 </div>
             </div>

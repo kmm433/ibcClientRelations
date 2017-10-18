@@ -10,13 +10,22 @@ class EditAddress extends React.Component{
     }
 
     storeAddress(value, index){
+
         var array = ['line1', 'line2', 'city','state', 'postcode', 'country'];
+
         name = array[index];
         console.log(value, index)
         console.log(index, name, value)
+
         if(this.props.type === "Postal Address")
             name = "postal" + name
+
         this.props.save(name, value);
+    }
+
+    checkboxAddress(checked){
+        var check = (this.state.postal + 1)%2;
+        this.props.changePostal(check)
     }
 
     render(){
@@ -28,16 +37,16 @@ class EditAddress extends React.Component{
         address.push(this.props.address.postcode)
         address.push(this.props.address.country)
 
-        var name = ['line1', 'line2', 'city','state', 'postcode', 'country'];
-        var displayName = ['Line1', 'Line2', 'City', 'State', 'Postcode', 'Country'];
+        var type = ['text', 'text', 'text','text', 'number', 'text'];
+        var displayName = ['Line 1', 'Line 2', 'City', 'State', 'Postcode', 'Country'];
         var min = [1, 1, 1, 2, 4, 1];
-        var max = [255, 255, 320, 30, 4, 255];
+        var max = [255, 255, 255, 30, 4, 255];
         var mand = ['1', '0', '1', '1', '1', '1'];
 
         return(
             <div>
 
-                        {name.map((item, i) =>
+                        {type.map((item, i) =>
                                 <Validator
                                     key = {i}
                                     type = {name[i]}
@@ -45,7 +54,7 @@ class EditAddress extends React.Component{
                                     minimum = {min[i]}
                                     maximum = {max[i]}
                                     mandatory = {mand[i]}
-                                    value={address[i]}
+                                    value={address[i] != null ? address[i] : ""}
                                     userAnswer = {this.storeAddress}
                                     index = {i}/>
                             )}

@@ -36,7 +36,7 @@ class AddClientID extends React.Component {
 
     renderShowID(){
         return(
-            <div className="w3-panel w3-blue">
+            <div className="w3-panel w3-blue" id="edit-signup-panel">
                 <Col sm={2}>
                     <ControlLabel style={{'paddingTop': '10%'}}>
                         Client ID:
@@ -60,6 +60,7 @@ class AddClientID extends React.Component {
         return(
             <FormGroup
                 className="w3-panel w3-blue"
+                id="edit-signup-panel"
                 method='POST'>
             <Col sm={3}>
                     <ControlLabel style={{'paddingTop': '1%'}}>

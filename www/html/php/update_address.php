@@ -9,18 +9,19 @@
     $state = $_POST['state'];
     $postcode = $_POST['postcode'];
     $country = $_POST['country'];
-    $postalID = $_POST['postalID'];
-    $postalline1 = $_POST['postalline1'];
-    $postalline2 = $_POST['postalline2'];
-    $postalcity = $_POST['postalcity'];
-    $postalstate = $_POST['postalstate'];
-    $postalpostcode = $_POST['postalpostcode'];
-    $postalcountry = $_POST['postalcountry'];
+    if($_POST['postal'] == 1 || $_POST['postal'] == '1'){
+        $result1 = $db->updateAddress($postalID, $postalline1, $postalline2, $postalcity, $postalstate, $postalpostcode, $postalcountry);
+        $postalID = $_POST['postalID'];
+        $postalline1 = $_POST['postalline1'];
+        $postalline2 = $_POST['postalline2'];
+        $postalcity = $_POST['postalcity'];
+        $postalstate = $_POST['postalstate'];
+        $postalpostcode = $_POST['postalpostcode'];
+        $postalcountry = $_POST['postalcountry'];
+    }
 
     $result = $db->updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country);
-    if($postalid != $addressid){
-        $result1 = $db->updateAddress($postalID, $postalline1, $postalline2, $postalcity, $postalstate, $postalpostcode, $postalcountry);
-    }
+
 
     if ($result)
       echo json_encode('Success');

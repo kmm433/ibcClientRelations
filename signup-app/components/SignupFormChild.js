@@ -235,7 +235,7 @@ class SignupForm extends React.Component {
     }
 //check if all the fields are filled out before submitting
      handleSubmit(event){
-         event.preventDefault();
+         //event.preventDefault();
          console.log("is address ready", this.checkBAddress(), this.checkReadyForSubmit())
          if(!this.checkReadyForSubmit()){
              console.log("Please fill out all required fields")
@@ -269,7 +269,6 @@ class SignupForm extends React.Component {
                  postalstate: this.state.postalstate,
                  postalcountry: this.state.postalcountry
              }
-
              this.props.sendData(this.state.storeAnswers, address, postal, this.state.membershipID);
          }
      }

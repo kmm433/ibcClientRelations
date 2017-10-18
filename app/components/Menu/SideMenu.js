@@ -34,7 +34,7 @@ class SideMenu extends React.Component {
           <ul>
               <li>
                  <NavLink activeClassName='active-route' to='/contact_us'>
-                    Contact Us
+                    {this.props.user_type == 1 ? "Edit Chamber Info" : "Contact Us"}
                  </NavLink>
               </li>
             <MenuItem text="Sign Out" link="/php/process_signout.php" />
@@ -86,6 +86,11 @@ class ExecSideMenu extends React.Component {
             <li>
               <NavLink activeClassName='active-route' to='/edit_signup'>
                   Edit Signup Form
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName='active-route' to='/add_user'>
+                  Add User
               </NavLink>
             </li>
         </div>
