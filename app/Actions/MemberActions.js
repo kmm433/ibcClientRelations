@@ -245,6 +245,7 @@ export function updateDetails(memberId, details) {
           if (result.value.email_syncronized === true) {
             alert('Successfully updated details. Email address has been syncronized with MailChimp.');
           }
+          else console.log(result);
         }
       }, error: result => {console.log('error: ', result);}
     });
