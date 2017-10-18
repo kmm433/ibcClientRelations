@@ -13,16 +13,17 @@ class MemberList extends React.Component {
     const memberList = this.props.member_list;
     var list = null;
     if (memberList) {
-      list = memberList.map((x) => {
+      list = memberList.map((member) => {
         return(
           <MemberListItem
-            key={x['email']}
-            memberID={x['UserID']}
-            first_name={x['firstname']}
-            last_name={x['lastname']}
-            email={x['email']}
-            business={x['businessname']}
-            expiry={x['expiry']}
+            key={member['email']}
+            memberID={member['UserID']}
+            first_name={member['firstname']}
+            last_name={member['lastname']}
+            email={member['email']}
+            business={member['businessname']}
+            expiry={member['expiry']}
+            type={member['type']}
             chamber_id={this.props.chamber_id}
             all={this.props.all}
             renewals={this.props.renewals}

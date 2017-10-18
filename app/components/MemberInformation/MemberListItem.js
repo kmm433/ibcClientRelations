@@ -8,12 +8,19 @@ class MemberListItem extends React.Component {
       hover: false
     };
     this.toggleHover = this.toggleHover.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
     this.renderExpiry = this.renderExpiry.bind(this);
   }
 
   // Toggles the hover indicator
   toggleHover() {
     this.setState({hover: !this.state.hover});
+  }
+
+  // Updates the displyed user details if selected
+  handleSelect() {
+    this.props.setMemberView(this.props.email, this.props.memberID, this.props.expiry, this.props.type);
+    this.toggleHover()
   }
 
   renderExpiry() {
@@ -59,7 +66,7 @@ class MemberListItem extends React.Component {
 
       <div className='member-details-block' style={hoverState}
         onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
-        <div className='member-list-item' onClick={() => {this.props.setMemberView(this.props.email, this.props.memberID, this.props.expiry), this.toggleHover()}}>
+        <div className='member-list-item' onClick={this.handleSelect}>
           <div className='member-list-item-field'>{this.props.first_name}</div>
           <div className='member-list-item-field'>{this.props.last_name}</div>
           <div className='member-list-item-field'>{this.props.email}</div>

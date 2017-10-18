@@ -27,7 +27,7 @@ class DB_Handler
     $this->db=null;
   }
 
-// Request validation of a user profile return ID if successful
+  // Request validation of a user profile return ID if successful
   function validateUser($username, $password) {
     $sql = $this->db->prepare("SELECT password FROM USER WHERE email=:user_name");
     if($sql->execute(array('user_name' => $username))) {
@@ -36,6 +36,64 @@ class DB_Handler
         return $username;
     }
     return false;
+  }
+
+  // Checks that an email account exists in the users table, used for password reset
+  function createPasswordToken($email) {
+    $this->db->beginTransaction();
+    $sql = $this->db->prepare("SELECT UserID FROM USER WHERE email=:email_address");
+    $sql->execute(array('email_address' => $email));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if($userId) {
+      $sql = $this->db->prepare("SELECT token, expiry FROM RESET_TOKEN");
+      $sql->execute();
+      $existingTokens = $sql->fetchAll(PDO::FETCH_ASSOC);
+      $token = '';
+      do {
+        for($i = 0; $i < 16; $i++) {
+          $token .= mt_rand(0, 9);
+        }
+      } while(in_array($token, $existingTokens['token']));
+      // Delete any existing tokens that have expired
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE expiry < NOW()");
+      $sql->execute();
+      // New tokens are valid for one hour
+      $sql = $this->db->prepare("INSERT INTO RESET_TOKENS (UserID, token, expiry) VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
+      $sql->execute(array(
+        'user_id' => $userId,
+        'token' => $token
+      ));
+      $this->db->commit();
+      return $token;
+    }
+    $this->db->rollBack();
+    return false;
+  }
+
+  // Checks that a provided password reset token both exists and is not expired
+  // If succes returns the associated userid
+  function resetPassword($token, $password) {
+    $sql = $this->db->prepare("SELECT UserID FROM RESET_TOKENS WHERE token=:token AND expiry > NOW()");
+    $sql->execute(array('token' => $token));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if ($userId) {
+
+      $options = [
+          'cost' => 11,
+          'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+      ];
+      $passwordHashed = password_hash($password, PASSWORD_DEFAULT, $options);
+
+      $sql = $this->db->prepare("UPDATE USER SET password=:new_password WHERE UserID=:user_id");
+      $sql->execute(array(
+        'new_password' => $passwordHashed,
+        'user_id' => $userId,
+      ));
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
+      $sql->execute(array('token' => $token));
+      return 'success';
+    }
+    return 'invalid';
   }
 
   // Changes a current user's password
@@ -176,21 +234,19 @@ class DB_Handler
     //Quote the input strings best we can do here
     $value = $this->db->quote($value);
     // Check if there is s preexisting value
-    $queryString = "SELECT * FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID='$dataID'";
+    $queryString = "SELECT answerid FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID=$memberID AND $table.DataID=$dataID";
     $sql = $this->db->prepare($queryString);
-    if ($sql->execute()) {
-      if ($sql->rowCount() > 0) {
-        $sql = $this->db->prepare("UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID");
-        if ($sql->execute()) {
-          return true;
-        }
-      }
-      else {
-        $sql = $this->db->prepare("INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, $value, $businessID)");
-        if ($sql->execute()) {
-          return true;
-        }
-      }
+    $sql->execute();
+    $answerid = $sql->fetch(PDO::FETCH_ASSOC)['answerid'];
+    if ($answerid) {
+      $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer=$value WHERE $table.answerid=$answerid";
+      $sql = $this->db->exec($queryString);
+      return true;
+    }
+    else {
+      $queryString = "INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, $value, $businessID)";
+      $sql = $this->db->prepare($queryString);
+      return true;
     }
     return false;
   }
@@ -250,15 +306,25 @@ class DB_Handler
   }
 
   // Changes whether a member is archived or not.
-  function setArchiveMember($memberID, $archived) {
-    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE UserID='$memberID'");
-    $result = $sql->execute();
+  function setArchiveMember($userId, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=:archive_status WHERE UserID=:user_id");
+    $result = $sql->execute(array(
+      'user_id' => $userId,
+      'archive_status' => $archived
+    ));
     return $result;
+  }
+
+  // Approves a member so that they can join the chamber
+  function approveMember($userId) {
+    $sql = $this->db->prepare("UPDATE USER SET type=2 WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    return true;
   }
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
+      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived, type
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=:chamber_id
           ORDER BY lastname;");
     if ($sql->execute(array(
@@ -1940,6 +2006,7 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
+<<<<<<< HEAD
 
 
   function updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country){
@@ -2060,6 +2127,60 @@ function addPayment($payment, $expiry, $chamber){
       catch(PDOExecption $e) {
           $this->pdo->rollBack();
           echo $e->getMessage();
+=======
+  function get_StatReview(){
+      $sql = $this->db->prepare("SELECT * FROM STAT_RENEW WHERE ChamberID = :chamber ORDER BY RenewDate;");
+      $result = $sql->execute(array(
+        ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  function insert_StatReview(){
+      $sql = $this->db->prepare("INSERT INTO STAT_RENEW (UserID, ChamberID, RenewDate) VALUES (:user,:chamber,NOW());");
+      $result = $sql->execute(array(
+          ":user" => $_SESSION['userid'],
+          ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
+  function get_StatNewMember(){
+      $sql = $this->db->prepare("SELECT * FROM STAT_NEWMEMBER WHERE ChamberID = :chamber ORDER BY MemberDate;");
+      $result = $sql->execute(array(
+        ":chamber" => $_SESSION['chamber']
+      ));
+
+      if ($result){
+          return $sql->fetchAll(PDO::FETCH_ASSOC);
+      }
+      else{
+          return false;
+      }
+  }
+  function insert_StatNewMember($userID,$chamber){
+      $sql = $this->db->prepare("INSERT INTO STAT_NEWMEMBER (UserID, ChamberID, MemberDate) VALUES (:user,:chamber,NOW());");
+      $result = $sql->execute(array(
+          ":user" => $userID,
+          ":chamber" => $chamber
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+>>>>>>> master
       }
   }
 

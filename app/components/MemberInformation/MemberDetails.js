@@ -25,7 +25,7 @@ class MemberDetails extends React.Component {
     this.handleDrag = this.handleDrag.bind(this);
     this.setEditMode = this.setEditMode.bind(this);
     this.toggleArchive = this.toggleArchive.bind(this);
-    this.renderInvoice= this.renderInvoice.bind(this);
+    this.approveMember = this.approveMember.bind(this);
   }
 
   componentWillMount(props) {
@@ -144,70 +144,21 @@ class MemberDetails extends React.Component {
     this.setState({editable: !this.state.editable});
   }
 
-  // Checks if an expiry is upcoming or has occurred
-  renderInvoice() {
-    // Splice the datestring into a usable date object
-    var warningWindow = new Date();
-    var expiryString = this.props.expiry;
-    var expiryDateComponents;
-    var expiryDate = null;
-    if (expiryString) {
-      var date = expiryString.split(' ');
-      expiryDateComponents = date[0].split('-');
-      expiryDate = new Date(expiryDateComponents[0], parseInt(expiryDateComponents[1]) - 1, expiryDateComponents[2]);
-    }
-    // Check if in warning phase or already expired
-    if(expiryDate && (expiryDate < warningWindow)) {
-      return (
-        <a className='btn btn-primary'
-          href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
-          Manage Invoices with Xero
-        </a>
-      );
-    }
-    else{
-      warningWindow.setDate(warningWindow.getDate() + 14);
-      if (expiryDate && (expiryDate < warningWindow)){
-        return (
-          <a className='btn btn-primary'
-            href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
-            Manage Invoices with Xero
-          </a>
-        );
-      }
-    }
-    return null;
-  }
-
   // This function will allow a chamber members archive status to be changed and
   // then refresh the list of members.
   toggleArchive() {
-    console.log('Attempting to perform archive action.');
-    var archived = 1;
-    if (this.props.archived) {
-      archived = 0;
-    }
-    $.ajax({
-      url: '/php/set_archive_member.php',
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        'memberID': this.props.memberID,
-        'archive_status': archived
-      },
-      success: response => {
-        this.props.getChamberMembers();
-        this.props.unselect();
-      },
-      error: response => {
-        console.log(response);
-      }
-    });
+    MemberActions.updateArichiveStatus(this.props.archived, this.props.memberID);
+    this.props.unselect();
+  }
+
+  // Approves a user that is waiting for approval
+  approveMember() {
+    MemberActions.approveUser(this.props.memberID);
+    this.props.unselect();
   }
 
   render() {
     const {tags, suggestions} = this.state;
-    const invoiceButton = this.renderInvoice();
     return (
       <div className='member-details'>
         <div className='member-details-controls'>
@@ -215,13 +166,20 @@ class MemberDetails extends React.Component {
             <input type='button' className='btn btn-primary' value='Return to List' onClick={(e) => this.props.unselect(e)}/>
             <a className='btn btn-primary' href={'mailto:'+this.props.member}>Email User</a>
             <input type='button' className='btn btn-primary' value='Edit Member Details' onClick={(e) => this.setEditMode(e)}/>
-            { invoiceButton }
+            <a className='btn btn-primary'
+              href={'/php/xero_invoice.php?user_id=' + this.props.memberID}>
+              Manage Invoices with Xero
+            </a>
             { this.props.all || this.props.renewals ?
               <input type='button' className='btn btn-danger' value='Archive Member' onClick={(e) => this.toggleArchive(e)}/>
               : null
             }
             { this.props.archived ?
               <input type='button' className='btn btn-success' value='Unarchive Member' onClick={(e) => this.toggleArchive(e)}/>
+              : null
+            }
+            { (this.props.type === "3") ?
+              <input type='button' className='btn btn-success' value='Approve Member' onClick={(e) => this.approveMember(e)}/>
               : null
             }
           </div>

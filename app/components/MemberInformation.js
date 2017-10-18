@@ -13,17 +13,21 @@ class MemberInformation extends React.Component {
       display_user_details: false,
       displayed_user: null,
       displayed_user_expiry: null,
+      displayed_user_type: null,
       unfiltered_members: null,
       member_list: null,
       member_list_renewals: null,
       member_list_archived: null,
+      member_list_approvals: null,
       search_phrase: '',
       all: true,
       renewals: false,
       archived: false,
+      approvals: false,
       num_all: null,
       num_renewals: null,
       num_archived: null,
+      num_approvals: null,
       invoice_callback_domain: null,
     };
     this.updateValues = this.updateValues.bind(this);
@@ -49,9 +53,11 @@ class MemberInformation extends React.Component {
       member_list: MemberStore.getMemberList(),
       member_list_renewals: MemberStore.getMemberListRenewals(),
       member_list_archived: MemberStore.getMemberListArchived(),
+      member_list_approvals: MemberStore.getMemberListApprovals(),
       num_all: MemberStore.getNumAll(),
       num_renewals: MemberStore.getNumRenewals(),
       num_archived: MemberStore.getNumArchived(),
+      num_approvals: MemberStore.getNumApprovals(),
       invoice_callback_domain: MemberStore.getInvoiceCallbackDomain(),
     });
   }
@@ -61,12 +67,15 @@ class MemberInformation extends React.Component {
     this.setState({
       all: false,
       renewals: false,
-      archived: false
+      archived: false,
+      approvals: false,
     });
     if (event.target.id === 'view-group-renewals')
       this.setState({renewals: true});
     else if (event.target.id === 'view-group-archived')
       this.setState({archived: true});
+    else if (event.target.id === 'view-group-approvals')
+      this.setState({approvals: true});
     else
       this.setState({all: true});
   }
@@ -79,12 +88,13 @@ class MemberInformation extends React.Component {
   }
 
   // Allows for the view to be switched to rendering a single member
-  setMemberView(member, memberID, expiry) {
+  setMemberView(member, memberID, expiry, type) {
     this.setState({
       display_user_details: true,
       displayed_user: member,
       displayed_user_id: memberID,
-      displayed_user_expiry: expiry
+      displayed_user_expiry: expiry,
+      displayed_user_type: type,
     });
   }
 
@@ -92,7 +102,10 @@ class MemberInformation extends React.Component {
   resetMemberView() {
     this.setState({
       display_user_details: false,
-      displayed_user: null
+      displayed_user: null,
+      displayed_user_id: null,
+      displayed_user_expiry: null,
+      displayed_user_type: null,
     });
   }
 
@@ -116,9 +129,11 @@ class MemberInformation extends React.Component {
                   all={this.state.all}
                   renewals={this.state.renewals}
                   archived={this.state.archived}
+                  approvals={this.state.approvals}
                   num_all={this.state.num_all}
                   num_renewals={this.state.num_renewals}
                   num_archived={this.state.num_archived}
+                  num_approvals={this.state.num_approvals}
                   invoice_callback_domain={this.state.invoice_callback_domain}
                   changeSearchPhrase={this.changeSearchPhrase}
                   changeViewGroup={this.changeViewGroup}
@@ -162,6 +177,19 @@ class MemberInformation extends React.Component {
                   />
                   : null
                 }
+
+                {this.state.approvals ?
+                  <MemberList
+                    member_list={this.state.member_list_approvals}
+                    chamber_id={this.props.chamber_id}
+                    all={this.state.all}
+                    renewals={this.state.renewals}
+                    archived={this.state.archived}
+                    getChamberMembers={this.getChamberMembers}
+                    setMemberView={this.setMemberView}
+                  />
+                  : null
+                }
               </div>
             </div>
           :
@@ -172,6 +200,7 @@ class MemberInformation extends React.Component {
                   member={this.state.displayed_user}
                   memberID={this.state.displayed_user_id}
                   expiry={this.state.displayed_user_expiry}
+                  type={this.state.displayed_user_type}
                   unselect={this.resetMemberView}
                   chamber_id={this.props.chamber_id}
                   all={this.state.all}

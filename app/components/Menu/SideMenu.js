@@ -59,6 +59,11 @@ class ExecSideMenu extends React.Component {
       return (
         <div>
             <li>
+              <NavLink activeClassName='active-route' to='/statistics'>
+                  Statistics
+              </NavLink>
+            </li>
+            <li>
               <NavLink activeClassName='active-route' to='/create_notice'>
                   Create New Notice
               </NavLink>

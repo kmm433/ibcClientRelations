@@ -9,9 +9,11 @@ class MemberStore extends EventEmitter {
     this.member_list = null;
     this.member_list_renewals = null;
     this.member_list_archived = null;
+    this.member_list_approvals = null;
     this.num_all = null;
     this.num_renewals = null;
     this.num_archived = null;
+    this.num_approvals = null;
     this.notes = null;
     this.invoice_callback_domain = null;
     this.complete_details = null;
@@ -32,9 +34,14 @@ class MemberStore extends EventEmitter {
     return this.member_list_renewals;
   }
 
-  // Allows for the retrieval od the archived member list
+  // Allows for the retrieval of the archived member list
   getMemberListArchived() {
     return this.member_list_archived;
+  }
+
+  // Allows for the retrieval of the list of members awaiting approval
+  getMemberListApprovals() {
+    return this.member_list_approvals;
   }
 
   // Allows for the retrieval of the number of members in the all list
@@ -50,6 +57,11 @@ class MemberStore extends EventEmitter {
   // Allows for the retrieval of the number of members in the archived list
   getNumArchived() {
     return this.num_archived;
+  }
+
+  // Allows for the retrieval of the number of members in the approvals list
+  getNumApprovals() {
+    return this.num_approvals;
   }
 
   // Allows for the list of notes to be retrieved
@@ -75,14 +87,16 @@ class MemberStore extends EventEmitter {
 
   // Updates the current list of filtered members and the view groups
   updateFilteredMembers(member_list, member_list_renewals, member_list_archived,
-    num_all, num_renewals, num_archived)
+    member_list_approvals, num_all, num_renewals, num_archived, num_approvals)
   {
     this.member_list = member_list;
     this.member_list_renewals = member_list_renewals;
     this.member_list_archived = member_list_archived;
+    this.member_list_approvals = member_list_approvals;
     this.num_all = num_all;
     this.num_renewals = num_renewals;
     this.num_archived = num_archived;
+    this.num_approvals = num_approvals;
     this.emit('change');
   }
 
@@ -116,9 +130,11 @@ class MemberStore extends EventEmitter {
           action.member_list,
           action.member_list_renewals,
           action.member_list_archived,
+          action.member_list_approvals,
           action.num_all,
           action.num_renewals,
-          action.num_archived
+          action.num_archived,
+          action.num_approvals
         );
         break;
       }
