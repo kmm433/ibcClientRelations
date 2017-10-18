@@ -2006,31 +2006,6 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
-<<<<<<< HEAD
-
-
-  function updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country){
-      try{
-          $sql = $this->db->prepare("UPDATE ADDRESS SET line1 = :line1, line2 = :line2, city = :city, state = :state, postcode= :postcode, country=:country
-              WHERE addressID = :addressID");
-
-          if($sql->execute(array(
-            ":line1" => $line1,
-            ":line2" => $line2,
-            ":city" => $city,
-            ":state" => $state,
-            ":postcode" => $postcode,
-            ":country" => $country,
-            ":addressID" => $addressID
-        ))){
-              return true;
-          }
-          return false;
-      }
-      catch(PDOExecption $e) {
-          echo $e->getMessage();
-      }
-  }
 
   function updateChamber($chamber, $name, $abn, $businessphone, $mobilephone, $anziccode, $website, $chamberemail){
       try{
@@ -2050,6 +2025,31 @@ function addPayment($payment, $expiry, $chamber){
             ":anziccode" => $anziccode,
             ":website" => $website,
             ":chamberemail" => $chamberemail
+        ))){
+              return true;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+  }
+
+  function updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country){
+
+      try{
+          $sql = $this->db->prepare("UPDATE ADDRESS SET
+              line1 = :line1, line2 = :line2, city = :city, state = :state, postcode= :postcode, country=:country
+              WHERE addressID = :addressID");
+
+          if($sql->execute(array(
+            ":line1" => $line1,
+            ":line2" => $line2,
+            ":city" => $city,
+            ":state" => $state,
+            ":postcode" => $postcode,
+            ":country" => $country,
+            ":addressID" => $addressID
         ))){
               return true;
           }
@@ -2127,7 +2127,9 @@ function addPayment($payment, $expiry, $chamber){
       catch(PDOExecption $e) {
           $this->pdo->rollBack();
           echo $e->getMessage();
-=======
+      }
+  }
+
   function get_StatReview(){
       $sql = $this->db->prepare("SELECT * FROM STAT_RENEW WHERE ChamberID = :chamber ORDER BY RenewDate;");
       $result = $sql->execute(array(
@@ -2180,7 +2182,6 @@ function addPayment($payment, $expiry, $chamber){
       }
       else{
           return false;
->>>>>>> master
       }
   }
 
