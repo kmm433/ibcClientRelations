@@ -1,12 +1,12 @@
 <?php
-include 'db_handler.php';
-$db = new DB_Handler();
+    include 'db_handler.php';
+    $db = new DB_Handler();
 
-$chamber = $_POST["chamber"];
+    $chamber = $_POST["chamber"];
 
-$results = $db->enableChamber($chamber);
-$results = $db->addParent($chamber);
+    $results = $db->enableChamber($chamber);
+    //$results = $db->addParent($chamber);
 
-echo json_encode($results);
+    echo json_encode($results);
 
 ?>

@@ -18,6 +18,7 @@ $answers = $_POST["answers"];
 $column = $_POST["columnname"];
 $table = $_POST["tablename"];
 $DataID = $_POST["DataID"];
+$membershipID = $_POST["membershipID"];
 
 $email = null;
 $password = null;
@@ -102,8 +103,8 @@ $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
 $results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
 $addressid = $db->getLastID();
-if(!(isset($postal) || empty($postal))){
-    $postalid =  $db->insertAddress($postal->line1, $postal->line2, $postal->city, $postal->state, $postal->postcode, $postal->country);
+if(!isset($postal) || empty($postal)){
+    $postalid =  $db->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
     $postalid = $db->getLastID();
 }
 else{
@@ -111,9 +112,10 @@ else{
 }
 
 
-$results = $db->insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
+$results = $db->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
 $id = $db->getLastID();
-$results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP + INTERVAL 1 YEAR', $jobtitle, 3);
+$results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, 3);
+$userid = $db->getLastID();
 
 $var = null;
 for($i = 0; $i<($size); $i++){
@@ -126,5 +128,5 @@ for($i = 0; $i<($size); $i++){
     }
 }
 
-echo json_encode($_POST['address']);
+echo json_encode($userid);
 ?>

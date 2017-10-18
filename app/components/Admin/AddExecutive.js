@@ -20,6 +20,8 @@ class AddExecutive extends React.Component{
         var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle'];
         var name = array[index];
         console.log(name, value)
+        console.log("getting here")
+        console.log(name, value)
         this.props.save(name, value)
     }
 
@@ -41,6 +43,7 @@ class AddExecutive extends React.Component{
                                 displayName = {displayName[i]}
                                 minimum = {min[i]}
                                 maximum = {max[i]}
+                                value = ""
                                 mandatory = {mand[i]}
                                 userAnswer = {this.storeChamberData}
                                 index = {i}/>

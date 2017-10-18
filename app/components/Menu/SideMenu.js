@@ -28,15 +28,15 @@ class SideMenu extends React.Component {
               Upcoming Events
             </NavLink>
           </li>
-          <li>
-              <NavLink activeClassName='active-route' to='/contact_us'>
-                    Contact Us
-              </NavLink>
-          </li>
           <ExecSideMenu user_type={this.props.user_type} />
         </ul>
         <div id="bottom-options">
           <ul>
+              <li>
+                 <NavLink activeClassName='active-route' to='/contact_us'>
+                    Contact Us
+                 </NavLink>
+              </li>
             <MenuItem text="Sign Out" link="/php/process_signout.php" />
             <li>
               <NavLink activeClassName='active-route' to='/help'>
