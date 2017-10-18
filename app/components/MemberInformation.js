@@ -13,6 +13,7 @@ class MemberInformation extends React.Component {
       display_user_details: false,
       displayed_user: null,
       displayed_user_expiry: null,
+      displayed_user_type: null,
       unfiltered_members: null,
       member_list: null,
       member_list_renewals: null,
@@ -87,12 +88,13 @@ class MemberInformation extends React.Component {
   }
 
   // Allows for the view to be switched to rendering a single member
-  setMemberView(member, memberID, expiry) {
+  setMemberView(member, memberID, expiry, type) {
     this.setState({
       display_user_details: true,
       displayed_user: member,
       displayed_user_id: memberID,
-      displayed_user_expiry: expiry
+      displayed_user_expiry: expiry,
+      displayed_user_type: type,
     });
   }
 
@@ -100,7 +102,10 @@ class MemberInformation extends React.Component {
   resetMemberView() {
     this.setState({
       display_user_details: false,
-      displayed_user: null
+      displayed_user: null,
+      displayed_user_id: null,
+      displayed_user_expiry: null,
+      displayed_user_type: null,
     });
   }
 
@@ -195,6 +200,7 @@ class MemberInformation extends React.Component {
                   member={this.state.displayed_user}
                   memberID={this.state.displayed_user_id}
                   expiry={this.state.displayed_user_expiry}
+                  type={this.state.displayed_user_type}
                   unselect={this.resetMemberView}
                   chamber_id={this.props.chamber_id}
                   all={this.state.all}

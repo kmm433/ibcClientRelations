@@ -82,7 +82,6 @@ export function filterMembers(members, searchPhrase) {
   var warningWindow = new Date();
   warningWindow.setDate(warningWindow.getDate() + 14);
   filteredMembers.forEach((member) => {
-    console.log('Member: ', member);
 
     // Splice the datestring into a usable date object
     var expiryString = member['expiry'];
@@ -134,7 +133,6 @@ export function submitNote(memberId, note) {
         'memberID': memberId,
         'note': note
       }, success: result => {
-        alert('The note was successfully recorded.');
         fetchNotes(memberId);
       }
     });
@@ -257,5 +255,50 @@ export function updateDetails(memberId, details) {
         }
       }, error: result => {console.log('error: ', result);}
     });
+  });
+  submitNote(memberId, 'Updated member\'s details.');
+}
+
+export function updateArichiveStatus(currentArchiveStatus, memberId) {
+  var archived = 1;
+  if (currentArchiveStatus) {
+    archived = 0;
+  }
+  $.ajax({
+    url: '/php/set_archive_member.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'memberID': memberId,
+      'archive_status': archived
+    },
+    success: response => {
+      fetchChamberMembers();
+    },
+    error: response => {
+      console.log(response);
+    }
+  });
+}
+export function approveUser(userId) {
+  $.ajax({
+    url: '/php/approve_member.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'user_id': userId,
+    },
+    success: response => {
+      if (response.status === 200) {
+        alert("Member has been Approved");
+        fetchChamberMembers();
+      }
+      else {
+        alert(response.value);
+      }
+    },
+    error: response => {
+      console.log(response);
+    }
   });
 }

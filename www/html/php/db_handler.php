@@ -306,10 +306,20 @@ class DB_Handler
   }
 
   // Changes whether a member is archived or not.
-  function setArchiveMember($memberID, $archived) {
-    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE UserID='$memberID'");
-    $result = $sql->execute();
+  function setArchiveMember($userId, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=:archive_status WHERE UserID=:user_id");
+    $result = $sql->execute(array(
+      'user_id' => $userId,
+      'archive_status' => $archived
+    ));
     return $result;
+  }
+
+  // Approves a member so that they can join the chamber
+  function approveMember($userId) {
+    $sql = $this->db->prepare("UPDATE USER SET type=2 WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    return true;
   }
 
   // Retrieve all members of a chamber
