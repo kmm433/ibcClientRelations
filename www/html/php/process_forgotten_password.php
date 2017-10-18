@@ -11,12 +11,12 @@ if ($token != false) {
     $subject = 'Password Reset for Slater Chamber';
     $message = 'You have requested that your password be reset.' . "\r\n" .
     'Click the following link to reset your password.' . "\r\n" .
-    'https://www.slaterchamber.com/reset_password?token=' . $token . "\r\n" .
+    'https://www.slaterchamber.com/reset_password.php?token=' . $token . "\r\n" .
     'If you are unable to click the link please copy and paste it into your address bar.';
     $headers = 'From: password-reset@slaterchamber.com' . "\r\n" .
     'Reply-To: password-reset@slaterchamber.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
-    $mailstatus = mail($to, $from, $message, $headers);
+    $mailstatus = mail($to, $subject, $message, $headers);
     // Redirect the user to show a success message
     header('Location: /forgotten_password.php?status=success');
 }

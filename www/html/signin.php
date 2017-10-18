@@ -41,7 +41,7 @@
             ?>
             <button type="submit" class="btn btn-primary sign-in" name="signin">Sign in</button>
 
-            <p id="forgotten-password"><a href="#">Forgotten Password</a></p>
+            <p id="forgotten-password"><a href="/forgotten_password.php">Forgotten Password</a></p>
           </form>
         </div>
         <div class="container signup-box">

@@ -77,6 +77,32 @@ class DB_Handler
     return false;
   }
 
+  // Checks that a provided password reset token both exists and is not expired
+  // If succes returns the associated userid
+  function resetPassword($token, $password) {
+    $sql = $this->db->prepare("SELECT UserID FROM RESET_TOKENS WHERE token=:token");
+    $sql->execute(array('token' => $token));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if ($userId) {
+
+      $options = [
+          'cost' => 11,
+          'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+      ];
+      $passwordHashed = password_hash($password, PASSWORD_DEFAULT, $options);
+
+      $sql = $this->db->prepare("UPDATE USER SET password=:new_password WHERE UserID=:user_id");
+      $sql->execute(array(
+        'new_password' => $passwordHashed,
+        'user_id' => $userId,
+      ));
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
+      $sql->execute(array('token' => $token));
+      return 'success';
+    }
+    return 'invalid';
+  }
+
   // Changes a current user's password
   function changePassword($userId, $currentPassword, $newPassword) {
     $this->db->beginTransaction();
