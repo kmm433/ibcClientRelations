@@ -11,7 +11,7 @@ if ($token != false) {
     $subject = 'Password Reset for Slater Chamber';
     $message = 'You have requested that your password be reset.' . "\r\n" .
     'Click the following link to reset your password.' . "\r\n" .
-    'https://www.slaterchamber.com/reset_password.php?token=' . $token . "\r\n" .
+    'https://slaterchamber.com/reset_password.php?token=' . $token . "\r\n" .
     'If you are unable to click the link please copy and paste it into your address bar.';
     $headers = 'From: password-reset@slaterchamber.com' . "\r\n" .
     'Reply-To: password-reset@slaterchamber.com' . "\r\n" .

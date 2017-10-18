@@ -1,9 +1,5 @@
 <?php
   session_start();
-  $login_status = "";
-  if($_POST)
-    if($_POST['status'] == 'invalid')
-      $login_status = "invalid";
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,21 +22,19 @@
         <div class="container logo-position">
         </div>
         <div class="container">
+          <?php if(isset($_GET['status'])): ?>
+            <p>Invalid username or password.</p>
+          <?php endif; ?>
           <form action="php/process_signin.php" method="POST">
             <div class="form-group">
               <label for="email">Email Address</label>
-              <input type="email" class="form-underline <?php echo $login_status;?>" name="email">
+              <input type="email" class="form-underline" name="email">
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-underline  <?php echo $login_status;?>" name="password">
+              <input type="password" class="form-underline" name="password">
             </div>
-            <?php
-              if($login_status != '')
-                echo("<p style='color:red;'>Invalid username or password.</p>");
-            ?>
             <button type="submit" class="btn btn-primary sign-in" name="signin">Sign in</button>
-
             <p id="forgotten-password"><a href="/forgotten_password.php">Forgotten Password</a></p>
           </form>
         </div>
