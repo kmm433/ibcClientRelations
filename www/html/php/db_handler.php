@@ -55,26 +55,45 @@ class DB_Handler
         }
       } while(in_array($token, $existingTokens['token']));
       // Delete any existing tokens that have expired
-      $now = date('Y-m-d H:i:s');
-      foreach ($existingTokens as $existingToken ) {
-        if ($existingToken['expiry'] > $now) {
-          $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
-          $sql->execute(array('token' => $existingToken['token']));
-        }
-      }
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE expiry < NOW()");
+      $sql->execute();
       // New tokens are valid for one hour
-      $date = date('Y-m-d H:i:s', strtotime('+1 hours'));
-      $sql = $this->db->prepare("INSERT INTO RESET_TOKENS (UserID, token, expiry) VALUES (:user_id, :token, :expiry)");
+      $sql = $this->db->prepare("INSERT INTO RESET_TOKENS (UserID, token, expiry) VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
       $sql->execute(array(
         'user_id' => $userId,
-        'token' => $token,
-        'expiry' => $date,
+        'token' => $token
       ));
       $this->db->commit();
       return $token;
     }
     $this->db->rollBack();
     return false;
+  }
+
+  // Checks that a provided password reset token both exists and is not expired
+  // If succes returns the associated userid
+  function resetPassword($token, $password) {
+    $sql = $this->db->prepare("SELECT UserID FROM RESET_TOKENS WHERE token=:token AND expiry > NOW()");
+    $sql->execute(array('token' => $token));
+    $userId = $sql->fetch(PDO::FETCH_ASSOC)['UserID'];
+    if ($userId) {
+
+      $options = [
+          'cost' => 11,
+          'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+      ];
+      $passwordHashed = password_hash($password, PASSWORD_DEFAULT, $options);
+
+      $sql = $this->db->prepare("UPDATE USER SET password=:new_password WHERE UserID=:user_id");
+      $sql->execute(array(
+        'new_password' => $passwordHashed,
+        'user_id' => $userId,
+      ));
+      $sql = $this->db->prepare("DELETE FROM RESET_TOKENS WHERE token=:token");
+      $sql->execute(array('token' => $token));
+      return 'success';
+    }
+    return 'invalid';
   }
 
   // Changes a current user's password

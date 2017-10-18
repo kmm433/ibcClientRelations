@@ -18,7 +18,7 @@ session_start();
       <div class="container logo-container">
         <img class="logo" src="img/nswbc-logo.png" />
       </div>
-      <!--Contains the login form-->
+      <!--Contains the email request form-->
       <div class="container login-box">
         <div class="container logo-position">
         </div>
