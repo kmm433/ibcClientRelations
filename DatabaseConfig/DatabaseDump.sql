@@ -2188,7 +2188,7 @@ END ;;
 DELIMITER ;
 
 
-INSERT INTO USER (`UserID`, `email`, `password`, `type`, `date_joined`, `firstname`, `lastname`, `archived`) VALUES ('1', 'admin@admin.com', '$2y$10$2NXAciEZ1GRWowGZpjXWvOEzWHkvQ4ku5ErGZd1BsskM5HM1skTly', '0', NOW(), 'Admin', 'Admin', '0');
+INSERT INTO USER (`UserID`, `email`, `password`, `type`, `date_joined`, `firstname`, `lastname`, `archived`) VALUES ('1', 'admin@slaterchamber.com', '$2y$10$2NXAciEZ1GRWowGZpjXWvOEzWHkvQ4ku5ErGZd1BsskM5HM1skTly', '0', NOW(), 'Admin', 'Admin', '0');
 
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
