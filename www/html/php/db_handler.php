@@ -156,6 +156,14 @@ class DB_Handler
     return false;
   }
 
+  // Retrieves the address IDs associated to a business
+  function getBusinessAddresses($userId) {
+    $sql = $this->db->prepare("SELECT addressid, postal FROM BUSINESS JOIN USER ON USER.businessID=BUSINESS.businessID WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    return $result;
+  }
+
 
   // Get the user's metadata
   function getUserData($email_addr) {

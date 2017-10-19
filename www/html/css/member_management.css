@@ -172,8 +172,19 @@
   border-top: 1px solid #BCBCBC;
   width: 100%;
   display: table;
+  margin-bottom: 0px;
+  padding: 20px 0px 0px 0px;
+}
+
+.address-details {
+  width: 100%;
+  display: table;
   margin-bottom: 20px;
-  padding: 20px 0px 10px 0px;
+  padding: 0px 0px 10px 0px;
+}
+
+.member-address {
+  padding-left: 10px;
 }
 
 .detail {

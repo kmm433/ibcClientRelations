@@ -16,6 +16,10 @@ class MemberDetails extends React.Component {
       details: {},
       editable: false,
       notes: [],
+      address_id: null,
+      postal_id: null,
+      business_address: null,
+      postal_address: null,
     }
     this.updateValues = this.updateValues.bind(this);
     this.getMembersGroups = this.getMembersGroups.bind(this);
@@ -32,6 +36,7 @@ class MemberDetails extends React.Component {
     MemberStore.on('change', this.updateValues);
     MemberActions.fetchNotes(this.props.memberID);
     MemberActions.fetchCompleteDetails(this.props.chamber_id, this.props.expiry, this.props.memberID, false);
+    MemberActions.fetchBusinessAddress(this.props.memberID);
     this.getMembersGroups();
     this.getAvailableGroups();
   }
@@ -44,6 +49,10 @@ class MemberDetails extends React.Component {
     this.setState({
       notes: MemberStore.getNotes(),
       details: MemberStore.getCompleteDetails(),
+      business_address: MemberStore.getBusinessAddress(),
+      postal_address: MemberStore.getPostalAddress(),
+      address_id: MemberStore.getBusinessAddressID(),
+      postal_id: MemberStore.getPostalAddressID(),
     });
   }
 
@@ -97,9 +106,6 @@ class MemberDetails extends React.Component {
       },
       success: result => {
         this.setState({tags: tags});
-      },
-      error: result => {
-        console.log(result);
       }
     });
   }
@@ -128,9 +134,6 @@ class MemberDetails extends React.Component {
         success: result => {
           this.setState({tags: tags});
           this.getAvailableGroups()
-        },
-        error: result => {
-          console.log(result);
         }
       });
     }
@@ -206,6 +209,10 @@ class MemberDetails extends React.Component {
           memberID={this.props.memberID}
           details={this.state.details}
           editable={this.state.editable}
+          business_address={this.state.business_address}
+          postal_address={this.state.postal_address}
+          address_id={this.state.address_id}
+          postal_id={this.state.postal_id}
           setEditMode={this.setEditMode}
         />
         <div className='member-details-groups'>

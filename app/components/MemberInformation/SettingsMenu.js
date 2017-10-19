@@ -1,4 +1,5 @@
 import React from 'react';
+import {NavLink} from 'react-router-dom';
 import $ from 'jquery';
 import * as MemberActions from '../../Actions/MemberActions.js';
 
@@ -49,7 +50,9 @@ class SettingsMenu extends React.Component {
   render() {
     return (
       <div id='member-info-settings'>
+        <NavLink exact activeClassName='active-route' to='/add_user'>
         <input type='button' className='btn btn-primary' value='Add New User'/>
+      </NavLink>
         <a className='btn btn-primary' href='/php/create_member_csv.php' target='_blank'>Export List as CSV</a>
         <input type='button'
           className='btn btn-primary'
