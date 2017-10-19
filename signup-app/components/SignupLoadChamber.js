@@ -2,7 +2,7 @@ import React from 'react';
 import Logo from './LogoHeader.js'
 import SignupData from './SignupDataHandler.js';
 import $ from 'jquery';
-import {ButtonToolbar, Button, ButtonGroup, DropdownButton, MenuItem} from 'react-bootstrap';
+import {ButtonToolbar, Button, ButtonGroup, DropdownButton, MenuItem, Col, } from 'react-bootstrap';
 import Payment from './Payment/Paypal.js'
 
 class ChamberDropdown extends React.Component {
@@ -86,6 +86,45 @@ class Main extends React.Component {
         })
     }
 
+    checkRenderPayment(){
+        if(this.state.requireApproval == 0){
+            return (
+                <div id="signup-container" className="w3-row">
+                    <div style={{'padding': '4%'}} className="container4" className="w3-container w3-card-4 w3-light-grey">
+                        <Col sm={1}/>
+                        <Col sm={6}>
+                            <div>
+                                Please finish your membership signup by checking out with paypal
+                            </div>
+                            <div>
+                                You can pay via Paypal or via Credit or Debit Card
+                            </div>
+                        </Col>
+                            <Col sm={5}>
+                                <Payment
+                                    userid = {this.state.userid}
+                                    amount = {this.state.amount}
+                                    token = {'AQld2h77nIaqVBcQQ8aEc532PFGYTeIAyREiK6Nr-PfZ90XAAQbXoFif2LbKA1ceoKU80EcOBhgCZ_p5'}/>
+                            </Col>
+                    </div>
+                </div>
+            );
+        }
+        else{
+            return (
+                <div id="signup-container" className="w3-row">
+                    <Button>
+                           <a href="/signin.php">Back to Login</a>
+                   </Button>
+                    <div className="container4" className="w3-container w3-card-4 w3-light-grey">
+                        <p>Thank you for joining {this.state.chamber_list[this.state.chamber]}!</p>
+                        <p>We will be in contact with you shortly</p>
+                    </div>
+                </div>
+            );
+        }
+    }
+
 
   render() {
     return(
@@ -103,11 +142,10 @@ class Main extends React.Component {
                   chamber_list={this.state.chamber_list}
                   sendChamber={this.getChamber}/>
           </ButtonToolbar>}
-          {this.state.selected && <SignupData chamberID={this.state.chamber} handleFinish={this.handleFinish}/>}
-          {this.state.finish == true && <Payment
-                                            userid = {this.state.userid}
-                                            amount = {this.state.amount}
-                                            token = {this.state.clientID}/>}
+          {this.state.selected && <SignupData
+                                        chamberID={this.state.chamber}
+                                        handleFinish={this.handleFinish}/>}
+          {this.state.finish == true && this.checkRenderPayment()}
       </div>
     )
   }

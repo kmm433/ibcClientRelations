@@ -103,6 +103,6 @@ $options = [
 ];
 $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
-$userid = $db->insertUserTransaction($password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
+$userid = $db->insertUserTransaction($firstname, $lastname, $id, $jobtitle, $email,$password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
 
 ?>

@@ -42,7 +42,7 @@ class PaymentMenu extends React.Component {
             </thead>
             <tbody>
                {this.props.list.map((item, i) =>
-                    <tr key = {this.props.list[i].membershipID}>
+                    <tr key = {i}>
                         <td>{this.props.list[i].name}</td>
                         <td>{this.props.list[i].info}</td>
                         <td>{this.props.list[i].amount}</td>
@@ -54,7 +54,6 @@ class PaymentMenu extends React.Component {
 
   displayAmount(){
       var i = this.state.index;
-      console.log("What the shit:", i, this.props.list[i].amount)
       return(
           <ControlLabel>
               The total amount to be paid is:{'  '} {this.props.list[i].amount}
@@ -235,7 +234,7 @@ class SignupForm extends React.Component {
     }
 //check if all the fields are filled out before submitting
      handleSubmit(event){
-         //event.preventDefault();
+         event.preventDefault();
          console.log("is address ready", this.checkBAddress(), this.checkReadyForSubmit())
          if(!this.checkReadyForSubmit()){
              console.log("Please fill out all required fields")

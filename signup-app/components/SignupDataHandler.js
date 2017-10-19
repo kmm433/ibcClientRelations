@@ -99,10 +99,13 @@ class SignupData extends React.Component {
     }
 
     getApprovalSettings(data){
+        console.log("fetching approval for: data")
         $.ajax({url: '/php/get_approval_settings.php', type: 'POST',
             dataType: 'json',
             data: {'chamber': data},
             success: response => {
+                console.log("getting here")
+                console.log(response)
                 this.setState({
                     requireApproval: response
                 });
@@ -123,7 +126,7 @@ class SignupData extends React.Component {
         var columnname = [];
 
         console.log("lines",address.line1, postal.line1)
-        //postal[line1 === null && postal = null;
+        //postal.line1 === null && postal = null;
 
         for(var i=0; i<this.state.signupFields.length; i++){
             data[i]= this.state.signupFields[i].DataID;

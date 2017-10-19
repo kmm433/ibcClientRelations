@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="/css/edit-signup.css" />
   </head>
   <body>
   <div id="signup-app"></div>
