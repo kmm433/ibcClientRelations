@@ -36,10 +36,8 @@ class EditPayment extends React.Component {
         this.outputDisabled = this.outputDisabled.bind(this);
 
     }
-
+//when the membership info is updated, fill the state with the new memberships recieved from parent
     componentWillReceiveProps(nextProps){
-        console.log(nextProps.paymentFields, nextProps.paymentIndex)
-        console.log(nextProps.paymentFields[0].name)
         var i = nextProps.paymentIndex;
         nextProps.editPayment &&
         this.setState({
@@ -49,21 +47,21 @@ class EditPayment extends React.Component {
             membershipID: nextProps.paymentFields[i].membershipID
         })
         }
-
+//send the selected payment type and expiry date to the parent
     updateParentPaymentType(paymentType, expiry){
         this.props.updatePaymentType(paymentType, expiry);
     }
 
+//store the user input values
     handleChange(event){
-        console.log(event.target.name, event.target.value)
         var name = event.target.name;
         var value = event.target.value;;
         this.setState({
             [name]: value
         })
-        console.log(this.state)
     }
 
+//if something is disabled display in red
     outputDisabled(){
         return(
             <text style={{'fontStyle': 'italic', 'color': 'red', 'padding': '2%'}}>Disabled</text>

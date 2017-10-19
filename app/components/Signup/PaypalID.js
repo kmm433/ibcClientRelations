@@ -36,7 +36,7 @@ class AddClientID extends React.Component {
 
     renderShowID(){
         return(
-            <div className="w3-panel w3-blue" id="edit-signup-panel">
+            <div className="w3-panel w3-blue">
                 <Col sm={2}>
                     <ControlLabel style={{'paddingTop': '10%'}}>
                         Client ID:

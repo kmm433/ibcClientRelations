@@ -46,7 +46,6 @@ class SignupData extends React.Component {
 }
 
     componentWillMount(){
-        console.log("rendering chamber: ", this.props.chamberID)
         this.getFields(this.props.chamberID);
         this.getPaymentDetails(this.props.chamberID);
         this.getPaymentType(this.props.chamberID);
@@ -55,7 +54,6 @@ class SignupData extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        console.log("rendering the next chamber: ", nextProps.chamberID)
         this.getFields(nextProps.chamberID);
         this.getPaymentDetails(nextProps.chamberID);
         this.getPaymentType(nextProps.chamberID);
