@@ -1,6 +1,0 @@
-/* For hiding and showing the menu */
-@media (min-width: 721px) {
-  #mobile-menu {
-    display: none;
-  }
-}
