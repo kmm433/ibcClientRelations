@@ -122,13 +122,7 @@ class NoticeEvent extends React.Component {
                 dataType: "json",
                 data:{
                     'eventID': this.props.eventID
-                },
-                success : function(response){
-                    //console.log('delete_Event Success');
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('delete_Event Error' + xhr.responseText);
-                }.bind(this)
+                }
             });
 
             this.setState({
@@ -150,12 +144,8 @@ class NoticeEvent extends React.Component {
                 'EventID': this.props.eventID
             },
             success : function(response){
-                //console.log('get_EventStatusGoing Success')
                 going = response[0];
                 cantgo = response[1];
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_EventStatusGoing Error')
             }.bind(this)
         });
         if (going.length > 0){  //User is already going
@@ -189,13 +179,7 @@ class NoticeEvent extends React.Component {
             dataType: "json",
             data: {
                 'EventID': this.props.eventID
-            },
-            success : function(response){
-                //console.log('hide_Event Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('hide_Event Error')
-            }.bind(this)
+            }
         });
 
     }
@@ -214,13 +198,7 @@ class NoticeEvent extends React.Component {
             dataType: "json",
             data: {
                 'EventID': this.props.eventID
-            },
-            success : function(response){
-                //console.log('set_EventGoing Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('set_EventGoing Error')
-            }.bind(this)
+            }
         });
     }
     cantgo(){
@@ -238,13 +216,7 @@ class NoticeEvent extends React.Component {
             dataType: "json",
             data: {
                 'EventID': this.props.eventID
-            },
-            success : function(response){
-                //console.log('set_EventCantgo Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('set_EventCantgo Error')
-            }.bind(this)
+            }
         });
 
     }

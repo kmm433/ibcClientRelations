@@ -35,8 +35,6 @@ class LinkEvent extends React.Component {
                 'EventID': this.props.match.params.EventID
             },
             success : function(response){
-                console.log('get_UserConfirmEvent Success');
-                console.log(response);
                 if(response.length != 0){
                     this.setState({
                         EventTitle: response[0].EventTitle,
@@ -48,9 +46,6 @@ class LinkEvent extends React.Component {
                         DatePosted: response[0].DatePosted
                     });
                 }
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_UserConfirmEvent Error' + xhr.responseText);
             }.bind(this)
         });
     }

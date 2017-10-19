@@ -126,12 +126,6 @@ class NoticeSurvey extends React.Component {
             items: FormattedOutput
         });
 
-        /*
-        console.log("USERANSWERS");
-        for (var i = 0; i < userAnswers.length; i++){
-            console.log(userAnswers[i]);
-        }
-        */
     }
 
     collapse(){
@@ -187,13 +181,7 @@ class NoticeSurvey extends React.Component {
                 dataType: "json",
                 data:{
                     'SurveyID': this.props.SurveyID
-                },
-                success : function(response){
-                    //console.log('delete_Survey Success');
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('delete_Survey Error' + xhr.responseText);
-                }.bind(this)
+                }
             });
 
             this.setState({
@@ -213,10 +201,6 @@ class NoticeSurvey extends React.Component {
           },
           success : function(response){
               questions = response;
-              //console.log('get_SurveyQuestions Success' + this.props.SurveyID + ' ' + response);
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_SurveyQuestions Error');
           }.bind(this)
       });
   }
@@ -232,10 +216,6 @@ class NoticeSurvey extends React.Component {
             },
             success : function(response){
                 answers = response;
-                //console.log('get_SurveyAnswers Success' + this.props.SurveyID + ' ' + response);
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_SurveyAnswers Error');
             }.bind(this)
         });
     }
@@ -296,7 +276,6 @@ class SurveyText extends React.Component {
         }
     }
     onChange(value) {
-        //console.log(value);
         // Set result
         var index = this.getIndex(this.props.qID);
         userAnswers[index].Answer = value;
@@ -345,15 +324,7 @@ class SubmitPage extends React.Component {
           dataType: "json",
           data: {
               'data': userAnswers
-          },
-          success : function(response){
-              //console.log(response)
-              //console.log('insert_SurveyAnswers Success')
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('insert_SurveyAnswers Error')
-              //console.log(status)
-          }.bind(this)
+          }
       });
 
         this.timeoutHandle = setTimeout(()=>{

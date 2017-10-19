@@ -52,11 +52,7 @@ class SurveyAnswerStatText extends React.Component {    // Represents each quest
               'questionNo': this.props.ID
           },
           success : function(response){
-              //console.log('get_QuestionResult Success');
               this.setState({ Results: response });
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_QuestionResult Error');
           }.bind(this)
       });
     }

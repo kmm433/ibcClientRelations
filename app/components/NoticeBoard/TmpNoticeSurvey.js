@@ -55,13 +55,7 @@ class TmpNoticeSurvey extends React.Component {
             dataType: "json",
             data:{
                 'SurveyID': this.props.SurveyID
-            },
-            success : function(response){
-                //console.log('reject_TmpSurvey Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('reject_TmpSurvey Error ' + xhr.responseText)
-            }.bind(this)
+            }
         });
     }
     approve(){
@@ -74,13 +68,7 @@ class TmpNoticeSurvey extends React.Component {
             dataType: "json",
             data:{
                 'SurveyID': this.props.SurveyID
-            },
-            success : function(response){
-                //console.log('accept_TmpSurvey Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('accept_TmpSurvey Error ' + xhr.responseText)
-            }.bind(this)
+            }
         });
         this.props.reload();
     }
@@ -93,14 +81,7 @@ class TmpNoticeSurvey extends React.Component {
           dataType: "json",
           data: {
               'surveyID': this.props.SurveyID
-          },
-          success : function(response){
-              questions = response;
-              //console.log('get_SurveyQuestions Success' + response)
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_SurveyQuestions Error')
-          }.bind(this)
+          }
       });
   }
 
@@ -112,14 +93,7 @@ class TmpNoticeSurvey extends React.Component {
             dataType: "json",
             data: {
                 'surveyID': this.props.SurveyID
-            },
-            success : function(response){
-                answers = response;
-                //console.log('get_SurveyAnswers Success' + response)
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_SurveyAnswers Error')
-            }.bind(this)
+            }
         });
     }
         /* Format the Questions and Answers properly, push into list that will
@@ -271,7 +245,6 @@ class SurveyText extends React.Component {
         }
     }
     onChange(value) {
-        //console.log(value);
         // Set result
         var index = this.getIndex(this.props.qID);
         userAnswers[index].Answer = value;

@@ -67,11 +67,7 @@ class EditEvent extends React.Component {
                 'EventURL' : this.state.EventURL
             },
             success : function(response){
-                console.log('modify_Event success');
                 this.props.reload();
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('modify_Event Error ' + xhr.responseText);
             }.bind(this)
         });
     }
