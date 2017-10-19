@@ -33,13 +33,11 @@ class EventStat extends React.Component {
             notgoingList: []
         };
         this.deleteNotice = this.deleteNotice.bind(this);
-        this.get_eventNames = this.get_eventNames.bind(this);
         this.get_eventResults = this.get_eventResults.bind(this);
     }
 
     componentWillMount(){
       this.get_eventResults();
-      this.get_eventNames();
     }
 
 
@@ -137,43 +135,19 @@ class EventStat extends React.Component {
                   'EventID': this.props.ID
               },
               success : function(response){
-                  this.setState({going: response});
+                  this.setState({
+                      going: response[0],
+                      notGoing: response[1],
+                      total: response[2],
+                      attendingList: response[3],
+                      notgoingList: response[4]
+                  });
                   //console.log('get_EventGoing Success')
               }.bind(this),
               error: function(xhr, status, err, response){
                   console.log('get_EventGoing Error' + xhr.responseText);
               }.bind(this)
           });
-          $.ajax({
-                url: '/php/get_EventNotGoing.php',
-                type:'POST',
-                dataType: "json",
-                data:{
-                    'EventID': this.props.ID
-                },
-                success : function(response){
-                    this.setState({notGoing: response});
-                    //console.log('get_EventNotGoing Success')
-                }.bind(this),
-                error: function(xhr, status, err, response){
-                    console.log('get_EventNotGoing Error' + xhr.responseText);
-                }.bind(this)
-           });
-           $.ajax({
-                 url: '/php/get_EventCount.php',
-                 type:'POST',
-                 dataType: "json",
-                 data:{
-                     'EventID': this.props.ID
-                 },
-                 success : function(response){
-                     this.setState({total: response});
-                     //console.log('get_EventCount Success')
-                 }.bind(this),
-                 error: function(xhr, status, err, response){
-                     console.log('get_EventCount Error' + xhr.responseText);
-                 }.bind(this)
-            });
     }
     deleteNotice(){
         if (confirm("Warning: This will permenantly remove this event from your chamber members and can not be undone! Are you sure?") == true){
@@ -195,25 +169,6 @@ class EventStat extends React.Component {
             // Reload Parent Component
             this.props.reload();
         }
-    }
-    get_eventNames(){
-        $.ajax({
-              url: '/php/get_eventNames.php',
-              type:'POST',
-              dataType: "json",
-              data:{
-                  'EventID': this.props.ID
-              },
-              success : function(response){
-                  this.setState({
-                      attendingList: response[0],
-                      notgoingList: response[1]
-                  });
-              }.bind(this),
-              error: function(xhr, status, err, response){
-                  console.log('get_eventNames Error' + xhr.responseText);
-              }.bind(this)
-         });
     }
     generateAttendingList() {
       const aList = this.state.attendingList;
