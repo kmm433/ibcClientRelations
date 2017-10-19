@@ -1954,15 +1954,14 @@ function addPayment($payment, $expiry, $chamber){
 
     function insertPayment($userid, $membershipID, $amount, $timestamp){
         try{
-            $sql = $this->db->prepare("INSERT INTO PAYMENT (userID, membershipID, amount, paymentdate) VALUES (:userid, :membershipID, :amount, :newtimestamp) ");
+            $sql = $this->db->prepare("INSERT INTO PAYMENT (userID, membershipID, amount, paid, paymentdate) VALUES (:userid, :membershipID, :amount, 1,  $timestamp) ");
             $sql->bindParam(':userID', $userid, PDO::PARAM_INT);
             $sql->bindParam(':membershipID', $umembershipID, PDO::PARAM_INT);
 
             if($sql->execute(array(
               ":userid" => $userid,
               ":membershipID" => $membershipID,
-              ":amount" => $amount,
-              ":newtimestamp" => $timestamp
+              ":amount" => $amount
           ))){
                 return true;
             }
@@ -2130,19 +2129,19 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
-  function insertUserTransaction($password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
+  function insertUserTransaction($firstname, $lastname, $id, $jobtitle, $email, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
 
       $this->db->beginTransaction();
 
       try{
-          $results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
-          $addressid = $db->getLastID();
+          $results =  $this->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
+          $addressid = $this->getLastID();
 
-          $postalid =  $db->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
-          $postalid = $db->getLastID();
+          $postalid =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
+          $postalid = $this->getLastID();
 
-          $results = $db->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $email, $password, $id, $firstname, $lastname, $jobtitle, $tablename, $table);
-          $id = $db->getLastID();
+          $results = $this->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $email, $password, $id, $firstname, $lastname, $jobtitle, $tablename, $table);
+          $id = $this->getLastID();
 
           //if requires approval then assign user type as 3 otherwise as 2
           $usertype = 2;
@@ -2150,8 +2149,8 @@ function addPayment($payment, $expiry, $chamber){
               $usertype = 3;
           }
 
-          $results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
-          $userid = $db->getLastID();
+          $results1 =  $this->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
+          $userid = $this->getLastID();
 
 
           $var = null;
@@ -2161,11 +2160,11 @@ function addPayment($payment, $expiry, $chamber){
                   $var = $answers[$i];
                   $data = $DataID[$i];
 
-                  $db->insertExtraUserData($tablename, $data, $var, $id);
+                  $this->insertExtraUserData($tablename, $data, $var, $id);
               }
           }
 
-          $db->insert_StatNewMember($userID,$chamber);
+          $this->insert_StatNewMember($userID,$chamber);
 
           $this->pdo->commit();
           echo json_encode($userid);

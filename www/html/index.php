@@ -39,6 +39,8 @@
     <link rel="stylesheet" href="/css/group_management.css" />
     <link rel="stylesheet" href="/css/invoice_management.css" />
     <link rel="stylesheet" href="/css/profile.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/edit-signup.css" />
   </head>
   <body>
     <base href="/" />

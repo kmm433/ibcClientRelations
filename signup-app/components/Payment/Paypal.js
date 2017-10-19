@@ -21,11 +21,14 @@ export default class Payment extends React.Component {
                 },
             success: response => {
               console.log('Ajax call occured', response);
+              if(confirm("Successful payment, thank you for joining!")){
+                  window.location.href = "/signin.php";
+              }
 
             },
             error: (xhr, status, err) => {
                 console.log("error",xhr, status, err)
-                alert("An error occured, your payment was not ")
+                ("An error occured")
             }});
             // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         }
@@ -47,6 +50,7 @@ export default class Payment extends React.Component {
         let env = 'sandbox'; // you can set here to 'production' for production
         let currency = 'AUD'; // or you can set this value from your props or state
         let total = this.props.amount;
+        let locale = 'en_AU'
         //let total = {this.props.amount}; // same as above, this is the total amount (based on currency) to be paid by using Paypal express checkout
         // Document on Paypal's currency code: https://developer.paypal.com/docs/classic/api/currency_codes/
 
@@ -66,10 +70,11 @@ export default class Payment extends React.Component {
                 env={env}
                 client={client}
                 currency={currency}
-                total={58}
+                total={this.props.amount}
                 onError={onError}
                 onSuccess={onSuccess}
-                onCancel={onCancel} />
+                onCancel={onCancel}
+                locale = {locale}/>
         );
     }
 }

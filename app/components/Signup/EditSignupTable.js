@@ -131,14 +131,14 @@ class FieldTable extends React.Component {
 
         return (
             <div className="table-responsive">
-                <Table striped bordered condensed hover>
+                <Table striped condensed hover>
                   <thead>
-                      <tr>
+                      <tr id="edit-signup-table">
                         <th> Name of Field </th>
                         <th style={{'width': '20%'}}> Optional </th>
                         <th style={{'width': '10%'}}> Type </th>
-                        <th id="columnWidth"> Minimum Value </th>
-                        <th id="columnWidth"> Maximum Value </th>
+                        <th id="columnWidth"> Minimum</th>
+                        <th id="columnWidth"> Maximum </th>
                         <th id="columnWidth"> </th>
                       </tr>
                   </thead>
