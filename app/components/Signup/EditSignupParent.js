@@ -4,6 +4,7 @@ import FieldTable from './EditSignupTable.js';
 import EditPayment from './EditPayment.js';
 import AddClientID from './PaypalID.js'
 import ApproveUser from './Approve.js'
+import UploadLogo from './UploadLogo.js'
 import DatePicker from 'react-datepicker';                          /* https://github.com/Hacker0x01/react-datepicker */
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -492,6 +493,7 @@ class EditSignup extends React.Component{
                         Upload Logo
                     </h3>
                     <hr className = "signup-divider" />
+                    <UploadLogo />
                 </div>
             </div>
         )

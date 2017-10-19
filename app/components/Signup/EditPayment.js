@@ -73,10 +73,10 @@ class EditPayment extends React.Component {
     //this table displays all the membership payment info for the chamber
     renderTable(){
         return (
-            <div className="table-responsive">
-                <Table striped bordered condensed hover>
+            <div>
+                <Table striped condensed hover>
                   <thead>
-                      <tr>
+                      <tr id="edit-signup-table">
                         <th> Membership Type </th>
                         <th> Additional Info </th>
                         <th> Payment Amount </th>
@@ -271,7 +271,7 @@ class EditPayment extends React.Component {
     }
 
     handleSubmit(){
-        this.addPaymentField(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
+        this.props.addPaymentField(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
             newInfo: "",
@@ -283,11 +283,11 @@ class EditPayment extends React.Component {
     render(){
         return(
             <div className="container">
+                {this.renderTable()}
                 <PaymentType
                     paymentType={this.props.paymentType}
                     expiry={this.props.expiry}
                     updatePaymentType={this.updateParentPaymentType}/>
-                {this.renderTable()}
             </div>
 
         )

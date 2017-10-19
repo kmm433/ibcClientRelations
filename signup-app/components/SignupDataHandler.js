@@ -13,6 +13,7 @@ class SignupData extends React.Component {
           loaded: false,
           loaded1: false,
           loaded3: false,
+          requireApproval: "",
           signupFields: [{
                displayname: [],
                columnname: [],
@@ -41,6 +42,7 @@ class SignupData extends React.Component {
         this.sendData = this.sendData.bind(this);
         this.renderSignupForm = this.renderSignupForm.bind(this);
         this.getClientToken = this.getClientToken.bind(this);
+        this.getApprovalSettings = this.getApprovalSettings.bind(this);
 }
 
     componentWillMount(){
@@ -49,6 +51,7 @@ class SignupData extends React.Component {
         this.getPaymentDetails(this.props.chamberID);
         this.getPaymentType(this.props.chamberID);
         this.getClientToken(this.props.chamberID);
+        this.getApprovalSettings(this.props.chamberID);
     }
 
     componentWillReceiveProps(nextProps){
@@ -57,6 +60,7 @@ class SignupData extends React.Component {
         this.getPaymentDetails(nextProps.chamberID);
         this.getPaymentType(nextProps.chamberID);
         this.getClientToken(nextProps.chamberID);
+        this.getApprovalSettings(this.props.chamberID);
     }
 
     getClientToken(){
@@ -86,17 +90,43 @@ class SignupData extends React.Component {
                   loaded: true
               });
               console.log("the chamber searching for: ", response)
+          },
+          error: (xhr, status, err) => {
+              console.log("error",xhr, status, err)
+              alert("An error occured")
           }
       });
     }
 
-    sendData(answers, address, postal){
+    getApprovalSettings(data){
+        console.log("fetching approval for: data")
+        $.ajax({url: '/php/get_approval_settings.php', type: 'POST',
+            dataType: 'json',
+            data: {'chamber': data},
+            success: response => {
+                console.log("getting here")
+                console.log(response)
+                this.setState({
+                    requireApproval: response
+                });
+                console.log("the chamber searching for: ", response)
+            },
+            error: (xhr, status, err) => {
+                console.log("error",xhr, status, err)
+                alert("An error occured")
+            }
+        });
+    }
+
+
+
+    sendData(answers, address, postal, membershipID){
         var data = [];
         var tablename = [];
         var columnname = [];
 
         console.log("lines",address.line1, postal.line1)
-        //postal[line1 === null && postal = null;
+        //postal.line1 === null && postal = null;
 
         for(var i=0; i<this.state.signupFields.length; i++){
             data[i]= this.state.signupFields[i].DataID;
@@ -113,13 +143,19 @@ class SignupData extends React.Component {
                 'tablename': tablename,
                 'columnname': columnname,
                 'address': address,
-                'postal': address
+                'postal': address,
+                'membershipID': membershipID,
+                'requireApproval': this.state.requireApproval
             },
             success: response => {
                 console.log("success",response)
+                //send back up if requires approval, the amount to be paid and the UserID
+                this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken)
+
             },
             error: (xhr, status, err) => {
                 console.log("error",xhr, status, err)
+                alert("An error occured, your membership signup what not successfull")
             }
         });
     }
@@ -173,6 +209,7 @@ class SignupData extends React.Component {
                 membershipType={this.state.paymentType}
                 expiry={this.props.expiry}
                 token={this.state.clientToken}
+                requireApproval = {this.state.requireApproval}
             />
         )
     }
