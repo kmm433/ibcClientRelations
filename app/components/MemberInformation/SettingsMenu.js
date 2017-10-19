@@ -115,7 +115,7 @@ class SettingsMenu extends React.Component {
               checked={this.props.approvals}
               onChange={(e) => this.props.changeViewGroup(e)}
             />
-            Show all {this.props.num_approvals} members of this chamber with awaiting approval.
+            Show all {this.props.num_approvals} members of this chamber awaiting approval.
           </label></li>
         </ul>
         <input
