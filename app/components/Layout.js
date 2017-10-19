@@ -1,7 +1,7 @@
 import React from 'react';
 import {BrowserRouter, Route} from 'react-router-dom';
+import {slide as MobileMenu} from 'react-burger-menu';
 import SideMenu from './Menu/SideMenu.js';
-import BottomMenu from './Menu/BottomMenu.js';
 import ReactRouter from 'react-router-dom';
 import NoticeBoard from './NoticeBoard';
 import Calendar from './Calendar';
@@ -33,11 +33,48 @@ class Layout extends React.Component {
         this.renderPage = this.renderPage.bind(this);
     }
 
+
     renderNormalUser(){
+      // Styling for the hamburger menu mased be pased as a JS variable
+      var styles = {
+        bmBurgerButton: {
+          position: 'fixed',
+          width: '16px',
+          height: '16px',
+          left: '15px',
+          top: '15px'
+        },
+        bmBurgerBars: {
+          background: '#373a47'
+        },
+        bmCrossButton: {
+          height: '24px',
+          width: '24px'
+        },
+        bmCross: {
+          background: '#bdc3c7'
+        },
+        bmMenu: {
+          background: '#2462AB',
+          fontSize: '1.15em'
+        },
+        bmMorphShape: {
+          fill: '#2462AB'
+        },
+        bmItemList: {
+          color: '#b8b7ad',
+          overlayY: 'scroll'
+        },
+        bmOverlay: {
+          background: 'rgba(0, 0, 0, 0.3)'
+        }
+      }
         return(
             <div id='layout'>
-              <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} />
-              <BottomMenu user_type={this.props.user_type} first_name={this.props.first_name} />
+              <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} className='side-menu-large-screen'/>
+              <MobileMenu styles={styles} id='mobile-menu' witdh={'280px'} className='side-menu-small-screen'>
+                <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} />
+              </MobileMenu>
               {/*This list defines all possible location that can be navigated to*/}
               <div>
                 <Route exact={true} path='/' render={()=> <NoticeBoard user_type={this.props.user_type} />}/>

@@ -140,6 +140,12 @@ html, body, .establish-fonts, #menu, #layout {
   margin-bottom: 60px;
 }
 
+@media (max-width: 720px) {
+  .main-component {
+    margin-top: 35px;
+  }
+}
+
 #notice-board {
   margin-left: 20%;
   margin-right: 5%;
