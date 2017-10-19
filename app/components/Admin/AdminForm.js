@@ -156,7 +156,7 @@ class AdminForm extends React.Component {
       var displayName = ['Email', 'Confirm Email', 'Password', 'Confirm Password', 'First Name', 'Last Name', 'Job Title', 'Business Phone', 'Mobile Phone', 'Chamber Email', 'Anzic Code', 'ABN', 'Website'];
       var min = [1, 1, 6, 6, 1, 1, 1, 8, 8, 1, 5, 11, 1];
       var max = [320, 320, 30, 30, 255, 255, 255, 11, 11, 320, 5, 11, 3000];
-      var mand = [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0];
+      var mand = [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0];
 
     return (
         <div>

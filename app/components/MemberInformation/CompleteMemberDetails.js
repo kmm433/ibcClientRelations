@@ -2,6 +2,7 @@ import React from 'react';
 import * as MemberActions from '../../Actions/MemberActions.js';
 import $ from 'jquery';
 import Detail from './Detail.js';
+import UserAddress from '../ContactUs/UserAddressEdit.js'
 
 class CompleteMemberDetails extends React.Component {
 
@@ -105,13 +106,16 @@ class CompleteMemberDetails extends React.Component {
       <div>
         {this.renderDetails()}
         {this.props.editable ?
-          <input
-            type='button'
-            className='btn btn-warning'
-            value='Save Changes'
-            onClick={this.handleSaveChanges}
-            disabled={this.checkErrors()}
-          />
+            <div>
+                <input
+                  style={{"marginLeft": '5%'}}
+                  type='button'
+                  className='btn btn-warning'
+                  value='Save Changes'
+                  onClick={this.handleSaveChanges}
+                  disabled={this.checkErrors()}/>
+                <UserAddress userID={this.props.memberID}/>
+            </div>
           : null
         }
       </div>

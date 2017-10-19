@@ -268,7 +268,7 @@ class SignupForm extends React.Component {
                  postalstate: this.state.postalstate,
                  postalcountry: this.state.postalcountry
              }
-             this.props.sendData(this.state.storeAnswers, address, postal, this.state.membershipID);
+             this.props.sendData(this.state.storeAnswers, address, postal, this.state.membershipID, this.state.amount);
          }
      }
 

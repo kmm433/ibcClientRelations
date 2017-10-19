@@ -9,22 +9,22 @@ class EditChamber extends React.Component{
     constructor(props){
         super(props)
 
-        console.log(this.props.address[0].line1, this.props.address[0].line2, this.props.address[0].city, this.props.address[0].postcode, this.props.address[0].state,this.props.address[0].country)
-        console.log(this.props.chamberData[0].name, this.props.chamberData[0].abn,this.props.chamberData[0].businessphone, this.props.chamberData[0].mobilephone)
+        this.props
+
         this.state = {
             update: 0,
-            line1: this.props.address[0].line1,
-            line2: this.props.address[0].line2,
-            city: this.props.address[0].city,
-            postcode: this.props.address[0].postcode,
-            state: this.props.address[0].state,
-            country: this.props.address[0].country,
-            postalline1: this.props.address[1].line1,
-            postalline2: this.props.address[1].line2,
-            postalcity: this.props.address[1].city,
-            postalpostcode: this.props.address[1].postcode,
-            postalstate: this.props.address[1].state,
-            postalcountry: this.props.address[1].country,
+            line1: this.props.address.line1,
+            line2: this.props.address.line2,
+            city: this.props.address.city,
+            postcode: this.props.address.postcode,
+            state: this.props.address.state,
+            country: this.props.address.country,
+            postalline1: this.props.postal.line1,
+            postalline2: this.props.postal.line2,
+            postalcity: this.props.postal.city,
+            postalpostcode: this.props.postal.postcode,
+            postalstate: this.props.postal.state,
+            postalcountry: this.props.postal.country,
             name: this.props.chamberData[0].name,
             abn: this.props.chamberData[0].abn,
             businessphone: this.props.chamberData[0].businessphone,
@@ -39,15 +39,11 @@ class EditChamber extends React.Component{
         this.setChamberData = this.setChamberData.bind(this);
         this.saveAddress = this.saveAddress.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.changePostal = this.changePostal.bind(this);
         this.checkbox = this.checkbox.bind(this);
         this.checkboxAddress = this.checkboxAddress.bind(this);
 
     }
 
-    changePostal(value){
-        this.setState({postal: value})
-    }
 
     checkbox(){
         return(
@@ -71,6 +67,8 @@ class EditChamber extends React.Component{
         this.setState({
             postal: check
         })
+        console.log(this.state.name, this.state.abn, this.state.businessphone, this.state.mobilephone, this.state.anziccode, this.state.website,this.state.chamberemail)
+        console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
     }
 
     handleSubmit(){
@@ -95,7 +93,7 @@ class EditChamber extends React.Component{
         }
         });
         console.log(this.state.line1, this.state.line2, this.state.city, this.state.postcode, this.state.state)
-        //console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
+        console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
         $.ajax({url: '/php/update_address.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -107,13 +105,13 @@ class EditChamber extends React.Component{
                 'postcode': this.state.postcode,
                 'state': this.state.state,
                 'country': this.state.country,
-                'postal': 0,/*,
+                'postal': 0,
                 'postalline1': this.state.postalline1,
                 'postalline2': this.state.postalline2,
                 'postalcity': this.state.postalcity,
                 'postalpostcode': this.state.postalpostcode,
                 'postalstate': this.state.postalstate,
-                'postalcountry': this.state.postalcountry*/
+                'postalcountry': this.state.postalcountry
 
             },
         success: response => {
@@ -125,7 +123,7 @@ class EditChamber extends React.Component{
         });
     }
 
-
+//set the state to the value coming in (the index reflects the name of the state, where to save the value)
     setChamberData(value, index){
         var array = ['Name', 'Business Phone', 'Mobile Phone', 'Anzic Code', 'Website', 'Chamber Email', 'ABN'];
         var name = array[index]
@@ -134,7 +132,7 @@ class EditChamber extends React.Component{
         console.log("which one", name, value, index)
         this.setState({[name]: value})
     }
-
+//save the address to send back to the data handling component
     saveAddress(name, value){
         console.log("address", name, value)
         this.setState({[name]: value})
@@ -179,63 +177,61 @@ class EditChamber extends React.Component{
                         mandatory = {1}
                         userAnswer = {this.setChamberData}
                         index = {2}/>
-                        <Validator
-                            type = {"number"}
-                            displayName = {"Anzic Code"}
-                            minimum ={5}
-                            maximum = {5}
-                            value = {this.props.chamberData[0].anziccode != null ? this.props.chamberData[0].anziccode : ""}
-                            mandatory = {0}
-                            userAnswer = {this.setChamberData}
-                            index = {3}/>
-                        <Validator
-                            type = {"text"}
-                            displayName = {"Website"}
-                            minimum = {0}
-                            maximum = {320}
-                            value = {this.props.chamberData[0].website != null ? this.props.chamberData[0].website : ""}
-                            mandatory = {0}
-                            userAnswer = {this.setChamberData}
-                            index = {4}/>
-                        <Validator
-                            type = {"email"}
-                            displayName = {"Chamber Email"}
-                            minimum = {0}
-                            maximum = {320}
-                            value = {this.props.chamberData[0].chamberemail != null ? this.props.chamberData[0].chamberemail : ""}
-                            mandatory = {0}
-                            userAnswer = {this.setChamberData}
-                            index = {5}/>
-                        <Validator
-                            type = {"number"}
-                            displayName = {"ABN"}
-                            minimum = {11}
-                            maximum = {11}
-                            value = {this.props.chamberData[0].abn != null ? this.props.chamberData[0].abn : ""}
-                            mandatory = {0}
-                            userAnswer = {this.setChamberData}
-                            index = {6}/>
-
+                    <Validator
+                        type = {"number"}
+                        displayName = {"Anzic Code"}
+                        minimum ={5}
+                        maximum = {5}
+                        value = {this.props.chamberData[0].anziccode != null ? this.props.chamberData[0].anziccode : ""}
+                        mandatory = {0}
+                        userAnswer = {this.setChamberData}
+                        index = {3}/>
+                    <Validator
+                        type = {"text"}
+                        displayName = {"Website"}
+                        minimum = {0}
+                        maximum = {320}
+                        value = {this.props.chamberData[0].website != null ? this.props.chamberData[0].website : ""}
+                        mandatory = {0}
+                        userAnswer = {this.setChamberData}
+                        index = {4}/>
+                    <Validator
+                        type = {"email"}
+                        displayName = {"Chamber Email"}
+                        minimum = {0}
+                        maximum = {320}
+                        value = {this.props.chamberData[0].chamberemail != null ? this.props.chamberData[0].chamberemail : ""}
+                        mandatory = {0}
+                        userAnswer = {this.setChamberData}
+                        index = {5}/>
+                    <Validator
+                        type = {"number"}
+                        displayName = {"ABN"}
+                        minimum = {11}
+                        maximum = {11}
+                        value = {this.props.chamberData[0].abn != null ? this.props.chamberData[0].abn : ""}
+                        mandatory = {0}
+                        userAnswer = {this.setChamberData}
+                        index = {6}/>
                 <div style={{'fontSize': 'large', 'marginLeft': '3%'}}>Address</div>
-            <EditAddress
-                type="Business Address"
-                save={this.saveAddress}
-                address={this.props.address[0]}
-                index={0}/>
-            {this.checkbox()}
-            {this.state.postal == 1 &&
-                <div>
+                <EditAddress
+                    type="Business Address"
+                    save={this.saveAddress}
+                    address={this.props.address}
+                    index={0}/>
+                {this.checkbox()}
+                {this.state.postal == 1 &&
+                    <div>
                     <div style={{'fontSize': 'large', 'marginLeft': '3%'}}>Postal Address</div>
-                    <EditAddress
-                        type="Postal Address"
-                        save={this.saveAddress}
-                        address={this.props.address[1]}
-                        index={1}/>
-                </div>}
-            <Button
-                style={{'marginLeft': '45%'}}
-                type="submit">
-                    Submit
+                        <EditAddress
+                            type="Postal Address"
+                            save={this.saveAddress}
+                            address={this.props.postal}
+                            index={1}/>
+                    </div>}
+                <Button
+                    style={{'marginLeft': '45%'}}
+                    type="submit"> Submit
                 </Button>
         </Form>
         );

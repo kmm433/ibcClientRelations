@@ -120,7 +120,7 @@ class SignupData extends React.Component {
 
 
 
-    sendData(answers, address, postal, membershipID){
+    sendData(answers, address, postal, membershipID, amount){
         var data = [];
         var tablename = [];
         var columnname = [];
@@ -145,12 +145,13 @@ class SignupData extends React.Component {
                 'address': address,
                 'postal': address,
                 'membershipID': membershipID,
+                'amount': amount,
                 'requireApproval': this.state.requireApproval
             },
             success: response => {
                 console.log("success",response)
                 //send back up if requires approval, the amount to be paid and the UserID
-                this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken)
+                this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken, this.state.expiry)
 
             },
             error: (xhr, status, err) => {
@@ -187,9 +188,16 @@ class SignupData extends React.Component {
             },
         success: response => {
             console.log("membership types: ", response[0].type, response[0].expiry_date)
+
+            var newExpiry;
+            if(response[0].expiry_date == null){
+                newExpiry = 'annual';
+            }else{
+                newExpiry = response[0].expiry_date;
+            }
            this.setState({
                paymentType: response[0].type,
-               expiry: response[0].expiry_date,
+               expiry: newExpiry,
                loaded2: true
            });
       },

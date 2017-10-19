@@ -19,6 +19,10 @@ $chamberemail = $_POST['chamberemail'];
 $address = $_POST['address'];
 $postal = $_POST['postal'];
 
+if(!isset($postal['line1']) || $postal['line1'] == ""){
+    $postal = $address;
+}
+
 $options = [
     'cost' => 11,
     'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),

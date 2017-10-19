@@ -164,7 +164,7 @@ class FieldTable extends React.Component {
     }
 
     renderAddField(){
-        const typeOptions = ['email', 'password', 'text', 'number', 'menu'];
+        const typeOptions = ['text', 'number'];
         const isDisabled = "disabled";
         return(
             <tr className = "edit-signup-input">
@@ -235,7 +235,7 @@ class FieldTable extends React.Component {
     }
 
     renderEditField(){
-        const typeOptions = ['email', 'text', 'number'];
+        const typeOptions = ['text', 'number'];
         var i = this.props.currentIndex;
         console.log("What is the new type",this.state.newType)
 

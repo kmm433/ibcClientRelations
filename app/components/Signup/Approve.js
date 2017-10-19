@@ -10,11 +10,11 @@ class ApproveUser extends React.Component {
         this.handleChangetoAutomatic = this.handleChangetoAutomatic.bind(this);
         this.handleChangetoManual = this.handleChangetoManual.bind(this);
     }
-
+//update approval status in parent component for conditional rendering
     handleChangetoManual(){
         this.props.updateApproval(1);
     }
-
+//update approval status in parent component for conditional rendering
     handleChangetoAutomatic(){
         this.props.updateApproval(0);
     }
@@ -51,7 +51,7 @@ class ApproveUser extends React.Component {
     //if the payment settings are set to manual then render information about the user flow and give them the option to switch to automatic
     renderManual(){
         return(
-            <div className="w3-panel w3-blue" id="edit-signup-panel">
+            <div>
                 <div style={{'padding': '2%'}}>
                     <Col sm={12}>
                         <div>
@@ -81,10 +81,8 @@ class ApproveUser extends React.Component {
     }
 
     render(){
-        console.log("getting more props", this.props.approval)
         return(
             <div>
-                {console.log(this.props.approval == 0)}
                 {this.props.approval == 0 ? this.renderAutomatic() : this.renderManual()}
             </div>
         )

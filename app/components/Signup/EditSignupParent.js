@@ -65,6 +65,7 @@ class EditSignup extends React.Component{
         this.updatePaymentEdit = this.updatePaymentEdit.bind(this);
         this.getApproval = this.getApproval.bind(this);
         this.updateApproval = this.updateApproval.bind(this);
+        this.checkifLive = this.checkifLive.bind(this);
 
     }
 
@@ -74,6 +75,7 @@ class EditSignup extends React.Component{
         this.getPaymentType();
         this.getClientID();
         this.getApproval();
+        this.checkifLive();
 
     }
 
@@ -121,10 +123,12 @@ class EditSignup extends React.Component{
 //display the expiry in text format for user readabiltiy but store in format compatible to store in database
     updatePayment(type, expiry){
         //console.log("Getting", type, expiry.format("DD-MM-YYYY"))
+        console.log(expiry)
         var message;
         if(type === 'ProRata'){
-            message = "New members and renewing members will now expire on " + expiry.format("LL");
-            expiry = expiry.format("YYYY-MM-DD")
+            message = "New members and renewing members will now expire on " + moment(expiry).format("LL");
+            expiry = expiry.format("YYYY-MM-DD HH:MM:SS")
+            console.log(expiry)
         }
         else{
             expiry = null;
@@ -181,7 +185,7 @@ class EditSignup extends React.Component{
                 'id': newID
             },
             success: response => {
-                console.log("success", response)
+                this.checkifLive();
                 this.setState({clientID: newID});
             },
             error: response => {
@@ -198,7 +202,7 @@ class EditSignup extends React.Component{
                     'mode': 'REMOVE'
                 },
                 success: response => {
-                    console.log("success", response)
+                    this.checkifLive();
                     this.setState({clientID: null});
                 },
                 error: (xhr, status, err) => {
@@ -250,7 +254,7 @@ class EditSignup extends React.Component{
                 'DataID': this.state.signupFields[this.state.currentIndex].DataID
             },
             success: response => {
-                console.log("is this actually updating", response)
+                this.checkifLive();
                 this.getFields();
             },
             error: response => {
@@ -269,6 +273,7 @@ class EditSignup extends React.Component{
             success: response => {
                 console.log(response)
                 this.getFields();
+                this.checkifLive();
             },
             error: response => {
                 console.log(response)
@@ -286,12 +291,30 @@ class EditSignup extends React.Component{
             success: response => {
                 console.log(response)
                 this.getFields();
+                this.checkifLive();
+            },
+            error: response => {
+                alert("An error occured!")
+            }
+        });
+    }
+
+    //check if the chamber is live
+    checkifLive(){
+        console.log("sending data")
+        $.ajax({url: '/php/chamber_live.php', type: 'POST',
+            dataType: 'json',
+            success: response => {
+                console.log("checking live",response)
+
             },
             error: response => {
                 console.log(response)
             }
         });
     }
+
+
 
     updateEdit(index){
         this.setState({
@@ -332,11 +355,10 @@ class EditSignup extends React.Component{
                 'amount': amount
             },
             success: response => {
-                console.log("working",response)
                 this.getPaymentDetails()
             },
             error: response => {
-                console.log("not working",response)
+                alert("An error occured!")
             }
         });
     }
@@ -357,7 +379,7 @@ class EditSignup extends React.Component{
                 this.getPaymentDetails();
             },
             error: response => {
-                console.log("nupdate sign up field",response)
+                alert("An error occured!")
             }
         });
     }
@@ -375,7 +397,7 @@ class EditSignup extends React.Component{
                 this.getPaymentDetails();
             },
             error: response => {
-                console.log(response)
+                alert("An error occured!")
             }
         });
     }
@@ -393,7 +415,7 @@ class EditSignup extends React.Component{
                 this.getPaymentDetails();
             },
             error: response => {
-                console.log(response)
+                alert("An error occured!")
             }
         });
     }
@@ -405,11 +427,11 @@ class EditSignup extends React.Component{
         $.ajax({url: '/php/get_approval_settings.php', type: 'POST',
             dataType: 'json',
             success: response => {
-                console.log(response)
+                this.checkifLive();
                 this.setState({approval: response})
             },
             error: response => {
-                console.log(response)
+                alert("An error occured!")
             }
         });
     }
@@ -422,11 +444,11 @@ class EditSignup extends React.Component{
                 'approval': update
             },
             success: response => {
-                console.log(response)
+                this.checkifLive();
                 this.getApproval();
             },
             error: response => {
-                console.log(response)
+                alert("An error occured!")
             }
         });
     }
@@ -436,6 +458,13 @@ class EditSignup extends React.Component{
             <div className='w3-row' id="edit-signup">
                 <div className="w3-container w3-card-4 w3-light-grey">
                     <h2 id="h2-editsignup">Edit Sign up Form</h2>
+                    <hr className = "signup-divider" />
+                <div> Users will only be able to access the online Sign up Form if you have:
+                    <li>Filled out Membership Payments</li>
+                    <li>Added your Paypal Client ID</li>
+                    <li>If you dont have your Paypal Client ID ready you can still recieve new users if your Approval settings are Manual </li>
+                    <li>If your Approval settings are set to Manual then you must manually approve them before they become a member</li>
+                 </div>
                     <hr className = "signup-divider" />
                     <h3
                         id="h3-editsignup">
@@ -488,24 +517,16 @@ class EditSignup extends React.Component{
                     <ApproveUser
                         approval={this.state.approval}
                         updateApproval={this.updateApproval}/>
-                    <h3
-                        id="h3-editsignup">
-                        Upload Logo
-                    </h3>
-                    <hr className = "signup-divider" />
-                    <UploadLogo />
                 </div>
             </div>
         )
     }
 
 
-
+//only render this component if the user logged in is of type 1
     render(){
-
         return(
             <div>
-                {console.log("the user type is",this.props.user_type)}
                 {this.props.user_type === '1' &&
                 ((this.state.data1loaded && this.state.data2loaded && this.state.data3loaded) ? this.renderPage() : null)}
             </div>

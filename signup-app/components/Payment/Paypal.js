@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import PaypalExpressBtn from 'react-paypal-express-checkout';
 import PaypalButton from './Button.js';
 
@@ -6,30 +7,38 @@ export default class Payment extends React.Component {
     constructor(props){
         super(props)
         console.log("payment getting", this.props.amount, this.props.token)
+
+        this.sendData = this.sendData.bind(this);
+    }
+
+    sendData(){
+        console.log("Expiry here is: ", this.props.expiry)
+        $.ajax({url: '/php/approve_payment.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'userid': this.props.userid,
+                'amount': this.props.amount,
+                'expiry': this.props.expiry
+            },
+        success: response => {
+            console.log("results from query: ", response)
+          if(confirm("Successful payment, thank you for joining!")){
+              window.location.href = "/signin.php";
+          }
+        },
+        error: (xhr, status, err) => {
+            console.log("error",xhr, status, err)
+
+        }});
     }
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
-            console.log("The payment was succeeded!", payment);
+            console.log("TWO: The payment was succeeded!", payment);
+            this.sendData();
 
-            $.ajax({url: '/php/approve_payment.php',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    'userid': this.props.userid,
-                    'amount': this.props.amount
-                },
-            success: response => {
-              console.log('Ajax call occured', response);
-              if(confirm("Successful payment, thank you for joining!")){
-                  window.location.href = "/signin.php";
-              }
 
-            },
-            error: (xhr, status, err) => {
-                console.log("error",xhr, status, err)
-                ("An error occured")
-            }});
             // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         }
 
@@ -49,7 +58,7 @@ export default class Payment extends React.Component {
         let shipping = '1';//shipping address set to 1 (not required)
         let env = 'sandbox'; // you can set here to 'production' for production
         let currency = 'AUD'; // or you can set this value from your props or state
-        let total = this.props.amount;
+        let total = parseInt(this.props.amount);
         let locale = 'en_AU'
         //let total = {this.props.amount}; // same as above, this is the total amount (based on currency) to be paid by using Paypal express checkout
         // Document on Paypal's currency code: https://developer.paypal.com/docs/classic/api/currency_codes/

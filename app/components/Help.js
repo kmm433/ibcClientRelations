@@ -31,10 +31,15 @@ class Help extends React.Component {
                             </div>
                         </Collapsible>
                     </div>
-
-
-
-
+                    <div className="member-list-item">
+                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up automated payments from members?</h4>}>
+                            <div style={{marginBottom: '25px'}}>
+                                First you must create a Business Paypal account (this is different to a personal account)
+                                The following link will take you to the sign up page.
+                                https://www.paypal.com/au/webapps/mpp/business-solutions
+                            </div>
+                        </Collapsible>
+                    </div>
                     <ExecHelp user_type = {this.props.user_type}/>
                 </div>
             </div>

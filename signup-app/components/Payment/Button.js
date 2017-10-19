@@ -86,12 +86,16 @@ PaypalButton.defaultProps = {
     env: 'sandbox',
     shipping: 1,
     onSuccess: (payment) => {
-        console.log('The payment was succeeded!', payment);
+        console.log('ONE: The payment was succeeded!', payment);
+        if(confirm("Thank you for joining! We will soon be in contact!")){
+            console.log("redirect")
+        }
     },
     onCancel: (data) => {
         console.log('The payment was cancelled!', data)
     },
     onError: (err) => {
+        alert("An error occured!")
         console.log('Error loading Paypal script!', err)
     }
 };

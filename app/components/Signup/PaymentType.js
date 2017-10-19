@@ -43,7 +43,7 @@ class PaymentType extends React.Component {
 
     //When switch to prorata button is clicked change
     handleChange(date){
-        console.log("Checking date:")
+        console.log("Checking date:", date)
         this.setState({
             expiry: moment(date),
             type: "ProRata"

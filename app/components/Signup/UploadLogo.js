@@ -1,9 +1,10 @@
+/*Not a Requirement and not used in final prject but left here in case want to add in future or have time to
+fix up*/
+
 import React from 'react';
 import $ from 'jquery';
 import serialize from 'form-serialize';
 import {Col, ButtonToolbar} from 'react-bootstrap';
-
-
 
 class UploadLogo extends React.Component{
     constructor(){
@@ -33,23 +34,6 @@ class UploadLogo extends React.Component{
     });
 
 }
-/*
-    getDetails(){
-        $.ajax({url: '/php/get_chamber_information.php', type: 'POST',
-            dataType: 'json',
-
-        success: response => {
-            console.log(response)
-            this.setState({
-                info: response,
-                loaded: true
-            })
-        },
-        error: response => {
-            console.log(response)
-        }
-        });
-    }*/
 
     render(){
 

@@ -1454,18 +1454,17 @@ function getFields($query){
 
       try{
           if(!isset($jobtitle) || empty($jobtitle)) { $jobtitle = null; }
-          if(!isset($businessID) || empty($businessID)) { $businessID = null; }
+          if(!isset($id) || empty($id)) { $id = null; }
           if(!isset($expiry) || empty($expiry)) { $expiry = null; }
 
           $sql = $this->db->prepare("INSERT INTO `USER` (`email`, `password`, `businessID`, `chamberID`, `firstname`, `lastname`, `expiry`, `jobtitle`, `type`)
-                              VALUES(:email, :password, :id, :chamber, :firstname, :lastname, :expiry, :jobtitle, :type)");
+                              VALUES(:email, :password, :id, :chamber, :firstname, :lastname, $expiry, :jobtitle, :type)");
 
           $sql->bindParam(':email', $email, PDO::PARAM_STR);
           $sql->bindParam(':password', $password, PDO::PARAM_STR);
           $sql->bindParam(':firstname', $firstname, PDO::PARAM_STR);
           $sql->bindParam(':lastname', $lastname, PDO::PARAM_STR);
           $sql->bindParam(':jobtitle', $jobtitle, PDO::PARAM_STR);
-          $sql->bindParam(':expiry', $expiry, PDO::PARAM_STR);
           $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
           $sql->bindParam(':id', $id, PDO::PARAM_INT);
           $sql->bindParam(':type', $type, PDO::PARAM_INT);
@@ -1474,6 +1473,43 @@ function getFields($query){
           echo $e->getMessage();
       }
 
+      try{
+          if($sql->execute()){
+              return ("success");
+          }
+          else{
+              return("error");
+          }
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
+  }
+
+  function insertChamberUser($email, $password, $id, $chamber, $firstname, $lastname, $expiry, $jobtitle, $type){
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+      try{
+          if(!isset($jobtitle) || empty($jobtitle)) { $jobtitle = null; }
+          if(!isset($id) || empty($id)) { $id = null; }
+          if(!isset($expiry) || empty($expiry)) { $expiry = null; }
+
+          $sql = $this->db->prepare("INSERT INTO `USER` (`email`, `password`, `businessID`, `chamberID`, `firstname`, `lastname`, `expiry`, `jobtitle`, `type`)
+                              VALUES(:email, :password, :id, :chamber, :firstname, :lastname, NULL, :jobtitle, :type)");
+
+          $sql->bindParam(':email', $email, PDO::PARAM_STR);
+          $sql->bindParam(':password', $password, PDO::PARAM_STR);
+          $sql->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+          $sql->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+          $sql->bindParam(':jobtitle', $jobtitle, PDO::PARAM_STR);
+          $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
+          $sql->bindParam(':id', $id, PDO::PARAM_INT);
+          $sql->bindParam(':type', $type, PDO::PARAM_INT);
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
 
       try{
           if($sql->execute()){
@@ -1851,14 +1887,24 @@ function addPayment($payment, $expiry, $chamber){
       return false;
   }
 
+
+
   //count how many users exists with this value (to check for email or name duplicates)
   function countUser($query){
-      $sql = $this->db->prepare($query);
-      if ($sql->execute()) {
-        $row = $sql->fetchColumn(0);
-        return $row;
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      try{
+          $sql = $this->db->prepare($query);
+
+          if ($sql->execute()) {
+            $row = $sql->fetchColumn(0);
+            return $row;
+          }
+          return false;
       }
-      return false;
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
   }
 
   function enableSignupField($chamber, $name, $able){
@@ -1935,6 +1981,7 @@ function addPayment($payment, $expiry, $chamber){
     }
 
     function updateApproval($chamber, $approval){
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try{
             $sql = $this->db->prepare("UPDATE APPROVAL SET approval = :approval WHERE chamberID = :chamber");
             $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
@@ -1965,15 +2012,33 @@ function addPayment($payment, $expiry, $chamber){
         }
     }
 
-    function approvePayment($userid, $amount, $timestamp){
+    function updateUserExpiry($userID, $expiry){
+
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try{
-            $sql = $this->db->prepare("UPDATE PAYMENT SET paid = 1, amount=:amount paymentdate=:newtimestamp WHERE userID = :userID");
-            $sql->bindParam(':userID', $userid, PDO::PARAM_INT);
-            $sql->bindParam(':amount', $amount, PDO::PARAM_INT);
+            if($expiry == 'annual'){
+                $expiry = 'NOW() + INTERVAL 1 YEAR';
+            }
+            $sql = $this->db->prepare("UPDATE USER SET expiry = '$expiry' where UserID = :userID");
 
             if($sql->execute(array(
-              ":userid" => $userid,
-              ":newtimestamp" => $timestamp,
+              ":userID" => $userID
+          ))){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    function approvePayment($userID, $amount, $expiry){
+        try{
+            $sql = $this->db->prepare("UPDATE PAYMENT SET paid = 1, amount=:amount, paymentdate=NOW() WHERE userID = :userID");
+
+            if($sql->execute(array(
+              ":userID" => $userID,
               ":amount" => $amount
           ))){
                 return true;
@@ -2073,6 +2138,8 @@ function addPayment($payment, $expiry, $chamber){
 
   function updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country){
 
+      if(!isset($line2) || empty($line2)) { $line2 = null; }
+
       try{
           $sql = $this->db->prepare("UPDATE ADDRESS SET
               line1 = :line1, line2 = :line2, city = :city, state = :state, postcode= :postcode, country=:country
@@ -2116,7 +2183,7 @@ function addPayment($payment, $expiry, $chamber){
           $a = array($email, $password, null, $id, $firstname, $lastname, null, $jobtitle, 1);
 
 
-          $results = $this->insertUser($email, $password, null, $id, $firstname, $lastname, null, $jobtitle, 1);
+          $results = $this->insertChamberUser($email, $password, null, $id, $firstname, $lastname, null, $jobtitle, 1);
 
           $optionaltable = "OPTIONALFIELDS_";
           $optionaltable .= $id;
@@ -2162,7 +2229,8 @@ function addPayment($payment, $expiry, $chamber){
       }
   }
 
-  function insertUserTransaction($size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
+  function insertUserTransaction($amount, $membershipID, $size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password,
+  $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
 
       $this->db->beginTransaction();
 
@@ -2176,17 +2244,16 @@ function addPayment($payment, $expiry, $chamber){
           $results = $this->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
           $id = $this->getLastID();
 
-
-
-
           //if requires approval then assign user type as 3 otherwise as 2
           $usertype = 2;
           if($requireApproval == 1){
               $usertype = 3;
           }
 
-          $results1 =  $this->insertUser($email, $password, null, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
+          $results1 =  $this->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'NOW() - INTERVAL 1 DAY', $jobtitle, $usertype);
           $userid = $this->getLastID();
+
+          $this->insertPayment($userid, $membershipID, $amount, 'NOW()');
 
 
           $var = null;
@@ -2266,6 +2333,26 @@ function addPayment($payment, $expiry, $chamber){
           return false;
       }
   }
+
+  function getIds($userID){
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      if(!isset($line2) || empty($line2)) { $line2 = null; }
+
+      try{
+          $sql = $this->db->prepare("select addressID, postal from BUSINESS b JOIN USER u ON b.businessID = u.businessID where userID = 123719");
+
+          if($sql->execute()){
+              $row = $sql->fetch(PDO::FETCH_ASSOC);
+              return $row;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
+  }
+
 
   }
 

@@ -4,8 +4,11 @@
 
     $userid = $_POST['userid'];
     $amount = $_POST['amount'];
-    $results = $db->approvePayment($userid, $amount, 'CURRENT_TIMESTAMP()');
+    $expiry = $_POST['expiry'];
+    $results = $db->approvePayment($userid, $amount, $expiry);
+    $results2= $db->updateUserExpiry($userid, $expiry);
 
-    echo json_encode($results);
+
+    echo json_encode($results2);
 
 ?>
