@@ -1,0 +1,43 @@
+/* The following is to style to admin page*/
+#admin-menu{
+    margin-left: 27%;
+}
+
+
+hr.admin-divider{
+margin-left: 20%;
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+
+  }
+
+  hr.signup-divider{
+    border: 0;
+    height: 1px;
+    background-color: #f0f0f0;
+    margin-left: 2%;
+    margin-right: 2%;
+    }
+  hr.welcome-divider{
+    margin-left: 7%;
+    margin-right: 7%;
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+    background-image: -moz-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+    background-image: -ms-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+    background-image: -o-linear-gradient(left, #f0f0f0, #BDC3C7, #f0f0f0);
+
+    }
+
+  #chamberadmin-btn{
+      width:20%;
+  }
+
+  #admin-dropdown{
+      width: 37%;
+  }

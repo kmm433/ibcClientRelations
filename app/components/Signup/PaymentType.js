@@ -57,7 +57,7 @@ class PaymentType extends React.Component {
                     Your payment type is currently set to: {' '} {this.props.paymentType}
                 </ControlLabel>
                 <Button onClick = {this.changeProRataBtn}>
-                    Switch to ProRata
+                    {this.state.addProRata == false ? "Switch to ProRata" : "Cancel"}
                 </Button>
             </div>
         )
@@ -88,12 +88,13 @@ class PaymentType extends React.Component {
         return(
             <div>
                 <Col sm={4}>
-                    <ControlLabel>
+                    <ControlLabel style={{'marginTop': '2%'}}>
                         Please choose a date of expiry:
                     </ControlLabel>
                 </Col>
                     <Col sm={4}>
                         <DatePicker
+                            style={{'marginTop': '1%'}}
                             dateFormat="DD-MM-YYYY"
                             selected={this.state.expiry}
                             onChange={this.handleChange}
@@ -115,12 +116,13 @@ class PaymentType extends React.Component {
         return (
             <div>
                 <Col sm={4}>
-                    <ControlLabel>
+                    <ControlLabel style={{'marginTop': '2%'}}>
                         Please choose a date of expiry:
                     </ControlLabel>
                 </Col>
                     <Col sm={4}>
                         <DatePicker
+                            style={{'marginTop': '2%'}}
                             dateFormat="DD-MM-YYYY"
                             selected={this.state.expiry}
                             onChange={this.handleChange}

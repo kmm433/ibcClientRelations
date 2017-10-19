@@ -63,7 +63,13 @@ class ExecHelp extends React.Component {
                       </div>
                   </Collapsible>
               </div>
-
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4>How do I set up the automated membership payments with Paypal?</h4>}>
+                      <div style={{marginBottom: '15px'}}>
+                          
+                      </div>
+                  </Collapsible>
+              </div>
           </div>
       );
     }

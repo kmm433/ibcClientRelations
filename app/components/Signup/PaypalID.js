@@ -36,13 +36,13 @@ class AddClientID extends React.Component {
 
     renderShowID(){
         return(
-            <div>
+            <div className="w3-panel w3-blue" id="edit-signup-panel">
                 <Col sm={2}>
-                        <ControlLabel>
-                            Client ID:
+                    <ControlLabel style={{'paddingTop': '10%'}}>
+                        Client ID:
                     </ControlLabel>
                 </Col>
-                <Col sm={8}>
+                <Col sm={8} style={{'paddingTop': '1.25%'}}>
                     {this.props.token}
                 </Col>
                     <Col sm={2}>
@@ -59,14 +59,17 @@ class AddClientID extends React.Component {
     renderAddID(){
         return(
             <FormGroup
+                className="w3-panel w3-blue"
+                id="edit-signup-panel"
                 method='POST'>
             <Col sm={3}>
-                    <ControlLabel>
+                    <ControlLabel style={{'paddingTop': '1%'}}>
                         Please Enter Your Paypal Client ID:
                 </ControlLabel>
             </Col>
                 <Col sm={7}>
                     <FormControl
+                        style={{'paddingTop': '1%'}}
                         type = "text"
                         name = "clientID"
                         onChange={this.handleChange}

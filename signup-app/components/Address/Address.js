@@ -213,6 +213,7 @@ class Address extends React.Component{
                                     displayName = {displayName[i]}
                                     minimum = {min[i]}
                                     maximum = {max[i]}
+                                    value = ""
                                     mandatory = {mand[i]}
                                     userAnswer = {this.storeAddress}
                                     index = {i}/>

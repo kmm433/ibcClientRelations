@@ -5,6 +5,7 @@
   padding-bottom: 20px;
   width: 20%;
   max-width: 292px;
+  overflow-y: auto;
   z-index: 999;
 }
 

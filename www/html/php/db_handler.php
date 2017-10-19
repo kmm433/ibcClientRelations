@@ -1368,12 +1368,16 @@ function getList($query) {
 }
 
 function getFields($query){
-    $sql = $this->db->prepare($query);
-    if ($sql->execute()) {
-      $row = $sql->fetchAll(PDO::FETCH_ASSOC);
-      return $row;
+    try{
+        $sql = $this->db->prepare($query);
+        if ($sql->execute()) {
+          $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+          return $row;
+        }
+        return false;
+    } catch(PDOExecption $e) {
+        echo $e->getMessage();
     }
-    return false;
 }
 
 //inserts a new field for the sign up form
@@ -1460,9 +1464,31 @@ function getFields($query){
       $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
       try{
-          $sql = $this->db->prepare("SELECT c.name, c.businessphone, a.line1, a.line2, a.city, a.postcode, a.state, a.country FROM CHAMBER c
-                                                        LEFT OUTER JOIN ADDRESS a ON c.location = a.addressID WHERE c.chamberID = :chamber");
+          $sql = $this->db->prepare("SELECT name, businessphone, mobilephone, anziccode, website, chamberemail, abn, location, postal
+				                     FROM CHAMBER WHERE chamberID = :chamber");
           $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
+
+          if($sql->execute()){
+              $row = $sql->fetchAll(PDO::FETCH_ASSOC);
+              return $row;
+          }
+          else{
+              return("error");
+          }
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
+  }
+
+  function getAddress($addressID){
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+      try{
+          $sql = $this->db->prepare("SELECT line1, line2, city, postcode, state, country
+                                        FROM ADDRESS WHERE addressID=:addressID");
+          $sql->bindParam(':addressID', $addressID, PDO::PARAM_INT);
 
           if($sql->execute()){
               $row = $sql->fetchAll(PDO::FETCH_ASSOC);
@@ -1674,25 +1700,30 @@ function getFields($query){
   }
 
 //insert a new business
-  function insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website){
+  function insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website){
 
             if(!isset($established) || empty($established)) { $established = null; }
-            if(!isset($addressid) || empty($addressid)) { $addressid = null; }
+            if(!isset($mobile) || empty($mobile)) { $mobile = null; }
+            if(!isset($postalid) || empty($postalid)) { $postalid = null; }
             if(!isset($mobile) || empty($mobile)) { $mobile = null; }
             if(!isset($anzic) || empty($anzic)) { $anzic = null; }
             if(!isset($numofemployees) || empty($numofemployees)) { $numofemployees = null; }
             if(!isset($website) || empty($website)) { $website = null; }
 
           $sql = $this->db->prepare("INSERT INTO BUSINESS (established, chamberID, addressid, postal, ABN, businessname, businessphone, mobile, anziccode, numofemployees, website)
-                              VALUES(:established, $chamber, $addressid, $postalid, :abn, :businessname, :businessphone, :mobile, :anzic, :numofemployees, :website)");
+                              VALUES(:established, $chamber, :addressid, :postalid, :abn, :businessname, :businessphone, :mobile, :anzic, :numofemployees, :website)");
+
+
         $sql->bindParam(':abn', $abn, PDO::PARAM_INT);
         $sql->bindParam(':businessname', $businessname, PDO::PARAM_STR);
         $sql->bindParam(':businessphone', $businessphone, PDO::PARAM_INT);
-          $sql->bindParam(':established', $established, PDO::PARAM_STR);
-          $sql->bindParam(':mobile', $mobile, PDO::PARAM_INT);
-          $sql->bindParam(':anzic', $anziccode, PDO::PARAM_INT);
-          $sql->bindParam(':numofemployees', $numofemployees, PDO::PARAM_INT);
-          $sql->bindParam(':website', $website, PDO::PARAM_STR);
+        $sql->bindParam(':addressid', $addressid, PDO::PARAM_INT);
+        $sql->bindParam(':postalid', $postalid, PDO::PARAM_INT);
+        $sql->bindParam(':established', $established, PDO::PARAM_STR);
+        $sql->bindParam(':mobile', $mobile, PDO::PARAM_INT);
+        $sql->bindParam(':anzic', $anziccode, PDO::PARAM_INT);
+        $sql->bindParam(':numofemployees', $numofemployees, PDO::PARAM_INT);
+        $sql->bindParam(':website', $website, PDO::PARAM_STR);
 
           try{
               if($sql->execute())
@@ -1706,7 +1737,7 @@ function getFields($query){
   }
 
   //insert a new business
-    function insertChamber($established, $baddressID, $paddressID, $abn, $parentID, $name, $businessphone, $mobilephone, $anziccode, $website){
+    function insertChamber($established, $baddressID, $paddressID, $abn, $parentID, $name, $businessphone, $mobilephone, $anziccode, $website, $chamberemail){
 
         //$this->db->setAttribute(PDO::ATTR_ERRMODE, ERROMODE_EXCEPTION);
 
@@ -1715,9 +1746,11 @@ function getFields($query){
         if(!isset($parentID) || empty($parentID)) { $parentID = null; }
         if(!isset($anziccode) || empty($anziccode)) { $anziccode = null; }
         if(!isset($website) || empty($website)) { $website = null; }
+        if(!isset($chamberemail) || empty($chamberemail)) { $chamberemail = null; }
 
-        $sql = $this->db->prepare("INSERT INTO CHAMBER (established, location, postal, ABN, parent_id, name, businessphone, mobilephone, anziccode, website)
-                    VALUES(null, :baddressID, :paddressID, :abn, :parentID, :name, :businessphone, :mobilephone, :anziccode, :website)");
+
+        $sql = $this->db->prepare("INSERT INTO CHAMBER (established, location, postal, ABN, parent_id, name, businessphone, mobilephone, anziccode, website, chamberemail)
+                    VALUES(null, :baddressID, :paddressID, :abn, :parentID, :name, :businessphone, :mobilephone, :anziccode, :website, :chamberemail)");
 
         //$sql->bindParam(':established,', $established, PDO::PARAM_STR);
         $sql->bindParam(':baddressID', $baddressID, PDO::PARAM_INT);
@@ -1729,6 +1762,7 @@ function getFields($query){
         $sql->bindParam(':mobilephone', $mobilephone, PDO::PARAM_INT);
         $sql->bindParam(':anziccode', $anziccode, PDO::PARAM_INT);
         $sql->bindParam(':website', $website, PDO::PARAM_STR);
+        $sql->bindParam(':chamberemail', $chamberemail, PDO::PARAM_STR);
 
         if($sql->execute())
             return ("success");
@@ -1761,7 +1795,7 @@ function addPayment($payment, $expiry, $chamber){
     try{
         if(!isset($expiry) || empty($expiry)) { $expiry = null; }
 
-        $sql = $this->db->prepare("INSERT INTO PAYMENTTYPES (chamberid, type, expiry_date) VALUES (:chamber, :type, :expiry_date)");
+        $sql = $this->db->prepare("INSERT INTO PAYMENTTYPES (chamberid, type, expiry_date) VALUES (:chamberid, :type, :expiry_date)");
         if($sql->execute(array(
           "type" => $payment,
           "expiry_date" => $expiry,
@@ -1814,11 +1848,12 @@ function addPayment($payment, $expiry, $chamber){
 
   function insertNewMembership($chamber, $name, $info, $amount){
       try{
-          $sql = $this->db->prepare("INSERT INTO MEMBERSHIPS (chamberID, name, info, amount, 1) SET disabled=0 WHERE displayname = '$name'");
+          $sql = $this->db->prepare("INSERT INTO MEMBERSHIPS (chamberID, name, info, amount, disabled) VALUES(:chamber, :name, :info, :amount, 0)");
           if($sql->execute(array(
-            "type" => $payment,
-            "expiry_date" => $expiry,
-            "chamberid" => $chamber
+            "amount" => $amount,
+            "info" => $info,
+            "chamber" => $chamber,
+            "name" => $name
           ))){
               return true;
           }
@@ -1849,7 +1884,7 @@ function addPayment($payment, $expiry, $chamber){
 
     }
 
-
+    //returns 0 if they are automatically added, returns 1 if requires approval
     function getApproval($chamber){
         try{
             $sql = $this->db->prepare("SELECT approval FROM APPROVAL WHERE chamberID = :chamber");
@@ -1873,6 +1908,61 @@ function addPayment($payment, $expiry, $chamber){
             $sql->bindParam(':approval', $approval, PDO::PARAM_INT);
 
             if($sql->execute()){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    function approveUser($userid){
+        try{
+            $sql = $this->db->prepare("UPDATE USER SET type = 2 WHERE UserID = :userID");
+            $sql->bindParam(':userID', $userid, PDO::PARAM_INT);
+
+            if($sql->execute()){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    function approvePayment($userid, $amount, $timestamp){
+        try{
+            $sql = $this->db->prepare("UPDATE PAYMENT SET paid = 1, amount=:amount paymentdate=:newtimestamp WHERE userID = :userID");
+            $sql->bindParam(':userID', $userid, PDO::PARAM_INT);
+            $sql->bindParam(':amount', $amount, PDO::PARAM_INT);
+
+            if($sql->execute(array(
+              ":userid" => $userid,
+              ":newtimestamp" => $timestamp,
+              ":amount" => $amount
+          ))){
+                return true;
+            }
+            return false;
+        }
+        catch(PDOExecption $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    function insertPayment($userid, $membershipID, $amount, $timestamp){
+        try{
+            $sql = $this->db->prepare("INSERT INTO PAYMENT (userID, membershipID, amount, paid, paymentdate) VALUES (:userid, :membershipID, :amount, 1,  $timestamp) ");
+            $sql->bindParam(':userID', $userid, PDO::PARAM_INT);
+            $sql->bindParam(':membershipID', $umembershipID, PDO::PARAM_INT);
+
+            if($sql->execute(array(
+              ":userid" => $userid,
+              ":membershipID" => $membershipID,
+              ":amount" => $amount
+          ))){
                 return true;
             }
             return false;
@@ -1917,6 +2007,173 @@ function addPayment($payment, $expiry, $chamber){
       else{
           return false;
       }
+  }
+
+
+  function updateChamber($chamber, $name, $abn, $businessphone, $mobilephone, $anziccode, $website, $chamberemail){
+      try{
+          if(!isset($abn) || empty($abn)) { $abn = null; }
+          if(!isset($website) || empty($website)) {$website = null; }
+          if(!isset($anziccode) || empty($anziccode)) { $anziccode = null; }
+          if(!isset($chamberemail) || empty($chamberemail)) { $chamberemail = null; }
+
+          $sql = $this->db->prepare("UPDATE CHAMBER SET name = :name, businessphone= :businessphone, mobilephone=:mobilephone, anziccode=:anziccode,website=:website, chamberemail=:chamberemail
+          WHERE chamberID=:chamber");
+
+          if($sql->execute(array(
+            ":chamber" => $chamber,
+            ":name" => $name,
+            ":businessphone" => $businessphone,
+            ":mobilephone" => $mobilephone,
+            ":anziccode" => $anziccode,
+            ":website" => $website,
+            ":chamberemail" => $chamberemail
+        ))){
+              return true;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+  }
+
+  function updateAddress($addressID, $line1, $line2, $city, $state, $postcode, $country){
+
+      try{
+          $sql = $this->db->prepare("UPDATE ADDRESS SET
+              line1 = :line1, line2 = :line2, city = :city, state = :state, postcode= :postcode, country=:country
+              WHERE addressID = :addressID");
+
+          if($sql->execute(array(
+            ":line1" => $line1,
+            ":line2" => $line2,
+            ":city" => $city,
+            ":state" => $state,
+            ":postcode" => $postcode,
+            ":country" => $country,
+            ":addressID" => $addressID
+        ))){
+              return true;
+          }
+          return false;
+      }
+      catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+  }
+
+  function insertChamberTransaction($name, $email, $password, $firstname, $lastname, $abn, $businessphone,$mobilephone, $anziccode,$website, $parentID, $jobtitle,$chamberemail, $address, $postal){
+      try{
+          $this->db->beginTransaction();
+
+          $established = null;
+          $addressid = null;
+          $postalid = null;
+          $id = null;
+          $results =  $this->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
+          $addressid = $this->getLastID();
+
+          $results =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
+          $postalid = $this->getLastID();
+
+
+          $results = $this->insertChamber($established, $addressid, $postalid, $abn, $parentID, $name, $businessphone, $mobilephone, $anziccode, $website, $chamberemail);
+          $id = $this->getLastID();
+          $a = array($email, $password, null, $id, $firstname, $lastname, null, $jobtitle, 1);
+
+
+          $results = $this->insertUser($email, $password, null, $id, $firstname, $lastname, null, $jobtitle, 1);
+
+          $optionaltable = "OPTIONALFIELDS_";
+          $optionaltable .= $id;
+
+          $businesstable = "BUSINESS_";
+          $businesstable .= $id;
+
+
+          $this->justExecute("CREATE TABLE $optionaltable (
+                                `DataID` int(11) NOT NULL AUTO_INCREMENT,
+                                `displayname` varchar(45) NOT NULL,
+                                `columnname` varchar(45) DEFAULT NULL,
+                                `inputtype` varchar(45) NOT NULL,
+                                `mandatory` varchar(5) NOT NULL,
+                                `tablename` varchar(45) DEFAULT NULL,
+                                `ordering` int(11) NOT NULL,
+                                `minimum` int(11) DEFAULT NULL,
+                                `maximum` int(11) DEFAULT NULL,
+                                `disabled` tinyint(4) NOT NULL DEFAULT '0',
+                                PRIMARY KEY (`DataID`),
+                                UNIQUE KEY `displayname_UNIQUE` (`displayname`)
+                              )ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1");
+
+          $this->justExecute("CREATE TABLE $businesstable (
+                                `DataID` int(11) NOT NULL,
+                                `answer` varchar(45) DEFAULT NULL,
+                                `BUSINESSID` varchar(45) DEFAULT NULL,
+                                `answerID` int(11) NOT NULL AUTO_INCREMENT,
+                                PRIMARY KEY (`answerID`)
+                              )");
+
+          //default settings to automatically expire new members a year from sign up date
+          $this->addPayment("Annual", null, $id);
+          //default settings to automatcally approve new users
+          $this->justExecute("INSERT INTO APPROVAL (chamberID) VALUES ($id)");
+          $this->pdo->commit();
+
+          return true;
+      }
+      catch(PDOExecption $e) {
+          $this->pdo->rollBack();
+          echo $e->getMessage();
+      }
+  }
+
+  function insertUserTransaction($firstname, $lastname, $id, $jobtitle, $email, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
+
+      $this->db->beginTransaction();
+
+      try{
+          $results =  $this->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
+          $addressid = $this->getLastID();
+
+          $postalid =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
+          $postalid = $this->getLastID();
+
+          $results = $this->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $email, $password, $id, $firstname, $lastname, $jobtitle, $tablename, $table);
+          $id = $this->getLastID();
+
+          //if requires approval then assign user type as 3 otherwise as 2
+          $usertype = 2;
+          if($requireApproval == 1){
+              $usertype = 3;
+          }
+
+          $results1 =  $this->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
+          $userid = $this->getLastID();
+
+
+          $var = null;
+          for($i = 0; $i<($size); $i++){
+              if($table[$i]==$tablename){
+
+                  $var = $answers[$i];
+                  $data = $DataID[$i];
+
+                  $this->insertExtraUserData($tablename, $data, $var, $id);
+              }
+          }
+
+          $this->insert_StatNewMember($userID,$chamber);
+
+          $this->pdo->commit();
+          echo json_encode($userid);
+
+      } catch(PDOExecption $e) {
+          $this->pdo->rollBack();
+          echo $e->getMessage();
+      }
+
   }
 
   function get_StatReview(){

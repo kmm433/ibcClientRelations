@@ -73,27 +73,26 @@ class AdminForm extends React.Component {
   }
 
     storeUserData(value, index){
-        var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle'];
+        var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle', 'businessphone', 'mobilephone', 'chamberemail', 'anziccode','abn', 'website'];
         var name = array[index];
         this.props.save([name], value)
 
     }
     storeName(value, index){
-        this.props.save(name, value)
-
+        this.props.save('name', value)
     }
 
     storeAddress(type, value, index){
         var array = ['line1', 'line2', 'city','state', 'postcode', 'country'];
-        name = array[index];
+        var savename = array[index];
         if(type === "Postal Address")
-            name = "postal" + name
-        console.log(value, index)
-        this.props.save(name, value);
+            value= "postal" + value
+        console.log(value, index, savename)
+        this.props.save(value, index);
     }
 
     saveParent(value){
-        this.props.save("parentID",value)
+        this.props.save("parentID", value)
     }
 
 
@@ -102,6 +101,7 @@ class AdminForm extends React.Component {
          this.setState({
              postal: check
          })
+         this.props.changePostal(check)
      }
 
      checkbox1(){
@@ -151,35 +151,34 @@ class AdminForm extends React.Component {
 
   render() {
 
-      var type = ['email', 'email','password', 'password', 'text', 'text','text', 'number', 'number', 'number', 'text'];
-      var name = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle', 'businessphone', 'mobilephone','anziccode','abn', 'website'];
-      var displayName = ['Email', 'Confirm Email', 'Password', 'Confirm Password', 'First Name', 'Last Name', 'Job Title', 'Business Phone', 'Mobile Phone', 'Anzic Code', 'ABN', 'Website'];
-      var min = [1, 1, 6, 6, 1, 1, 1, 8, 8, 5, 11, 1];
-      var max = [320, 320, 30, 30, 255, 255, 255, 11, 11, 5, 11, 3000];
-      var mand = [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0];
+      var type = ['email', 'email','password', 'password', 'text', 'text','text', 'number','number', 'email', 'number', 'number', 'text'];
+      var name = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle', 'businessphone', 'mobilephone', 'chamberemail', 'anziccode','abn', 'website'];
+      var displayName = ['Email', 'Confirm Email', 'Password', 'Confirm Password', 'First Name', 'Last Name', 'Job Title', 'Business Phone', 'Mobile Phone', 'Chamber Email', 'Anzic Code', 'ABN', 'Website'];
+      var min = [1, 1, 6, 6, 1, 1, 1, 8, 8, 1, 5, 11, 1];
+      var max = [320, 320, 30, 30, 255, 255, 255, 11, 11, 320, 5, 11, 3000];
+      var mand = [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0];
 
     return (
         <div>
                 <div id="signup-headings">Create New Chamber</div>
+                <hr className = "signup-divider" />
                     <Validator
                             type = "text"
                             displayName = "Chamber Name"
                             minimum = {1}
                             maximum = {255}
                             mandatory = {1}
+                            value=""
                             userAnswer = {this.storeName}
                             index = {0}/>
                         {this.checkbox2()}
-                    {this.state.showMenu == 1 && <ChamberDropdown
-                        save = {this.storeAddress}
-                        chamber_list = {this.props.chamberlist}
-                    />}
                     {name.map((item, i) =>
                             <Validator
                                 key = {i}
                                 type = {type[i]}
                                 displayName = {displayName[i]}
                                 minimum = {min[i]}
+                                value=""
                                 maximum = {max[i]}
                                 mandatory = {mand[i]}
                                 userAnswer = {this.storeUserData}
