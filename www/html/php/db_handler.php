@@ -187,6 +187,16 @@ class DB_Handler
     return false;
   }
 
+  // Updates the type of a user
+  function updateMemberType($userId, $userType) {
+    $sql = $this->db->prepare("UPDATE USER SET type=:user_type WHERE UserID=:user_id");
+    $sql->execute(array(
+      'user_type' => $userType,
+      'user_id' => $userId,
+    ));
+    return true;
+  }
+
   // Creates a dummy business for a user if for some reason one hasn't been provided
   function createEmptyBusiness($chamberId, $userId) {
     $this->db->beginTransaction();

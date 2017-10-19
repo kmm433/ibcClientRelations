@@ -259,6 +259,7 @@ export function updateDetails(memberId, details) {
   submitNote(memberId, 'Updated member\'s details.');
 }
 
+// Sets a member as either archived or unarchived
 export function updateArichiveStatus(currentArchiveStatus, memberId) {
   var archived = 1;
   if (currentArchiveStatus) {
@@ -280,6 +281,8 @@ export function updateArichiveStatus(currentArchiveStatus, memberId) {
     }
   });
 }
+
+// Approves a user on the awaiting aprovals list
 export function approveUser(userId) {
   $.ajax({
     url: '/php/approve_member.php',
@@ -296,6 +299,34 @@ export function approveUser(userId) {
       else {
         alert(response.value);
       }
+    },
+    error: response => {
+      console.log(response);
+    }
+  });
+}
+
+// Changes the membership type of a user (Exec/Mmeber)
+export function updateMemberType(userId, userType) {
+  $.ajax({
+    url: '/php/update_member_type.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'user_id': userId,
+      'user_type': userType,
+    },
+    success: response => {
+      if (response.status === 200) {
+        if (userType === 1)
+          alert("Member has been promoted to an executive member.");
+        else
+          alert("Member has been demoted to an ordinary member.");
+      }
+      else {
+        alert(response.value);
+      }
+      fetchChamberMembers();
     },
     error: response => {
       console.log(response);
