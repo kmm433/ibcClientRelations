@@ -742,3 +742,11 @@ margin-bottom: 2%;
  .transparent {
      background-color: transparent !important;
  }
+
+.help-img {
+  width: 100%;
+}
+
+.help-p {
+  padding: 15px 0;
+}
