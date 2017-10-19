@@ -234,21 +234,19 @@ class DB_Handler
     //Quote the input strings best we can do here
     $value = $this->db->quote($value);
     // Check if there is s preexisting value
-    $queryString = "SELECT * FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID='$memberID' AND $table.DataID='$dataID'";
+    $queryString = "SELECT answerid FROM $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID WHERE USER.UserID=$memberID AND $table.DataID=$dataID";
     $sql = $this->db->prepare($queryString);
-    if ($sql->execute()) {
-      if ($sql->rowCount() > 0) {
-        $sql = $this->db->prepare("UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer='$value' WHERE USER.UserID='$memberID' AND $table.DataID=$dataID");
-        if ($sql->execute()) {
-          return true;
-        }
-      }
-      else {
-        $sql = $this->db->prepare("INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, $value, $businessID)");
-        if ($sql->execute()) {
-          return true;
-        }
-      }
+    $sql->execute();
+    $answerid = $sql->fetch(PDO::FETCH_ASSOC)['answerid'];
+    if ($answerid) {
+      $queryString = "UPDATE $table JOIN BUSINESS ON $table.BUSINESSID=BUSINESS.businessID JOIN USER ON USER.businessID=BUSINESS.businessID SET $table.answer=$value WHERE $table.answerid=$answerid";
+      $sql = $this->db->exec($queryString);
+      return true;
+    }
+    else {
+      $queryString = "INSERT INTO $table (DataID, answer, BUSINESSID) VALUES ($dataID, $value, $businessID)";
+      $sql = $this->db->prepare($queryString);
+      return true;
     }
     return false;
   }
@@ -308,15 +306,25 @@ class DB_Handler
   }
 
   // Changes whether a member is archived or not.
-  function setArchiveMember($memberID, $archived) {
-    $sql = $this->db->prepare("UPDATE USER SET archived=$archived WHERE UserID='$memberID'");
-    $result = $sql->execute();
+  function setArchiveMember($userId, $archived) {
+    $sql = $this->db->prepare("UPDATE USER SET archived=:archive_status WHERE UserID=:user_id");
+    $result = $sql->execute(array(
+      'user_id' => $userId,
+      'archive_status' => $archived
+    ));
     return $result;
+  }
+
+  // Approves a member so that they can join the chamber
+  function approveMember($userId) {
+    $sql = $this->db->prepare("UPDATE USER SET type=2 WHERE UserID=:user_id");
+    $sql->execute(array('user_id' => $userId));
+    return true;
   }
 
   // Retrieve all members of a chamber
   function getChamberMembers($chamberID) {
-      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived
+      $sql = $this->db->prepare("SELECT UserID, firstname, lastname, email, businessname, expiry, archived, type
           FROM USER LEFT OUTER JOIN BUSINESS ON USER.businessID=BUSINESS.businessID WHERE USER.chamberID=:chamber_id
           ORDER BY lastname;");
     if ($sql->execute(array(

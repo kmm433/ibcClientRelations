@@ -47,15 +47,22 @@ if (!$businessID) {
   $businessID = $db->createEmptyBusiness($_SESSION['chamber'], $_POST['member_id']);
 }
 
-// Update the standard details
-if (!preg_match('/BUSINESS_/', $detail[1]['tablename']) && $detail[1]['disabled'] == 'false') {
-  $results = $db->setDetail($_POST['member_id'], $detail[1]['value'], $detail[1]['columnname'], $detail[1]['tablename']);
-}
-else {
-  if ($detail[1]['value'] != '')
-  $results = $db->setChamberSpecificDetail($_POST['member_id'], $detail[1]['DataID'], $businessID, $detail[1]['value'], $detail[1]['columnname'], $detail[1]['tablename']);
+$editedOptional = false;
+$editedNormal = false;
+if ($detail[1]['disabled'] == 'false') {
+  // Update the non-standard details
+  if (preg_match('/BUSINESS_/', $detail[1]['tablename'])) {
+    $results = $db->setChamberSpecificDetail($_POST['member_id'], $detail[1]['DataID'], $businessID, $detail[1]['value'], $detail[1]['columnname'], $detail[1]['tablename']);
+    $editedOptional = $results;
+  }
+  // Update the standard details
+  else {
+    $results = $db->setDetail($_POST['member_id'], $detail[1]['value'], $detail[1]['columnname'], $detail[1]['tablename']);
+    $editedNormal = $results;
+  }
 }
 
-echo json_encode(array('status' => 200, 'value' => array('email_syncronized' => $emailSynced)));
+
+echo json_encode(array('status' => 200, 'value' => array('email_syncronized' => $emailSynced, 'edited_optional' => $editedOptional, 'editied_normal' => $editedNormal, 'detail' => $detail, 'match' => preg_match('/BUSINESS_/', $detail[1]['tablename']))));
 
 ?>
