@@ -71,7 +71,7 @@ class SurveyAnswerStat extends React.Component {    // Represents each question
         return(
             <div className='event-list-item'>
                 <div className="w3-row" id='eventStat' style={{paddingLeft: '8px', marginBottom: '20px'}}>
-                    <div><h4>Question: {this.props.title}</h4></div>
+                    <div style={{marginBottom: '30px'}}><h4>Question: {this.props.title}</h4></div>
                     <div className="w3-col s6">
                         {pieChart}
                     </div>
