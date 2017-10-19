@@ -60,7 +60,7 @@ class Notice extends React.Component {
                         <div className="w3-col s11"><h2>{this.props.title}</h2></div>
                         {ExecBtns}
                     </div>
-                    <div className="notice-content" style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}>
+                    <div className="notice-content" style={{whiteSpace: 'pre-line'}}>
                         <p>{this.props.message}</p>
                     </div>
                 </div>

@@ -91,7 +91,7 @@ class NoticeEvent extends React.Component {
                   </div>
                   <div className="eventDiv"> <i>Where: </i> <span>{this.props.location}</span></div>
                   {url}
-                  <div style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}><p>{this.props.message}</p></div>
+                  <div style={{whiteSpace: 'pre-line'}}><p>{this.props.message}</p></div>
                 </div>
                 <div className="event-buttons">
                     {<button type="button" disabled={this.state.Disabled} className={this.state.going} onClick={this.going} id="btnRSVPGoing">{this.state.goingText}</button>}
@@ -151,13 +151,13 @@ class NoticeEvent extends React.Component {
             },
             success : function(response){
                 //console.log('get_EventStatusGoing Success')
-                going = response;
+                going = response[0];
+                cantgo = response[1];
             }.bind(this),
             error: function(xhr, status, err){
                 console.log('get_EventStatusGoing Error')
             }.bind(this)
         });
-
         if (going.length > 0){  //User is already going
             this.setState({
                  going: "btn btn-success",
@@ -166,33 +166,15 @@ class NoticeEvent extends React.Component {
                  cantgoText: "RSVP Can't go"
             });
         }
-        else{
-            // Check if the user is NOT going to the event
-            $.ajax({
-                url: '/php/get_EventStatusCantGo.php',
-                type:'POST',
-                async: false,
-                dataType: "json",
-                data: {
-                    'EventID': this.props.eventID
-                },
-                success : function(response){
-                    //console.log('get_EventStatusCantGo Success')
-                    cantgo = response;
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('get_EventStatusCantGo Error')
-                }.bind(this)
+        else if (cantgo.length > 0){ // User is already marked cant go
+            this.setState({
+                 cantgo: "btn btn-danger",
+                 cantgoText: "You're not attending",
+                 going: "btn btn-default",
+                 goingText: "RSVP Going"
             });
-            if (cantgo.length > 0){ // User is already going
-                this.setState({
-                     cantgo: "btn btn-danger",
-                     cantgoText: "You're not attending",
-                     going: "btn btn-default",
-                     goingText: "RSVP Going"
-                });
-            }
         }
+
     }
 
     hide(){

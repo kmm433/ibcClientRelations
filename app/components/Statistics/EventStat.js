@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';                                     /* For ajax query */
 import Collapsible from 'react-collapsible';                /* https://www.npmjs.com/package/react-collapsible */
 import PieChart from 'react-minimal-pie-chart';             /* https://github.com/toomuchdesign/react-minimal-pie-chart */
+import moment from "moment";                                /* https://momentjs.com/ */
 import NoticeEvent from '../NoticeBoard/NoticeEvent.js';
 
 
@@ -71,7 +72,7 @@ class EventStat extends React.Component {
             <div className='event-list-item'>
                 <Collapsible trigger={<div className="w3-row">
                                         <div className="w3-col s9"><h4>{this.props.title}</h4></div>
-                                        <div className="w3-col s3" style={{float: 'right', marginTop: '15px'}}>Posted: {this.props.DatePosted}</div>
+                                        <div className="w3-col s3" style={{float: 'right', marginTop: '15px'}}>Posted: {moment(this.props.DatePosted).format('LLL')}</div>
                                       </div>}>
 
                     <div className="w3-row">
@@ -218,10 +219,10 @@ class EventStat extends React.Component {
       const aList = this.state.attendingList;
       var list = null;
       if (aList) {
-        list = aList.map((x) => {
+        list = aList.map((x, index) => {
           return(
             <Person
-              key={x['firstname'] + x['lastname']}
+              key={index}
               name={x['firstname'] + " " + x['lastname']}
             />
           );
@@ -233,10 +234,10 @@ class EventStat extends React.Component {
       const nList = this.state.notgoingList;
       var list = null;
       if (nList) {
-        list = nList.map((x) => {
+        list = nList.map((x, index) => {
           return(
             <Person
-              key={x['firstname'] + x['lastname']}
+              key={index}
               name={x['firstname'] + " " + x['lastname']}
             />
           );

@@ -15,7 +15,7 @@
     <!--Blue background panel-->
     <div class="background-blue">
       <div class="container logo-container">
-        <img class="logo" src="img/nswbc-logo.png" />
+        <img class="logo" src="img/isopods-logo.png" />
       </div>
       <!--Contains the login form-->
       <div class="container login-box">
