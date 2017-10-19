@@ -1916,17 +1916,19 @@ function addPayment($payment, $expiry, $chamber){
   }
 
   function countUserEmail($email){
+
       $sql = $this->db->prepare("SELECT COUNT(*) FROM USER where email=:thisemail");
+      $sql->bindParam(':chamber', $chamber, PDO::PARAM_INT);
+
       $result = $sql->execute(array(
         ":thisemail" => $email
       ));
 
-      if ($result){
-          return true;
+      if ($sql->execute()) {
+        $row = $sql->fetchColumn(0);
+        return $row;
       }
-      else{
-          return false;
-      }
+      return false;
 
   }
 

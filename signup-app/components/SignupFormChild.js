@@ -4,8 +4,8 @@ import {FormGroup, Checkbox, Form, Col, HelpBlock, Button, ControlLabel, ButtonT
 import Validator from './SignupValidator.js';
 import Payment from './Payment/Paypal';
 import Address from './Address/Address.js';
-import GoogleAddress from './Address/GoogleAddress.js';
 
+//renders the peyment meny for the user to select which type of membership they want
 class PaymentMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -22,7 +22,6 @@ class PaymentMenu extends React.Component {
   }
 
   handleSelect(evt){
-      console.log("not getting here")
       this.setState({
           value: this.props.list[evt].name,
           index: evt
@@ -100,7 +99,6 @@ class SignupForm extends React.Component {
 
   constructor(props) {
       super(props);
-      console.log("This is this rendering", this.props.list)
 
       this.state = ({
           safeSubmit: false,
@@ -150,7 +148,6 @@ class SignupForm extends React.Component {
       this.setState({
           storeAnswers: temp
       })
-      console.log("checkingarray",temp)
   }
 
     storeUserData(data, index){
@@ -159,21 +156,17 @@ class SignupForm extends React.Component {
         this.setState({
             storeAnswers: temp
         })
-        console.log("Is it ready?", temp)
 
     }
 //store the address after it has been validated
     storeAddress(type, name, value){
-        console.log(type, name, value)
         if(type === "Postal Address")
             name = "postal" + name
-        console.log("type name value",type, name, value)
         this.setState({[name]: value})
     }
 
     //check all the data is filled out before payment
     checkReadyForSubmit(){
-        console.log("checking submit ready", this.checkAnswersReady(), this.checkAddressReady(), this.checkAnswersReady())
         if(this.checkAnswersReady() && this.checkAddressReady() && this.checkMembership()){
             return true;
         }
@@ -183,7 +176,6 @@ class SignupForm extends React.Component {
     }
 
     checkMembership(){
-        console.log(this.state.membershipID)
         if(this.state.membershipID == null || this.state.membershipID == ""){
             return false;
         }
@@ -195,13 +187,10 @@ class SignupForm extends React.Component {
     //check if the postal address is required and if so is filled out
     //check if business address is filled out
     checkAddressReady(){
-        console.log("checking both addresses", this.checkBAddress(), this.checkPAddress())
         if(this.state.postal===1 && this.checkBAddress() && this.checkPAddress()){
-            console.log("yes 1")
             return true;
         }
         else if(this.state.postal===0 && this.checkBAddress()){
-            console.log("Yes 2")
             return true;
         }
         else {
@@ -235,19 +224,15 @@ class SignupForm extends React.Component {
 //check if all the fields are filled out before submitting
      handleSubmit(event){
          event.preventDefault();
-         console.log("is address ready", this.checkBAddress(), this.checkReadyForSubmit())
          if(!this.checkReadyForSubmit()){
-             console.log("Please fill out all required fields")
              alert("Please fill out all required fields")
              return
          }
          else if(this.state.storeAnswers[0] !== this.state.storeAnswers[1]){
-             console.log("getting here")
              alert("Emails do not match")
              return
          }
          else if(this.state.storeAnswers[2] !== this.state.storeAnswers[3]){
-             console.log("getting here")
              alert("Passwords do not Match")
              return
          }
@@ -298,7 +283,6 @@ class SignupForm extends React.Component {
      }
      //save the memebership selected by the user and the amount
      saveMembership(i){
-         console.log("the amount is:", i ,this.props.membershipList[i].amount)
          this.setState({
              membershipID: i,
              amount: this.props.membershipList[i].amount

@@ -3,6 +3,7 @@ import $ from 'jquery';
 import {Form, Button, FormGroup, ControlLabel, Col, DropdownButton, ButtonGroup, MenuItem} from 'react-bootstrap';
 import ActiveChamberTable from './ActiveChambers.js'
 
+//Dropdown menu for selecting a chamber to disable
 class DropDown extends React.Component {
   constructor(props) {
     super(props);
@@ -14,41 +15,36 @@ class DropDown extends React.Component {
 
     this.handleSelect = this.handleSelect.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
+}
 
   handleSelect(evt){
       this.setState({
           display: this.props.chamber_list[evt],
           chamber: evt
       })
-      console.log(evt)
   }
-
+//handle submission of disabling a chamber, ask user to confirm they want
   handleSubmit(){
-      console.log("selected chamber", this.state.chamber)
       if(confirm("Are you sure you want to disable this chamber?") === true){
-
           $.ajax({url: '/php/disable_chamber.php', type: 'POST',
               dataType: 'json',
               data: {'chamber': this.state.chamber},
           success: response => {
-              console.log(response)
               var mess = this.state.display + " was successfully disabled";
               this.setState({display: "Please Select a Chamber"})
               this.props.message(mess);
           },
           error: (xhr, status, err) => {
-              console.log("error",xhr.responseText, status, err)
               var mess = this.state.display + " an error occured, the chamber was no disabled";
               this.props.message(mess);
           }
           });
       }
       else {
-          console.log("not")
+          console.log("")
       }
   }
-
+//render the buttons and menu for disabling a chamber
   render() {
     return (
         <div>
@@ -82,7 +78,7 @@ class DropDown extends React.Component {
   }
 }
 
-
+//component for disabling a chamber
 class DisableChamber extends React.Component{
 
     constructor(){
@@ -105,6 +101,7 @@ class DisableChamber extends React.Component{
         this.wasDisabled = this.wasDisabled.bind(this);
         this.getActiveChambers = this.getActiveChambers.bind(this);
     }
+    //when component mounts get the list of all chambers and the list of active chambers
     componentDidMount(){
         this.getChamberList();
         this.getActiveChambers();
@@ -115,7 +112,7 @@ class DisableChamber extends React.Component{
         this.getChamberList();
         this.getActiveChambers();
     }
-
+//get a list of all chambers
     getChamberList(){
         $.ajax({url: '/php/get_allchamber.php', type: 'POST',
             dataType: 'json',
@@ -129,42 +126,34 @@ class DisableChamber extends React.Component{
             });
         },
         error: response => {
-            console.log(response)
+            alert("An error occured, please refresh the page!")
         }
         });
     }
-
+//get a list of all active chambers
     getActiveChambers(){
-        console.log("hellp")
         $.ajax({url: '/php/get_chamber_parentlist.php', type: 'POST',
             dataType: 'json',
             data: {
                 'mode': 0
             },
         success: response => {
-            console.log(response)
             this.setState({
                 activeChambers: response,
                 loaded1: true
             })
-
-            /*
-            this.setState({
-                chamberList: response,
-                loaded: true
-            });*/
         },
         error: response => {
-            console.log(response)
+            alert("An error occured, please refresh the page!")
         }
         });
     }
-
+//get the value of a selected chamebr
     getSelectedChamber(value){
-        console.log(value)
         this.setState({chamber: value})
     }
 
+//show users the implications of disabling a chamber
     render(){
         return(
             <div className='w3-row' id="edit-signup">

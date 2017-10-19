@@ -110,7 +110,6 @@ class EditSignup extends React.Component{
             dataType: 'json',
 
         success: response => {
-            console.log("membership types: ", response[0].type, response[0].expiry_date)
            this.setState({
                data3loaded: true,
                paymentType: response[0].type,
@@ -122,13 +121,10 @@ class EditSignup extends React.Component{
 //update the payment type (annual or prorata)
 //display the expiry in text format for user readabiltiy but store in format compatible to store in database
     updatePayment(type, expiry){
-        //console.log("Getting", type, expiry.format("DD-MM-YYYY"))
-        console.log(expiry)
         var message;
         if(type === 'ProRata'){
             message = "New members and renewing members will now expire on " + moment(expiry).format("LL");
             expiry = expiry.format("YYYY-MM-DD HH:MM:SS")
-            console.log(expiry)
         }
         else{
             expiry = null;
@@ -142,7 +138,6 @@ class EditSignup extends React.Component{
                     'expiry': expiry
                 },
                 success: response => {
-                    console.log("membership types: ", response)
                    this.setState({
                        paymentType: response[0].type,
                        expiry: response[0].expiry_date
@@ -155,7 +150,7 @@ class EditSignup extends React.Component{
               });
         }
         else{
-            console.log("not working")
+            alert("An error occured, please refresh the page")
         }
     }
 
@@ -167,17 +162,15 @@ class EditSignup extends React.Component{
                 'mode': 'RETRIEVE'
             },
             success: response => {
-                console.log("initially getting clientID: ", response)
                this.setState({clientID: response});
             },
             error: response => {
-              console.log("get paypal ID",response)
+              alert("An error occured, please refresh the page")
             }
           });
     }
 //add a new client id
     addClientID(newID){
-        console.log("ClientID is", newID)
         $.ajax({url: '/php/get_paypalID.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -189,7 +182,7 @@ class EditSignup extends React.Component{
                 this.setState({clientID: newID});
             },
             error: response => {
-              console.log("addclientID",response)
+              alert("An error occured, please refresh the page!")
             }
           });
     }
@@ -206,7 +199,7 @@ class EditSignup extends React.Component{
                     this.setState({clientID: null});
                 },
                 error: (xhr, status, err) => {
-                  console.log("remove client D", xhr.responseText, status, err)
+                  alert("An error occured, please refresh the page!")
                 }
               });
         }
@@ -216,7 +209,6 @@ class EditSignup extends React.Component{
 
     //inserts a new sign up field
     sendData(newDisplayname, newOptional, newType, newMin, newMax){
-        console.log("sending data")
         $.ajax({url: '/php/insert_newsignup_field.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -227,11 +219,10 @@ class EditSignup extends React.Component{
                 'maximum': newMax
             },
             success: response => {
-                console.log("working",response)
                 this.getFields();
             },
             error: response => {
-                console.log("not working",response)
+                alert("An error occured, please refresh the page!")
             }
         });
     }
@@ -239,7 +230,6 @@ class EditSignup extends React.Component{
     sendUpdatedField(newDisplayname, newOptional, newType, newMin, newMax){
         var optional=null;
         newOptional === true ? optional = '1' : optional = '0'
-        console.log("sending data", newDisplayname, optional, newType, newMin, newMax, this.state.signupFields[this.state.currentIndex].DataID)
         this.setState({
             edit: false
         })
@@ -258,38 +248,34 @@ class EditSignup extends React.Component{
                 this.getFields();
             },
             error: response => {
-                console.log("nupdate sign up field",response)
+                alert("An error occured, please refresh the page!")
             }
         });
     }
     //disable a sign up field and then retrieve new list of fields to display
     sendFieldtoDisable(name){
-        console.log("sending data")
         $.ajax({url: '/php/delete_signup_field.php', type: 'POST',
             dataType: 'json',
             data: {
                 'name': name
             },
             success: response => {
-                console.log(response)
                 this.getFields();
                 this.checkifLive();
             },
             error: response => {
-                console.log(response)
+                alert("An error occured, please refresh the page!")
             }
         });
     }
     //enable a sign up field and then retrieve the new fields to display again
     sendFieldtoEnable(name){
-        console.log("sending data")
         $.ajax({url: '/php/enable_signup_field.php', type: 'POST',
             dataType: 'json',
             data: {
                 'name': name
             },
             success: response => {
-                console.log(response)
                 this.getFields();
                 this.checkifLive();
             },
@@ -301,21 +287,18 @@ class EditSignup extends React.Component{
 
     //check if the chamber is live
     checkifLive(){
-        console.log("sending data")
         $.ajax({url: '/php/chamber_live.php', type: 'POST',
             dataType: 'json',
             success: response => {
-                console.log("checking live",response)
-
+                console.log("")
             },
             error: response => {
-                console.log(response)
+                alert("An error occured, please refresh the page!")
             }
         });
     }
 
-
-
+//update the edit if it is turned to true in the child component
     updateEdit(index){
         this.setState({
             edit: true,
@@ -323,13 +306,14 @@ class EditSignup extends React.Component{
         })
     }
 
+//if edit payment mode is turned on in the child then update the state for conditional rendering
     updatePaymentEdit(index){
-        console.log("payment index", index)
         this.setState({
             editPayment: true,
             paymentIndex: index
         })
     }
+    //if edit payment mode is turned off in the child then update the state for conditional rendering
     editPaymentFalse(){
         this.setState({
             editPayment: false
@@ -346,7 +330,6 @@ class EditSignup extends React.Component{
 
     //inserts a new sign up field
     sendMembershipData(name, info, amount){
-        console.log("sending data")
         $.ajax({url: '/php/insert_membership_field.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -364,8 +347,6 @@ class EditSignup extends React.Component{
     }
     //send a field that has been edited
     sendUpdatedMembership(id, name, info, amount){
-        console.log("sending")
-        console.log("sending", name, info, amount)
         $.ajax({url: '/php/update_membership_field.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -375,7 +356,6 @@ class EditSignup extends React.Component{
                 'membershipID': id
             },
             success: response => {
-                console.log("is this actually updating", response)
                 this.getPaymentDetails();
             },
             error: response => {
@@ -385,7 +365,6 @@ class EditSignup extends React.Component{
     }
     //disable a sign up field and then retrieve new list of fields to display
     sendMembershiptoDisable(name){
-        console.log("sending data")
         $.ajax({url: '/php/enable_membership_field.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -393,7 +372,6 @@ class EditSignup extends React.Component{
                 'able': 1
             },
             success: response => {
-                console.log(response)
                 this.getPaymentDetails();
             },
             error: response => {
@@ -403,7 +381,6 @@ class EditSignup extends React.Component{
     }
     //enable a sign up field and then retrieve the new fields to display again
     sendMembershiptoEnable(name){
-        console.log("sending data")
         $.ajax({url: '/php/enable_membership_field.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -411,7 +388,6 @@ class EditSignup extends React.Component{
                 'able': 0
             },
             success: response => {
-                console.log(response)
                 this.getPaymentDetails();
             },
             error: response => {
@@ -421,9 +397,8 @@ class EditSignup extends React.Component{
     }
 
     /******************************/
-
+//get the approval settings of the chamber
     getApproval(){
-        console.log("sending data")
         $.ajax({url: '/php/get_approval_settings.php', type: 'POST',
             dataType: 'json',
             success: response => {
@@ -435,9 +410,8 @@ class EditSignup extends React.Component{
             }
         });
     }
-
+//if the user changes the approval settings then update
     updateApproval(update){
-        console.log("sending data")
         $.ajax({url: '/php/update_approval_settings.php', type: 'POST',
             dataType: 'json',
             data:{
@@ -452,6 +426,7 @@ class EditSignup extends React.Component{
             }
         });
     }
+
 
     renderPage(){
         return(
@@ -510,6 +485,7 @@ class EditSignup extends React.Component{
                         add = {this.addClientID}
                     />
                     <h3
+                        style={{'paddingTop': '7%'}}
                         id="h3-editsignup">
                         Approve New Users
                     </h3>

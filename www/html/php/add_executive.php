@@ -17,7 +17,7 @@ $db = new DB_Handler();
     $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
 
-    $results =  $db->insertUser($email, $password, null, $chamber, $firstname, $lastname, null, $jobtitle, 1);
+    $results =  $db->insertChamberUser($email, $password, null, $chamber, $firstname, $lastname, null, $jobtitle, 1);
     echo json_encode($results);
   }
 else {

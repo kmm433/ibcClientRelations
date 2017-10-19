@@ -6,13 +6,11 @@ import PaypalButton from './Button.js';
 export default class Payment extends React.Component {
     constructor(props){
         super(props)
-        console.log("payment getting", this.props.amount, this.props.token)
 
         this.sendData = this.sendData.bind(this);
     }
 
     sendData(){
-        console.log("Expiry here is: ", this.props.expiry)
         $.ajax({url: '/php/approve_payment.php',
             type: 'POST',
             dataType: 'json',
@@ -22,20 +20,18 @@ export default class Payment extends React.Component {
                 'expiry': this.props.expiry
             },
         success: response => {
-            console.log("results from query: ", response)
           if(confirm("Successful payment, thank you for joining!")){
               window.location.href = "/signin.php";
           }
         },
         error: (xhr, status, err) => {
-            console.log("error",xhr, status, err)
+            alert("An error occured, please refresh the page!")
 
         }});
     }
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
-            console.log("TWO: The payment was succeeded!", payment);
             this.sendData();
 
 
@@ -43,14 +39,11 @@ export default class Payment extends React.Component {
         }
 
         const onCancel = (data) => {
-            // User pressed "cancel" or close Paypal's popup!
-            console.log('The payment was cancelled!', data);
-            // You can bind the "data" object's value to your state or props or whatever here, please see below for sample returned data
+            alert("You cancelled the payment")
         }
 
         const onError = (err) => {
             // The main Paypal's script cannot be loaded or somethings block the loading of that script!
-            console.log("Error!", err);
             alert("An error occured, the payment did not go through.")
             // Because the Paypal's main script is loaded asynchronously from "https://www.paypalobjects.com/api/checkout.js"
             // => sometimes it may take about 0.5 second for everything to get set, or for the button to appear

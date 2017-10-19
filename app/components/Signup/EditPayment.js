@@ -193,10 +193,9 @@ class EditPayment extends React.Component {
             </ButtonGroup>
         )
     }
-
+//if the user enters a new membership type and submits then send to parent for sending to DB
+//and clear all the state
     handleEditSubmit(){
-        console.log(this.state)
-        console.log(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.props.updateMembership(this.state.membershipID, this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
@@ -205,9 +204,8 @@ class EditPayment extends React.Component {
             membershipID: ""
         })
     }
-
+//handle cancel, clear state
     handleCancel(event){
-        console.log("Updating:")
         this.setState({
             newMembershipType: "",
             newInfo: "",
@@ -218,20 +216,17 @@ class EditPayment extends React.Component {
     }
     //if edit has been enabled then update the edit field
     handleEdit(event){
-        console.log("index is: ", event.target.name)
         var index = event.target.name;
         this.props.updateEdit(index)
     }
 
     handleRemove(event){
         var i = event.target.name;
-        console.log("removing", event.target.name);
         this.props.disableMembership(this.props.paymentFields[i].name);
     }
 
     handleEnable(event){
         var i = event.target.name;
-        console.log("editing", event)
         this.props.enableMembership(this.props.paymentFields[i].name);
     }
 

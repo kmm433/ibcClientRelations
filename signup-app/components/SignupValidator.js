@@ -24,7 +24,6 @@ class Validator extends React.Component{
         $.ajax({url: '/php/user_duplicate.php', type: 'POST', dataType: 'json', async: false,
             data: {'email': email},
             success: response => {
-                console.log("exists: ", response)
                 answer = response;
             }
         });
@@ -39,7 +38,6 @@ isPassword(password){
         var intCount = 0;
 
         for(var i = 0; i < password.length; i++){
-            console.log("Password", password[i])
             if(isInt(password[i])){
                 intCount++;
             }
@@ -48,7 +46,6 @@ isPassword(password){
             }
         }
         if(upperCount !== 0 && intCount !== 0){
-            console.log(intCount)
             return true;
         }
         else {
@@ -64,7 +61,6 @@ isPassword(password){
 checkValid(name, value){
 
     const length = value.length;
-    console.log("email", !isEmail(value))
 
     if(this.props.type === "email"){
         if(!isEmail(value)){
@@ -88,9 +84,7 @@ checkValid(name, value){
                      error: "",
                      valid: null
                      })
-
-                 console.log("displayname",this.props.displayName, this.props.displayName === "Email")
-                 this.props.displayName === "Email" ? this.setState({email: value}) : console.log("not doing it")
+                 this.props.displayName === "Email" && this.setState({email: value})
                  this.props.userAnswer(value, this.props.index)
              }
         }

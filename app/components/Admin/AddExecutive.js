@@ -2,7 +2,7 @@ import React from 'react';
 import Validator from '../../../signup-app/components/SignupValidator.js';
 import {Form, FormGroup, Col, ControlLabel, Checkbox, ButtonGroup} from 'react-bootstrap';
 
-
+//this component adds an executive account to an enabled chamber in case of new employees
 class AddExecutive extends React.Component{
     constructor(props){
         super(props)
@@ -10,21 +10,15 @@ class AddExecutive extends React.Component{
         this.state = {
             update: 0
         }
-
-        console.log(this.props.chamberlist)
         this.storeChamberData = this.storeChamberData.bind(this);
     }
 
-
+//stores the result of the user input after validation
     storeChamberData(value, index){
         var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle'];
         var name = array[index];
-        console.log(name, value)
-        console.log("getting here")
-        console.log(name, value)
         this.props.save(name, value)
     }
-
 
     render(){
         var type = ['email', 'email','password', 'password', 'text', 'text','text'];

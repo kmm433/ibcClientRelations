@@ -69,11 +69,10 @@ class SignupData extends React.Component {
                 'chamber': this.props.chamberID
             },
             success: response => {
-                console.log("initially getting clientID: ", response)
                this.setState({clientToken: response});
             },
             error: response => {
-              console.log("get paypal ID",response)
+              aler("An error occured!")
             }
           });
     }
@@ -87,30 +86,23 @@ class SignupData extends React.Component {
                   signupFields: response,
                   loaded: true
               });
-              console.log("the chamber searching for: ", response)
           },
           error: (xhr, status, err) => {
-              console.log("error",xhr, status, err)
               alert("An error occured")
           }
       });
     }
 
     getApprovalSettings(data){
-        console.log("fetching approval for: data")
         $.ajax({url: '/php/get_approval_settings.php', type: 'POST',
             dataType: 'json',
             data: {'chamber': data},
             success: response => {
-                console.log("getting here")
-                console.log(response)
                 this.setState({
                     requireApproval: response
                 });
-                console.log("the chamber searching for: ", response)
             },
             error: (xhr, status, err) => {
-                console.log("error",xhr, status, err)
                 alert("An error occured")
             }
         });
@@ -123,15 +115,11 @@ class SignupData extends React.Component {
         var tablename = [];
         var columnname = [];
 
-        console.log("lines",address.line1, postal.line1)
-        //postal.line1 === null && postal = null;
-
         for(var i=0; i<this.state.signupFields.length; i++){
             data[i]= this.state.signupFields[i].DataID;
             tablename[i]= this.state.signupFields[i].tablename;
             columnname[i]= this.state.signupFields[i].columnname;
         }
-        console.log("Did you get answers?", answers, data, tablename, columnname)
         $.ajax({url: '/php/insert_user_data.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -147,13 +135,11 @@ class SignupData extends React.Component {
                 'requireApproval': this.state.requireApproval
             },
             success: response => {
-                console.log("success",response)
                 //send back up if requires approval, the amount to be paid and the UserID
                 this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken, this.state.expiry)
 
             },
             error: (xhr, status, err) => {
-                console.log("error",xhr, status, err)
                 alert("An error occured, your membership signup what not successfull")
             }
         });
@@ -166,14 +152,10 @@ class SignupData extends React.Component {
                 'chamber': chamber
             },
         success: response => {
-            console.log(response)
            this.setState({
                paymentFields: response,
                loaded1: true
            });
-       },
-       error: response => {
-           console.log(response)
        }
         })
         }
@@ -185,7 +167,6 @@ class SignupData extends React.Component {
                 'chamber': chamber
             },
         success: response => {
-            console.log("membership types: ", response[0].type, response[0].expiry_date)
 
             var newExpiry;
             if(response[0].expiry_date == null){
@@ -198,15 +179,11 @@ class SignupData extends React.Component {
                expiry: newExpiry,
                loaded2: true
            });
-      },
-      error: response => {
-          console.log(response)
       }
     });
     }
 
     renderSignupForm(){
-        console.log("Is this working")
         return(
             <SignupForm
                 fields={this.state.signupFields}

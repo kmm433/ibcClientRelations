@@ -6,7 +6,6 @@
         $chamber = $_POST["chamber"];
 
         $results = $db->enableChamber($chamber);
-        //$results = $db->addParent($chamber);
 
         echo json_encode($results);
     }

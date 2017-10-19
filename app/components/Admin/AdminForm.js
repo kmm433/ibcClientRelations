@@ -48,11 +48,11 @@ class ChamberDropdown extends React.Component {
   }
 }
 
+//render the admin form to be filled out to create a new chamber
 class AdminForm extends React.Component {
 
   constructor(props) {
       super(props);
-      console.log("This is this rendering", this.props.chamberlist)
 
       this.state = ({
           postal: 1,
@@ -71,13 +71,14 @@ class AdminForm extends React.Component {
       this.storeName = this.storeName.bind(this);
 
   }
-
+//stores the new user data
     storeUserData(value, index){
         var array = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle', 'businessphone', 'mobilephone', 'chamberemail', 'anziccode','abn', 'website'];
         var name = array[index];
         this.props.save([name], value)
 
     }
+    //stores the name of the new chamber
     storeName(value, index){
         this.props.save('name', value)
     }
@@ -87,15 +88,13 @@ class AdminForm extends React.Component {
         var savename = array[index];
         if(type === "Postal Address")
             value= "postal" + value
-        console.log(value, index, savename)
         this.props.save(value, index);
     }
 
     saveParent(value){
         this.props.save("parentID", value)
     }
-
-
+//if the check box is checked or not conditionally render postal address form
      checkboxAddress(checked){
          var check = (this.state.postal + 1)%2;
          this.setState({
@@ -103,7 +102,7 @@ class AdminForm extends React.Component {
          })
          this.props.changePostal(check)
      }
-
+//checkbox for rendering postal address
      checkbox1(){
          return(
              <FormGroup>
@@ -121,16 +120,15 @@ class AdminForm extends React.Component {
          )
 
      }
-
+//storing the result of a checkbox
      checkboxParent(checked){
          var check = (this.state.showMenu + 1)%2;
-         console.log(check)
-         console.log(check)
          this.setState({
              showMenu: check
          })
      }
 
+//checkbox for rendering the parent chamber menu
      checkbox2(){
          return(
              <FormGroup>

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Button, Col, ControlLabel, FormGroup, FormControl} from 'react-bootstrap';
 
+
+//component for adding a clientID to set up payments
 class AddClientID extends React.Component {
     constructor(props){
         super(props)
@@ -16,27 +18,23 @@ class AddClientID extends React.Component {
         this.handleAdd = this.handleAdd.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
-
+//remove the clientID input
     handleRemove(){
         this.props.remove();
     }
-
+//add the clientID input
     handleAdd(){
-        console.log(this.state.value)
         this.props.add(this.state.value);
     }
+
     handleChange(event){
-        console.log(event.target.value)
         this.setState({value: event.target.value})
     }
 
-    submitID(){
-
-    }
-
+//display the id of the chamber
     renderShowID(){
         return(
-            <div className="w3-panel w3-blue">
+            <div>
                 <Col sm={2}>
                     <ControlLabel style={{'paddingTop': '10%'}}>
                         Client ID:
@@ -56,15 +54,14 @@ class AddClientID extends React.Component {
         )
     }
 
+//if the client does not already have an id then add it
     renderAddID(){
         return(
             <FormGroup
-                className="w3-panel w3-blue"
-                id="edit-signup-panel"
                 method='POST'>
             <Col sm={3}>
-                    <ControlLabel style={{'paddingTop': '1%'}}>
-                        Please Enter Your Paypal Client ID:
+                <ControlLabel style={{'paddingTop': '1%'}}>
+                    Please Enter Your Paypal Client ID:
                 </ControlLabel>
             </Col>
                 <Col sm={7}>
@@ -75,7 +72,6 @@ class AddClientID extends React.Component {
                         onChange={this.handleChange}
                     />
                     <FormControl.Feedback />
-                {/*<HelpBlock>{this.props.error}</HelpBlock>*/}
                 </Col>
                 <Col sm={2}>
                     <Button
@@ -88,7 +84,7 @@ class AddClientID extends React.Component {
             </FormGroup>
         )
     }
-
+//if the token exists then show it otherwise ask the user to add one
     render(){
         return(
             <div>

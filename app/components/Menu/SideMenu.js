@@ -88,11 +88,6 @@ class ExecSideMenu extends React.Component {
                   Edit Signup Form
               </NavLink>
             </li>
-            <li>
-              <NavLink activeClassName='active-route' to='/add_user'>
-                  Add User
-              </NavLink>
-            </li>
         </div>
       );
     }

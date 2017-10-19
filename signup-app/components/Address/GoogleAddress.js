@@ -1,3 +1,7 @@
+/****************
+this component is not currently being used but kept in case of further implementation
+***********/
+
 import React from 'react';
 import {Form, Col, HelpBlock, FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
 import Input from './../SignupInput.js';
@@ -26,8 +30,6 @@ class GoogleAddress extends React.Component {
 
     handleFormSubmit(address, placeId){
 
-    console.log("The address is: ", this.state.address)
-
     geocodeByAddress(this.state.address)
       .then(results =>
         (getLatLng(results[0]),
@@ -37,12 +39,9 @@ class GoogleAddress extends React.Component {
         })
         )
     )
-      .then(latLng => console.log('Success', latLng))
-      .catch(error =>  console.error('Error', error))
   }
 
   confirmAddress(){
-      console.log("not working")
 
       const city = <PlacesAutocomplete
           id="google-address-box"
@@ -73,11 +72,7 @@ class GoogleAddress extends React.Component {
   }
 
     selectType(type){
-        console.log("is this working", type)
         this.props.save(type, state)
-    }
-    checkValid(){
-        console.log("address")
     }
 
 render(){

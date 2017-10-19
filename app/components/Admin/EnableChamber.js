@@ -4,6 +4,7 @@ import $ from 'jquery';
 import {Form, Button, FormGroup, ControlLabel, Col, DropdownButton, ButtonGroup, MenuItem, Checkbox, HelpBlock} from 'react-bootstrap';
 import AddExecutive from './AddExecutive'
 
+//Dropdown menu shows all the disabled chambers to reactivate
 class DropDown extends React.Component {
   constructor(props) {
     super(props);
@@ -11,12 +12,9 @@ class DropDown extends React.Component {
     this.state = {
         display: "Please Select a Chamber",
         chamber: ""
-
     }
-
     this.handleSelect = this.handleSelect.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   handleSelect(evt){
@@ -24,32 +22,24 @@ class DropDown extends React.Component {
           display: this.props.chamber_list[evt],
           chamber: evt
       })
-      console.log(evt)
   }
 
-
+//make sure the user wants to enable the chamber before submission
   handleSubmit(){
-      console.log("selected chamber", this.state.chamber)
       if(confirm("Are you sure you want to enable this chamber?") === true){
-
           $.ajax({url: '/php/enable_chamber.php', type: 'POST',
               dataType: 'json',
               data: {'chamber': this.state.chamber},
           success: response => {
-              console.log(response)
               var mess = this.state.display + " was successfully enabled";
               this.setState({display: "Please Select a Chamber"})
               this.props.message(mess, true);
           },
           error: (xhr, status, err) => {
-              console.log("error",xhr.responseText, status, err)
               var mess = this.state.display + " an error occured, the chamber was not enabled";
               this.props.message(mess, false);
           }
           });
-      }
-      else {
-          console.log("not")
       }
   }
 
@@ -86,7 +76,7 @@ class DropDown extends React.Component {
   }
 }
 
-
+//renders the enable chamber component
 class EnableChamber extends React.Component{
 
     constructor(){
@@ -135,27 +125,24 @@ class EnableChamber extends React.Component{
 
     //ajax call to get the list of enabled chambers from the database
     getChamberList(){
-        console.log("Getting here?")
         $.ajax({url: '/php/get_allchamber.php', type: 'POST',
             dataType: 'json',
             data: {
                 'mode': 1
             },
         success: response => {
-            console.log("recieving",response)
             this.setState({
                 chamberList: response,
                 loaded: true
             });
         },
         error: response => {
-            console.log(response)
+            alert("An error occured, please refresh the page!")
         }
         });
     }
     //get the value of the selected chamber from the dropdown menu
     getSelectedChamber(value){
-        console.log(value)
         this.setState({chamber: value})
     }
     //when the checkox is checked/unchecked update the state variable
@@ -239,20 +226,14 @@ class EnableChamber extends React.Component{
                      'jobtitle': this.state.jobtitle
                  },
              success: response => {
-                 console.log(response)
                  ReactDOM.findDOMNode(this.refs.form).submit();
              },
-             error: response => {
-                 console.log(response)
-                 alert(response)
+             error: (xhr, status, err) => {
+                 console.log(xhr.responseText, status, err)
+                 alert("An error occured, please refresh the page!")
              }
              });
          }
-         else{
-             console.log("not ready")
-         }
-
-
      }
 
     render(){

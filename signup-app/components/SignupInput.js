@@ -17,7 +17,6 @@ class Input extends React.Component{
 
     handleChange(event){
         this.setState({value: event.target.value})
-        console.log("handling change: ", event.target.value)
         this.props.check(event.target.name, event.target.value);
     }
 

@@ -61,13 +61,11 @@ class Main extends React.Component {
     componentWillMount() {
       $.ajax({url: '/php/chamber_list.php', type: 'POST', dataType: 'json',
       success: response => {
-        console.log('Ajax call occured', response);
         this.setState({chamber_list: response})
       }});
     }
 
     getChamber(newChamber){
-        console.log("Is this updating?", newChamber)
         this.setState({
             chamber: newChamber,
             selected: true
