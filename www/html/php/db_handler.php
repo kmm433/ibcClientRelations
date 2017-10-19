@@ -1861,6 +1861,21 @@ function addPayment($payment, $expiry, $chamber){
       return false;
   }
 
+  function countUserEmail($email){
+      $sql = $this->db->prepare("SELECT COUNT(*) FROM USER where email=:thisemail");
+      $result = $sql->execute(array(
+        ":thisemail" => $email
+      ));
+
+      if ($result){
+          return true;
+      }
+      else{
+          return false;
+      }
+
+  }
+
   function enableSignupField($chamber, $name, $able){
       try{
 
