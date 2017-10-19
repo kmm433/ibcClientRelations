@@ -29,13 +29,7 @@ class TmpNoticeEvent extends React.Component {
             dataType: "json",
             data:{
                 'eventID': this.props.eventID
-            },
-            success : function(response){
-                //console.log('reject_TmpEvent Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('reject_TmpEvent Error ' + xhr.responseText)
-            }.bind(this)
+            }
         });
     }
     approve(){
@@ -48,13 +42,7 @@ class TmpNoticeEvent extends React.Component {
             dataType: "json",
             data:{
                 'eventID': this.props.eventID
-            },
-            success : function(response){
-                //console.log('accept_TmpEvent Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('accept_TmpEvent Error ' + xhr.responseText)
-            }.bind(this)
+            }
         });
         this.props.reload();
     }

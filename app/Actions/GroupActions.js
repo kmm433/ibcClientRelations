@@ -42,9 +42,6 @@ export function createGroup(groupName) {
     },
     success: result => {
       fetchGroups();
-    },
-    error: result => {
-      console.log('Failed', result);
     }
   });
 }
@@ -62,9 +59,6 @@ export function deleteGroups(groupIDs) {
       var groups = [];
       updateGroupSelection(groups)
       fetchGroups();
-    },
-    error: result => {
-      console.log('Failed', result);
     }
   });
 }
@@ -85,9 +79,6 @@ export function updateAPIKey(apiKey) {
       else {
         alert(result.value);
       }
-    },
-    error: result => {
-      console.log(result);
     }
   });
 }
@@ -113,9 +104,6 @@ export function updateMailListID(groupID, mailListID) {
 
 
       fetchGroups();
-    },
-    error: result => {
-      console.log('An error has occurred: ', result);
     }
   });
 }
@@ -131,9 +119,6 @@ export function unregisterMailListID(groupID) {
     },
     success: result => {
       alert(result.value);
-    },
-    error: result => {
-      console.log('An error has occurred: ', result);
     }
   });
 }
@@ -162,9 +147,6 @@ export function getGroupMembers(groups) {
           type: 'RETRIEVED_MEMBERS',
           members: result,
         });
-      },
-      error: result => {
-        console.log('Error: ', result);
       }
     });
   }

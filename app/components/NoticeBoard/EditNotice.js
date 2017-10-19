@@ -38,11 +38,7 @@ class EditNotice extends React.Component {
                 'message': this.state.message
             },
             success : function(response){
-                //console.log('modify_Notification Success');
                 this.props.reload();
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('modify_Notification Error' + xhr.responseText);
             }.bind(this)
         });
     }

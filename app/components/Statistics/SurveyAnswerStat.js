@@ -97,11 +97,7 @@ class SurveyAnswerStat extends React.Component {    // Represents each question
               'questionNo': this.props.ID
           },
           success : function(response){
-              //console.log('get_QuestionResult Success');
               this.setupPieChart(response);
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_QuestionResult Error');
           }.bind(this)
       });
     }

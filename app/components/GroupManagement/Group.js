@@ -35,7 +35,6 @@ class Group extends React.Component {
 
   updateChecked(event) {
     this.props.updateSelectedGroups(this.props.group_id, event.target.checked);
-    console.log('Box checked for group: ', this.props.group_name);
   }
 
   handleIDEdit(event) {

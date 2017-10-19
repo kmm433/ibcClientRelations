@@ -107,11 +107,7 @@ class NewMemberStat extends React.Component {
             async: false,
             dataType: "json",
             success : function(response){
-                //console.log('get_StatNewMember Success ' + response);
                 this.setupData(response);
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_StatNewMember Error ' + xhr.responseText);
             }.bind(this)
         });
     }
