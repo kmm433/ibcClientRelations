@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';                                     /* For ajax query */
 import Collapsible from 'react-collapsible';                /* https://www.npmjs.com/package/react-collapsible */
+import moment from "moment";                                /* https://momentjs.com/ */
 import NoticeSurvey from '../NoticeBoard/NoticeSurvey.js';
 import SurveyAnswerStat from './SurveyAnswerStat.js'
 import SurveyAnswerStatText from './SurveyAnswerStatText.js'
@@ -45,7 +46,7 @@ class SurveyStat extends React.Component {
             <div className='event-list-item'>
                 <Collapsible trigger={<div className="w3-row">
                                         <div className="w3-col s9"><h4>{this.props.title}</h4></div>
-                                        <div className="w3-col s3" style={{float: 'right', marginTop: '15px'}}>Posted: {this.props.DatePosted}</div>
+                                        <div className="w3-col s3" style={{float: 'right', marginTop: '15px'}}>Posted: {moment(this.props.DatePosted).format('LLL')}</div>
                                       </div>}>
 
                     <div className="w3-row">
