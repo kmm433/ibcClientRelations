@@ -2,11 +2,15 @@
     include 'db_handler.php';
     $db = new DB_Handler();
 
-    $chamber = $_POST["chamber"];
+    if(isset($_SESSION['user'])){
+        $chamber = $_POST["chamber"];
 
-    $results = $db->enableChamber($chamber);
-    //$results = $db->addParent($chamber);
+        $results = $db->enableChamber($chamber);
+        //$results = $db->addParent($chamber);
 
-    echo json_encode($results);
-
+        echo json_encode($results);
+    }
+    else {
+        echo json_encode(false);
+    }
 ?>

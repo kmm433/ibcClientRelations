@@ -479,3 +479,11 @@ input:checked + .slider:before {
  .transparent {
      background-color: transparent !important;
  }
+
+.help-img {
+  width: 100%;
+}
+
+.help-p {
+  padding: 15px 0;
+}
