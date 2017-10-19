@@ -3,7 +3,7 @@
     $db = new DB_Handler();
 
 
-    $result = $db->insertNewMembership($_POST['name'], $_POST['info'], $_POST['amount']);
+    $result = $db->insertNewMembership($_SESSION['chamber'], $_POST['name'], $_POST['info'], $_POST['amount']);
 
-    echo json_encode($ordering);
+    echo json_encode($result);
 ?>

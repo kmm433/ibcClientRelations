@@ -105,7 +105,7 @@ class DisableChamber extends React.Component{
         this.wasDisabled = this.wasDisabled.bind(this);
         this.getActiveChambers = this.getActiveChambers.bind(this);
     }
-    componentWillMount(){
+    componentDidMount(){
         this.getChamberList();
         this.getActiveChambers();
     }

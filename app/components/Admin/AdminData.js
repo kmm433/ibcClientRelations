@@ -21,6 +21,7 @@ constructor(){
             mobilephone: null,
             anziccode: null,
             website: null,
+            chamberemail: null,
             jobtitle: null,
             line1: null,
             line2: null,
@@ -94,7 +95,7 @@ constructor(){
              this.setState({error: "Emails do not match"})
          }
          else if(this.state.password !== this.state.confirmpassword){
-             this.setState({error: "Emails do not match"})
+             this.setState({error: "Passwords do not match"})
          }
          else{
              this.setState({error: ""})
@@ -150,7 +151,6 @@ constructor(){
          });
      }
 
-
     handleSubmit(event){
         event.preventDefault();
         var address = {
@@ -189,12 +189,12 @@ constructor(){
                 'anziccode': this.state.anziccode,
                 'website': this.state.website,
                 'jobtitle': this.state.jobtitle,
+                'chamberemail': this.state.chamberemail,
                 'address': address,
                 'postal': postal
             },
         success: response => {
             console.log("Did this work",response)
-            this.refs.form.reset();
         },
         error: (xhr, status, err) => {
             console.log("error",xhr.responseText, status, err)
