@@ -19,7 +19,6 @@ class PaypalButton extends React.Component {
                 if (isScriptLoadSucceed) {
                     this.setState({ showButton: true });
                 } else {
-                    console.log('Cannot load Paypal script!');
                     this.props.onError();
                 }
             }
@@ -86,13 +85,14 @@ PaypalButton.defaultProps = {
     env: 'sandbox',
     shipping: 1,
     onSuccess: (payment) => {
-        console.log('The payment was succeeded!', payment);
+        if(confirm("Thank you for joining! We will soon be in contact!")){
+        }
     },
     onCancel: (data) => {
-        console.log('The payment was cancelled!', data)
+        alert("An error occured!")
     },
     onError: (err) => {
-        console.log('Error loading Paypal script!', err)
+        alert("An error occured!")
     }
 };
 

@@ -31,10 +31,46 @@ class Help extends React.Component {
                             </div>
                         </Collapsible>
                     </div>
-
-
-
-
+                    <div className="member-list-item">
+                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up automated payments from members?</h4>}>
+                            <div style={{marginBottom: '25px'}}>
+                                First you must create a Business Paypal account (this is different to a personal account)
+                                The following link will take you to the sign up page.
+                                https://www.paypal.com/au/webapps/mpp/business-solutions
+                                The account must be verified before obtaining a client ID.
+                                Follow this link: https://developer.paypal.com/developer/accounts/
+                                And log in with your exising Paypal Business Account.
+                                Next, click on the Generate BraintreeSDK access token.
+                                Copy and Paste this token into the Client ID section of the Edit Signup Page.
+                            </div>
+                        </Collapsible>
+                    </div>
+                    <div className="member-list-item">
+                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up Pro Rata Payments?</h4>}>
+                            <div style={{marginBottom: '25px'}}>
+                                Go to the Edit Signup Page and scroll down to "Edit Membership Payments".
+                                Underneath the table of membership types, your current payment settings will be displayed.
+                                If your current settings are Annual then you can switch to Pro Rata by pressing the button.
+                                Now you must select a date. The data selected will be the date that all members who join after that point in time will expire.
+                                You can edit the amount to be paid for the remainder of the term in the table.
+                            </div>
+                        </Collapsible>
+                    </div>
+                    <div className="member-list-item">
+                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I manually/automatically accept new members?</h4>}>
+                            <div style={{marginBottom: '25px'}}>
+                                Go to the Edit Signup Form on the side menu. Under the heading "Approve New Users" will be displayed your current settings.
+                                You can switch settings by clicking the button.
+                            </div>
+                        </Collapsible>
+                    </div>
+                    <div className="member-list-item">
+                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up users to automatically join?</h4>}>
+                            <div style={{marginBottom: '25px'}}>
+                                For users to join automatically you must fill our the membership types in the Edit Payment section of the Edit Sigup Page.
+                            </div>
+                        </Collapsible>
+                    </div>
                     <ExecHelp user_type = {this.props.user_type}/>
                 </div>
             </div>

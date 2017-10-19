@@ -61,28 +61,26 @@ class Main extends React.Component {
     componentWillMount() {
       $.ajax({url: '/php/chamber_list.php', type: 'POST', dataType: 'json',
       success: response => {
-        console.log('Ajax call occured', response);
         this.setState({chamber_list: response})
       }});
     }
 
     getChamber(newChamber){
-        console.log("Is this updating?", newChamber)
         this.setState({
             chamber: newChamber,
             selected: true
         })
     }
 
-    handleFinish(requireApproval, amount, userid, clientID){
-        console.log(requireApproval, amount, userid, clientID)
+    handleFinish(requireApproval, amount, userid, clientID, expiry){
         this.setState({
             finish: true,
             selected: false,
             userid: userid,
             amount: amount,
             requireApproval: requireApproval,
-            clientID: clientID
+            clientID: clientID,
+            expiry: expiry
         })
     }
 
@@ -104,6 +102,7 @@ class Main extends React.Component {
                                 <Payment
                                     userid = {this.state.userid}
                                     amount = {this.state.amount}
+                                    expiry = {this.state.expiry}
                                     token = {'AQld2h77nIaqVBcQQ8aEc532PFGYTeIAyREiK6Nr-PfZ90XAAQbXoFif2LbKA1ceoKU80EcOBhgCZ_p5'}/>
                             </Col>
                     </div>

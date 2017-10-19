@@ -18,9 +18,6 @@ class FieldTable extends React.Component {
           addfield: false
       }
 
-
-      console.log("testing dataID", this.props.signupFields[0].DataID)
-
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleEditSubmit = this.handleEditSubmit.bind(this);
@@ -51,8 +48,7 @@ class FieldTable extends React.Component {
         })
     }
 
-
-
+    //
     disabledInput(){
         return(
             <td><input id="signup-checkbox"
@@ -155,7 +151,6 @@ class FieldTable extends React.Component {
                           <td> {tables.includes(this.props.signupFields[i].tablename)
                                   ? this.disabledEditBtn() : this.editBtn(i)}</td>
                       </tr>)}
-                      {console.log("editing is:", this.props.edit)}
                       {this.props.edit ? this.renderEditField() : this.renderAddField()}
                   </tbody>
               </Table>
@@ -164,7 +159,7 @@ class FieldTable extends React.Component {
     }
 
     renderAddField(){
-        const typeOptions = ['email', 'password', 'text', 'number', 'menu'];
+        const typeOptions = ['text', 'number'];
         const isDisabled = "disabled";
         return(
             <tr className = "edit-signup-input">
@@ -235,9 +230,8 @@ class FieldTable extends React.Component {
     }
 
     renderEditField(){
-        const typeOptions = ['email', 'text', 'number'];
+        const typeOptions = ['text', 'number'];
         var i = this.props.currentIndex;
-        console.log("What is the new type",this.state.newType)
 
         return(
             <tr className = "edit-signup-input">
@@ -286,14 +280,12 @@ class FieldTable extends React.Component {
     }
 
     selectType(type){
-        console.log("is this working", type)
         this.setState({
             newType: type
         })
     }
 
     handleChange(event){
-        console.log(event.target.value)
         var name = event.target.name;
         var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;;
         this.setState({
@@ -304,8 +296,6 @@ class FieldTable extends React.Component {
     handleSubmit(){
         var optional=1;
         this.state.newOptional === true ? optional = '1' : optional = '0'
-
-        console.log("sending", this.state.newDisplayname, optional, this.state.newType, this.state.newMin, this.state.newMax)
         this.props.sendNewFields(this.state.newDisplayname, optional, this.state.newType, this.state.newMin, this.state.newMax);
 
         this.setState({
@@ -318,7 +308,6 @@ class FieldTable extends React.Component {
     }
 
     handleEditSubmit(){
-        console.log("Handling the index")
         this.props.sendUpdatedField(this.state.newDisplayname, this.state.newOptional, this.state.newType, this.state.newMin, this.state.newMax);
 
         this.setState({
@@ -332,13 +321,11 @@ class FieldTable extends React.Component {
 
     handleRemove(event){
         var index = event.target.name;
-        console.log("removing", event.target.name);
         this.props.disableField(this.props.signupFields[index].displayname);
     }
 
     handleEnable(event){
         var index = event.target.name;
-        console.log("editing")
         this.props.enableField(this.props.signupFields[index].displayname);
     }
 
@@ -348,7 +335,6 @@ class FieldTable extends React.Component {
     }
 
     handleCancel(event){
-        console.log("Updating:")
         this.setState({
             newDisplayname: "",
             newOptional: false,

@@ -8,7 +8,6 @@ class PaymentType extends React.Component {
     constructor(props){
         super(props)
 
-        console.log("Expiry", this.props.expiry)
         this.state = {
             expiry: moment(),
             addProRata: false,
@@ -31,7 +30,6 @@ class PaymentType extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        console.log("Mounting again", this.props.paymentType, this.props.expiry)
         nextProps.expiry !== null && this.setState({expiry: moment(nextProps.expiry)})
     }
 
@@ -43,7 +41,6 @@ class PaymentType extends React.Component {
 
     //When switch to prorata button is clicked change
     handleChange(date){
-        console.log("Checking date:")
         this.setState({
             expiry: moment(date),
             type: "ProRata"
@@ -64,7 +61,6 @@ class PaymentType extends React.Component {
     }
 //when the button is pressed show or hide the pro rata options
     changeProRataBtn(){
-        console.log("changing")
         if(this.state.addProRata === true){
             this.setState({addProRata: false})
         }
@@ -80,7 +76,6 @@ class PaymentType extends React.Component {
 
     //turn edit mode on
     handleDateChange(){
-        console.log("changing")
         this.setState({editProRata: true})
     }
 
@@ -88,13 +83,13 @@ class PaymentType extends React.Component {
         return(
             <div>
                 <Col sm={4}>
-                    <ControlLabel style={{'marginTop': '2%'}}>
+                    <ControlLabel style={{'marginTop': '5%'}}>
                         Please choose a date of expiry:
                     </ControlLabel>
                 </Col>
                     <Col sm={4}>
                         <DatePicker
-                            style={{'marginTop': '1%'}}
+                            style={{'marginTop': '4%'}}
                             dateFormat="DD-MM-YYYY"
                             selected={this.state.expiry}
                             onChange={this.handleChange}
@@ -116,13 +111,13 @@ class PaymentType extends React.Component {
         return (
             <div>
                 <Col sm={4}>
-                    <ControlLabel style={{'marginTop': '2%'}}>
+                    <ControlLabel style={{'marginTop': '5%'}}>
                         Please choose a date of expiry:
                     </ControlLabel>
                 </Col>
                     <Col sm={4}>
                         <DatePicker
-                            style={{'marginTop': '2%'}}
+                            style={{'marginTop': '4%'}}
                             dateFormat="DD-MM-YYYY"
                             selected={this.state.expiry}
                             onChange={this.handleChange}

@@ -1,6 +1,7 @@
 import React from 'react';
 import {ButtonGroup, DropdownButton, Button, MenuItem} from 'react-bootstrap';
 
+//dropdown for displaying a given list of options
 class DropDown extends React.Component {
     constructor(props){
         super(props);

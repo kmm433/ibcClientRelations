@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table} from 'react-bootstrap';
 
+//This displays a table of the active chambers and their parents
 class ActiveChamberTable extends React.Component{
     render(){
         console.log("",this.props.activeChambers)

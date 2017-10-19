@@ -4,7 +4,7 @@ class Logo extends React.Component {
   render(){
     return(
       <div id="signup-logo">
-          <img src="img/nswbc-logo.png" />
+          <img src="/img/isopods-logo.png" />
       </div>
     );
   }

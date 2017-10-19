@@ -3,6 +3,7 @@ import $ from 'jquery';
 import AdminForm from './AdminForm.js';
 import {Form, Button, HelpBlock} from 'react-bootstrap';
 
+//this component renders a form for creating a new chamber
 class CreateChamber extends React.Component{
 
 constructor(){
@@ -54,14 +55,12 @@ constructor(){
         this.submitReady = this.submitReady.bind(this);
     }
 
+//check if the address is all filled out and ready to send
     checkAddressReady(){
-        console.log("checking both addresses", this.checkBAddress(), this.checkPAddress(), this.state.postal)
         if(this.state.postal===1 && this.checkBAddress() && this.checkPAddress()){
-            console.log("yes 1")
             return true;
         }
         else if(this.state.postal===0 && this.checkBAddress()){
-            console.log("Yes 2")
             return true;
         }
         else {
@@ -70,7 +69,6 @@ constructor(){
     }
 
     checkBAddress(){
-        console.log(this.state.line1,this.state.city, this.state.postcode, this.state.state, this.state.country)
         if(this.state.line1 === null || this.state.city === null || this.state.postcode === null || this.state.state === null || this.state.country === null){
             return false;
         }
@@ -83,13 +81,10 @@ constructor(){
         }
         return true;
     }
-
+//saves the user input after it has been validated
     save(name, value) {
-        console.log(name, value)
-         this.setState({[name]: value});
 
-         console.log(this.state.name, this.state.email, this.state.confirmemail, this.state.password, this.state.confirmpassword,
-         this.state.firstname, this.state.lastname, this.state.abn, this.state.businessphone, this.state.mobilephone)
+         this.setState({[name]: value});
 
          if(this.state.email !== this.state.confirmemail){
              this.setState({error: "Emails do not match"})
@@ -99,10 +94,9 @@ constructor(){
          }
          else{
              this.setState({error: ""})
-             console.log("Ready Yet?", this.checkRequiredFields(), this.checkAddressReady())
          }
      }
-
+//check if ready for submission
      submitReady(){
          if(this.checkRequiredFields()&& this.checkAddressReady())
             return true;
@@ -110,7 +104,7 @@ constructor(){
             return false;
         }
      }
-
+//if the child component has checked the postal box change the value for conditional rendering
      changePostal(value){
          this.setState({postal: value})
      }
@@ -119,10 +113,8 @@ constructor(){
          this.getChamberList();
      }
 
+//check that all the required fields are not null
      checkRequiredFields(){
-         console.log(this.state.name, this.state.email, this.state.confirmemail, this.state.password, this.state.confirmpassword,
-         this.state.firstname, this.state.lastname, this.state.abn, this.state.businessphone, this.state.mobilephone)
-
          if(this.state.name == null || this.state.email == null || this.state.confirmemail == null ||this.state.password == null || this.state.confirmpassword == null
          || this.state.firstname == null || this.state.lastname == null || this.state.abn == null ||this.state.businessphone == null || this.state.mobilephone == null){
              return false;
@@ -131,8 +123,7 @@ constructor(){
              return true;
          }
      }
-
-
+//get the list of all chambers from the database
      getChamberList(){
          $.ajax({url: '/php/get_allchamber.php', type: 'POST',
              dataType: 'json',
@@ -146,11 +137,12 @@ constructor(){
              });
          },
          error: response => {
-             console.log(response)
+             alert("An error occured, please refresh the page!")
          }
          });
      }
 
+//handleSubmit once all the fields required are validated and filled out
     handleSubmit(event){
         event.preventDefault();
         var address = {
@@ -172,8 +164,7 @@ constructor(){
                 postalcountry: this.state.postalcountry
             }
         }
-
-        console.log(this.state.name, this.state.email, this.state.password, this.state.parentID, this.state.abn)
+//inserts new chamber info into the databse
         $.ajax({url: '/php/insert_new_chamber.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -194,14 +185,15 @@ constructor(){
                 'postal': postal
             },
         success: response => {
-            console.log("Did this work",response)
+            alert("The chamber was successfully created.")
         },
         error: (xhr, status, err) => {
-            console.log("error",xhr.responseText, status, err)
+            alert("An error occured, the chamber was not successfully created")
         }
     });
     }
 
+//submission button
     submitBtn(){
         return(
             <Button
@@ -215,6 +207,7 @@ constructor(){
         )
     }
 
+//if not ready for submit render this button
     disabledBtn(){
         return(
             <Button

@@ -36,10 +36,8 @@ class EditPayment extends React.Component {
         this.outputDisabled = this.outputDisabled.bind(this);
 
     }
-
+//when the membership info is updated, fill the state with the new memberships recieved from parent
     componentWillReceiveProps(nextProps){
-        console.log(nextProps.paymentFields, nextProps.paymentIndex)
-        console.log(nextProps.paymentFields[0].name)
         var i = nextProps.paymentIndex;
         nextProps.editPayment &&
         this.setState({
@@ -49,21 +47,21 @@ class EditPayment extends React.Component {
             membershipID: nextProps.paymentFields[i].membershipID
         })
         }
-
+//send the selected payment type and expiry date to the parent
     updateParentPaymentType(paymentType, expiry){
         this.props.updatePaymentType(paymentType, expiry);
     }
 
+//store the user input values
     handleChange(event){
-        console.log(event.target.name, event.target.value)
         var name = event.target.name;
         var value = event.target.value;;
         this.setState({
             [name]: value
         })
-        console.log(this.state)
     }
 
+//if something is disabled display in red
     outputDisabled(){
         return(
             <text style={{'fontStyle': 'italic', 'color': 'red', 'padding': '2%'}}>Disabled</text>
@@ -195,10 +193,9 @@ class EditPayment extends React.Component {
             </ButtonGroup>
         )
     }
-
+//if the user enters a new membership type and submits then send to parent for sending to DB
+//and clear all the state
     handleEditSubmit(){
-        console.log(this.state)
-        console.log(this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.props.updateMembership(this.state.membershipID, this.state.newMembershipType, this.state.newInfo, this.state.newAmount)
         this.setState({
             newMembershipType: "",
@@ -207,9 +204,8 @@ class EditPayment extends React.Component {
             membershipID: ""
         })
     }
-
+//handle cancel, clear state
     handleCancel(event){
-        console.log("Updating:")
         this.setState({
             newMembershipType: "",
             newInfo: "",
@@ -220,20 +216,17 @@ class EditPayment extends React.Component {
     }
     //if edit has been enabled then update the edit field
     handleEdit(event){
-        console.log("index is: ", event.target.name)
         var index = event.target.name;
         this.props.updateEdit(index)
     }
 
     handleRemove(event){
         var i = event.target.name;
-        console.log("removing", event.target.name);
         this.props.disableMembership(this.props.paymentFields[i].name);
     }
 
     handleEnable(event){
         var i = event.target.name;
-        console.log("editing", event)
         this.props.enableMembership(this.props.paymentFields[i].name);
     }
 

@@ -22,6 +22,9 @@ $column = $_POST["columnname"];
 $table = $_POST["tablename"];
 $DataID = $_POST["DataID"];
 
+$amount = $_POST["amount"];
+$membershipID = $_POST["membershipID"];
+
 $email = null;
 $password = null;
 $firstname = null;
@@ -95,6 +98,6 @@ $options = [
 ];
 $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
-$userid = $db->insertUserTransaction($size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
+$userid = $db->insertUserTransaction($amount, $membershipID, $size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
 
 ?>

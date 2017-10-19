@@ -2,7 +2,8 @@ import React from 'react';
 import {Form, FormGroup, Col, ControlLabel, Checkbox, ButtonGroup, DropdownButton, MenuItem} from 'react-bootstrap';
 
 
-
+//this is a drop down menu for a list of chambers
+//(depending on the array it is sent could be parents or active)
 class DropDown extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +20,6 @@ class DropDown extends React.Component {
       this.setState({
           display: this.props.chamber_list[evt]
       })
-      console.log(evt)
       this.props.save(evt);
   }
 

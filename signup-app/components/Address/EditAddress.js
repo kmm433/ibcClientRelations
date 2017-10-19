@@ -14,8 +14,6 @@ class EditAddress extends React.Component{
         var array = ['line1', 'line2', 'city','state', 'postcode', 'country'];
 
         name = array[index];
-        console.log(value, index)
-        console.log(index, name, value)
 
         if(this.props.type === "Postal Address")
             name = "postal" + name

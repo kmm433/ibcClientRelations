@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Col, ControlLabel, FormGroup, FormControl} from 'react-bootstrap';
 
+
 class ApproveUser extends React.Component {
     constructor(props){
         super(props)
@@ -10,18 +11,18 @@ class ApproveUser extends React.Component {
         this.handleChangetoAutomatic = this.handleChangetoAutomatic.bind(this);
         this.handleChangetoManual = this.handleChangetoManual.bind(this);
     }
-
+//update approval status in parent component for conditional rendering
     handleChangetoManual(){
         this.props.updateApproval(1);
     }
-
+//update approval status in parent component for conditional rendering
     handleChangetoAutomatic(){
         this.props.updateApproval(0);
     }
 //if the payment settings are set to automamatic then render information about the user flow and give them the option to switch to manual
     renderAutomatic(){
         return(
-            <div className="w3-panel w3-blue">
+            <div>
                 <div>
                     <Col sm={12}>
                         <div>
@@ -31,13 +32,13 @@ class ApproveUser extends React.Component {
                                 Users will currently be automatically directed to payment page and become a member of your chamber upon payment.
                         </div>
                     </Col>
-                    <Col style={{'paddingTop': '2%'}} sm={6}>
+                    <Col style={{'paddingTop': '2%'}} sm={8}>
                         <div>
                                 If you would like to manually approve users and send them an invoice, switch to Manual.
                         </div>
                     </Col>
 
-                        <Col sm={6}>
+                        <Col sm={4}>
                             <Button
                                 onClick={this.handleChangetoManual}>
                                 Switch to Manual
@@ -51,7 +52,7 @@ class ApproveUser extends React.Component {
     //if the payment settings are set to manual then render information about the user flow and give them the option to switch to automatic
     renderManual(){
         return(
-            <div className="w3-panel w3-blue" id="edit-signup-panel">
+            <div>
                 <div style={{'padding': '2%'}}>
                     <Col sm={12}>
                         <div>
@@ -64,12 +65,12 @@ class ApproveUser extends React.Component {
                                 Once you approve a user, they will show up as expired in your member list. Send them an invoice to finalise membership.
                         </div>
                     </Col>
-                    <Col style={{'paddingTop': '2%'}} sm={6}>
+                    <Col style={{'paddingTop': '2%'}} sm={8}>
                         <div>
                             If you would like to automatically approve users, switch to Automatic.
                         </div>
                     </Col>
-                        <Col style={{'paddingTop': '1%'}} sm={6}>
+                        <Col style={{'paddingTop': '1%'}} sm={4}>
                             <Button
                                 onClick={this.handleChangetoAutomatic}>
                                 Automatic
@@ -81,10 +82,8 @@ class ApproveUser extends React.Component {
     }
 
     render(){
-        console.log("getting more props", this.props.approval)
         return(
-            <div>
-                {console.log(this.props.approval == 0)}
+            <div style={{'marginBottom': '25%'}}>
                 {this.props.approval == 0 ? this.renderAutomatic() : this.renderManual()}
             </div>
         )
