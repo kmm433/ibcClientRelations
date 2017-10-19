@@ -157,6 +157,16 @@ class MemberDetails extends React.Component {
     this.props.unselect();
   }
 
+  // Promotes a general member to an executive member
+  promoteMember() {
+    MemberActions.updateMemberType(this.props.memberID, 1);
+  }
+
+  // Demotes and executive member to an ordinary member
+  demoteMember() {
+    MemberActions.updateMemberType(this.props.memberID, 2);
+  }
+
   render() {
     const {tags, suggestions} = this.state;
     return (
@@ -180,6 +190,14 @@ class MemberDetails extends React.Component {
             }
             { (this.props.type === "3") ?
               <input type='button' className='btn btn-success' value='Approve Member' onClick={(e) => this.approveMember(e)}/>
+              : null
+            }
+            { (this.props.type === "2") ?
+              <input type='button' className='btn btn-primary' value='Promote to Executive' onClick={(e) => this.promoteMember(e)}/>
+              : null
+            }
+            { (this.props.type === "1") ?
+              <input type='button' className='btn btn-primary' value='Demote to Member' onClick={(e) => this.demoteMember(e)}/>
               : null
             }
           </div>
