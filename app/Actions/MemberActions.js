@@ -333,3 +333,42 @@ export function updateMemberType(userId, userType) {
     }
   });
 }
+
+
+// Fetches the address information associated with a business
+export function fetchBusinessAddress(userId) {
+  $.ajax({
+    url: '/php/get_business_addresses.php',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'user_id': userId,
+    },
+    success: response => {
+      if (response.status === 200) {
+        const addressId = response.value.addressid;
+        const postalId = response.value.postal;
+        $.ajax({
+          url: '/php/get_address.php',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            'addressid': response.value.addressid,
+            'postalid': response.value.postal,
+          }, success: response => {
+            dispatcher.dispatch({
+              'type': 'RETRIEVED_USER_ADDRESSES',
+              'address_id': addressId,
+              'postal_id': postalId,
+              'address': response.address,
+              'postal': response.postal,
+            });
+          }, error: response => {console.log(response);}
+        });
+      }
+    },
+    error: response => {
+      console.log('Error: ', response);
+    }
+  });
+}

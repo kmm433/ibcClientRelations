@@ -17,6 +17,10 @@ class MemberStore extends EventEmitter {
     this.notes = null;
     this.invoice_callback_domain = null;
     this.complete_details = null;
+    this.address_id = null;
+    this.postal_id = null;
+    this.address = null;
+    this.postal = null;
   }
 
   // Allows for the list of unfiltered members to be retrieved
@@ -79,6 +83,26 @@ class MemberStore extends EventEmitter {
     return this.complete_details;
   }
 
+  // Allows for the retrieval of a business' address id
+  getBusinessAddressID() {
+    return this.address_id;
+  }
+
+  // Allows for the retrieval of a business' postal address id
+  getPostalAddressID() {
+    return this.postal_id;
+  }
+
+  // Allows for the member's business address to be retrieved
+  getBusinessAddress() {
+    return this.address;
+  }
+
+  // Allows for the member's businesses postal address to be retrieved
+  getPostalAddress() {
+    return this.postal;
+  }
+
   // Updates the current list of unfiltered members
   updateUnfilteredMembers(members) {
     this.unfiltered_members = members;
@@ -118,6 +142,15 @@ class MemberStore extends EventEmitter {
     this.emit('change');
   }
 
+  // Updates the members address Information
+  updateMemberAddress(address, postal, addressId, postalId) {
+    this.address_id = addressId;
+    this.postal_id = postalId;
+    this.address = address;
+    this.postal = postal;
+    this.emit('change');
+  }
+
   // The handler for any fired actions
   handleDispatchedActions(action) {
     switch(action.type) {
@@ -149,6 +182,13 @@ class MemberStore extends EventEmitter {
       case 'RETRIEVED_USER_DETAILS': {
         this.updateCompleteDetails(action.details);
         break;
+      }
+      case 'RETRIEVED_USER_ADDRESSES': {
+        this.updateMemberAddress(action.address,
+          action.postal,
+          action.address_id,
+          action.postal_id
+        );
       }
     }
   }

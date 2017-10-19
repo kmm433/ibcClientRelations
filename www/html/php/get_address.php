@@ -9,8 +9,8 @@
         $results = $db->getAddress($addressid);
         $results1 = $db->getAddress($postalid);
 
-        array_push($results, $results1);
-        echo json_encode($results);
+        $addresses = array('address' => $results, 'postal' => $results1);
+        echo json_encode($addresses);
     }
     else {
         echo json_encode(false);

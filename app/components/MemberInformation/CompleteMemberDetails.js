@@ -10,10 +10,16 @@ class CompleteMemberDetails extends React.Component {
     this.state = {
       details: null,
       errors: [],
+      business_address: null,
+      postal_address: null,
+      address_id: null,
+      postal_id: null,
     };
     this.renderDetails = this.renderDetails.bind(this);
     this.updateDetail = this.updateDetail.bind(this);
     this.updateError = this.updateError.bind(this);
+    this.updateBusinessAddress = this.updateBusinessAddress.bind(this);
+    this.updatePostalAddress = this.updatePostalAddress.bind(this);
     this.handleSaveChanges = this.handleSaveChanges.bind(this);
     this.checkErrors = this.checkErrors.bind(this);
   }
@@ -31,6 +37,26 @@ class CompleteMemberDetails extends React.Component {
           detailsArray[detail][1]['value'] = '';
       }
       this.setState({details: detailsArray});
+    }
+    if (!nextProps.business_address) {
+      this.setState({
+        business_address: [[]],
+      });
+    }
+    else {
+      this.setState({
+        business_address: nextProps.business_address,
+      });
+    }
+    if (!nextProps.postal_address) {
+      this.setState({
+        postal_address: [[]],
+      });
+    }
+    else {
+      this.setState({
+        postal_address: nextProps.postal_address,
+      });
     }
   }
 
@@ -57,6 +83,20 @@ class CompleteMemberDetails extends React.Component {
     if (!existing)
       errors.push({detail: detail, status: errorStatus});
     this.setState({errors: errors});
+  }
+
+  // Allows for the business address to be updated
+  updateBusinessAddress(value) {
+    this.setState({
+      business_address: value,
+    });
+  }
+
+  // Allows for the postal address to be updated
+  updatePostalAddress(value) {
+    this.setState({
+      postal_address: value,
+    });
   }
 
   // Checks if there are any errors in the current inputs
