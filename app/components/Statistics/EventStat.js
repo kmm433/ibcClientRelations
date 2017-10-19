@@ -142,10 +142,6 @@ class EventStat extends React.Component {
                       attendingList: response[3],
                       notgoingList: response[4]
                   });
-                  //console.log('get_EventGoing Success')
-              }.bind(this),
-              error: function(xhr, status, err, response){
-                  console.log('get_EventGoing Error' + xhr.responseText);
               }.bind(this)
           });
     }
@@ -159,10 +155,6 @@ class EventStat extends React.Component {
                     'eventID': this.props.ID
                 },
                 success : function(response){
-                    //console.log('delete_Event Success');
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('delete_Event Error' + xhr.responseText);
                 }.bind(this)
             });
 

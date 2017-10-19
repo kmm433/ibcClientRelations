@@ -75,10 +75,6 @@ class Results extends React.Component {
             dataType: "json",
             success : function(response){
                 this.setState({events: response});
-                //console.log('get_AllEvents Success')
-            }.bind(this),
-            error: function(xhr, status, err, response){
-                console.log('get_AllEvents Error' + xhr.responseText);
             }.bind(this)
         });
    }
@@ -91,16 +87,11 @@ class Results extends React.Component {
              dataType: "json",
              success : function(response){
                  this.setState({surveys: response});
-                 //console.log('get_AllSurveys Success')
-             }.bind(this),
-             error: function(xhr, status, err, response){
-                 console.log('get_AllSurveys Error' + xhr.responseText);
              }.bind(this)
          });
     }
 
     reload(){
-        //console.log("reload");
         if(this.state.Reload == false){
             this.setState({
                 Reload: true

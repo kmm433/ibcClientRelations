@@ -69,7 +69,6 @@ class UpcomingEvents extends React.Component {
 
   /* Returns the next 15 messages */
   get_nextMessages(){
-    //console.log('getNextMessages Called');
     var getNext = []
     if(count == messages.length){
       hasMore = false;
@@ -96,11 +95,6 @@ class UpcomingEvents extends React.Component {
             dataType: "json",
             success : function(response){
                 events = response;
-                //console.log('get_Events Success')
-            }.bind(this),
-            error: function(xhr, status, err, response){
-                console.log('get_Events Error' + xhr.responseText);
-
             }.bind(this)
         });
         return events;
@@ -137,7 +131,6 @@ class UpcomingEvents extends React.Component {
 
         // Nothing to display message
         if(emptyNotifications == true){
-            console.log("EMPTY");
             messages.push(<EmptyNotification
                 key="EmptyNotification"
                 user_type={this.props.user_type}

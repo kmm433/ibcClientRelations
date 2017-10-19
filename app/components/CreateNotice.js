@@ -285,15 +285,11 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    //console.log('insert_notication Success ' + response);
                     alert("Notification successfully posted");
                     this.setState({
                         NTitle: "",
                         NContent: ""
                     });
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('insert_notication Error ' + xhr.responseText);
                 }.bind(this)
             });
 
@@ -311,11 +307,7 @@ class create_notice extends React.Component {
                         'business' : bus
                     },
                     success : function(response){
-                        //console.log('get_Emails Success ');
                         emails = response;
-                    }.bind(this),
-                    error: function(xhr, status, err){
-                        console.log('get_Emails Error ' + xhr.responseText);
                     }.bind(this)
                 });
                 window.location = 'mailto:?bcc=' + emails + '&subject=New Chamber Notice: ' + this.state.NTitle + '&body=' + this.state.NContent;
@@ -369,7 +361,6 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    //console.log('Event Success ' + response);
                     alert("Event successfully posted");
                     //If email option selected, do email blast
                     if (this.state.Eemail == "on"){
@@ -384,9 +375,6 @@ class create_notice extends React.Component {
                             Elink: ""
                         });
                     }
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('insert_event Error ' + xhr.responseText);
                 }.bind(this)
             });
         }
@@ -404,11 +392,7 @@ class create_notice extends React.Component {
                 'business' : bus
             },
             success : function(response){
-                //console.log('get_Emails Success ');
                 emails = response;
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_Emails Error ' + xhr.responseText);
             }.bind(this)
         });
         window.location = 'mailto:?bcc=' + emails
@@ -467,7 +451,6 @@ class create_notice extends React.Component {
                     'business' : bus
                 },
                 success : function(response){
-                    //console.log('insert_Survey Success' + response);
                     alert("Survey successfully posted");
                     //If email option selected, do email blast
                     if (this.state.Semail == "on"){
@@ -475,9 +458,6 @@ class create_notice extends React.Component {
                     }else {
                         this.surveyReset();
                     }
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('insert_Survey Error ' + xhr.responseText);
                 }.bind(this)
             });
         }
@@ -495,11 +475,7 @@ class create_notice extends React.Component {
                 'business' : bus
             },
             success : function(response){
-                //console.log('get_Emails Success ');
                 emails = response;
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_Emails Error ' + xhr.responseText);
             }.bind(this)
         });
         window.location = 'mailto:?bcc=' + emails

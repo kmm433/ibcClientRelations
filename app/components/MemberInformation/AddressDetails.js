@@ -57,7 +57,6 @@ class AddressDetails extends React.Component {
 
   // Renders the editable view of the address
   renderEditable() {
-    console.log(this.props.address);
     const displayNames = {
       line1: 'Line 1', line2: 'Line 2',
       city: 'City', postcode: 'Postcode',
@@ -78,7 +77,7 @@ class AddressDetails extends React.Component {
               <FormControl
                 type='text'
                 value={(this.props.address && this.props.address[0][key]) ? this.props.address[0][key]: ''}
-                onChange={console.log('update')}
+                onChange={}
               />
             </FormGroup>
           </div>

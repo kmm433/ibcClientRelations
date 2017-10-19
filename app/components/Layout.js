@@ -41,15 +41,17 @@ class Layout extends React.Component {
           position: 'fixed',
           width: '16px',
           height: '16px',
-          left: '15px',
-          top: '15px'
+          left: '12px',
+          top: '12px',
+          color: '#bdc3c7'
         },
         bmBurgerBars: {
           background: '#373a47'
         },
         bmCrossButton: {
           height: '24px',
-          width: '24px'
+          width: '24px',
+          zIndex: '1000'
         },
         bmCross: {
           background: '#bdc3c7'
@@ -72,6 +74,7 @@ class Layout extends React.Component {
         return(
             <div id='layout'>
               <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} className='side-menu-large-screen'/>
+              <div className='mobile-menu-header'></div>
               <MobileMenu styles={styles} id='mobile-menu' witdh={'280px'} className='side-menu-small-screen'>
                 <SideMenu user_type={this.props.user_type} first_name={this.props.first_name} />
               </MobileMenu>

@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/theme.css" />
     <link rel="stylesheet" href="/css/side_menu.css" />
+    <link rel="stylesheet" href="/css/mobile_menu.css" />
     <link rel="stylesheet" href="/css/member_management.css" />
     <link rel="stylesheet" href="/css/group_management.css" />
     <link rel="stylesheet" href="/css/invoice_management.css" />

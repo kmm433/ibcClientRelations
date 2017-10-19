@@ -90,7 +90,6 @@ class NoticeBoard extends React.Component {
 
   /* Returns the next 15 messages */
   get_nextMessages(){
-    //console.log('getNextMessages Called');
     var getNext = []
     if(count == messages.length){
       hasMore = false;
@@ -116,10 +115,6 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              //console.log('get_Notifications Success' + notifications)
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_Notifications Error')
           }.bind(this)
       });
       return notifications;
@@ -135,10 +130,6 @@ class NoticeBoard extends React.Component {
           dataType: "json",
           success : function(response){
               notifications = response;
-              //console.log('get_NotificationsTEMP Success ' + response)
-          }.bind(this),
-          error: function(xhr, status, err){
-              console.log('get_NotificationsTEMP Error')
           }.bind(this)
       });
       return notifications;
@@ -153,11 +144,6 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 events = response;
-                //console.log('get_Events Success')
-            }.bind(this),
-            error: function(xhr, status, err, response){
-                console.log('get_Events Error' + xhr.responseText);
-
             }.bind(this)
         });
         return events;
@@ -171,10 +157,6 @@ class NoticeBoard extends React.Component {
               dataType: "json",
               success : function(response){
                   events = response;
-                  //console.log('get_EventsNoticeBoardTEMP Success');
-              }.bind(this),
-              error: function(xhr, status, err, response){
-                  console.log('get_EventsNoticeBoardTEMP Error' + xhr.responseText);
               }.bind(this)
           });
           return events;
@@ -190,10 +172,6 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 surveys = response;
-                //console.log('get_Surveys Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_Surveys Error')
             }.bind(this)
         });
         return surveys;
@@ -206,10 +184,6 @@ class NoticeBoard extends React.Component {
             dataType: "json",
             success : function(response){
                 surveys = response;
-                //console.log('get_surveysTEMP Success')
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_surveysTEMP Error')
             }.bind(this)
         });
         return surveys;

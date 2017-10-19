@@ -109,11 +109,7 @@ class RenewStat extends React.Component {
             async: false,
             dataType: "json",
             success : function(response){
-                //console.log('get_StatReview Success ' + response);
                 this.setupData(response);
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_StatReview Error ' + xhr.responseText);
             }.bind(this)
         });
     }

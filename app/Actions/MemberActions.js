@@ -219,8 +219,6 @@ export function fetchCompleteDetails(chamberId, expiry, memberId, expiryDisabled
             type: 'RETRIEVED_USER_DETAILS',
             details: fields,
           });
-        }, error: response => {
-          console.log('ERROR:', response);
         }
       });
     }
@@ -253,7 +251,7 @@ export function updateDetails(memberId, details) {
             alert('Successfully updated details. Email address has been syncronized with MailChimp.');
           }
         }
-      }, error: result => {console.log('error: ', result);}
+      }
     });
   });
   submitNote(memberId, 'Updated member\'s details.');
@@ -275,9 +273,6 @@ export function updateArichiveStatus(currentArchiveStatus, memberId) {
     },
     success: response => {
       fetchChamberMembers();
-    },
-    error: response => {
-      console.log(response);
     }
   });
 }
@@ -299,9 +294,6 @@ export function approveUser(userId) {
       else {
         alert(response.value);
       }
-    },
-    error: response => {
-      console.log(response);
     }
   });
 }
@@ -327,9 +319,6 @@ export function updateMemberType(userId, userType) {
         alert(response.value);
       }
       fetchChamberMembers();
-    },
-    error: response => {
-      console.log(response);
     }
   });
 }
@@ -363,12 +352,9 @@ export function fetchBusinessAddress(userId) {
               'address': response.address,
               'postal': response.postal,
             });
-          }, error: response => {console.log(response);}
+          }
         });
       }
-    },
-    error: response => {
-      console.log('Error: ', response);
     }
   });
 }

@@ -30,17 +30,12 @@ class LinkSurvey extends React.Component {
                 'SurveyID': this.props.match.params.SurveyID
             },
             success : function(response){
-                console.log('get_UserConfirmSurvey Success');
-                console.log(response);
                 if(response.length != 0){
                     this.setState({
                         title: response[0].SurveyTitle,
                         DatePosted: response[0].DatePosted
                     });
                 }
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_UserConfirmSurvey Error' + xhr.responseText);
             }.bind(this)
         });
     }

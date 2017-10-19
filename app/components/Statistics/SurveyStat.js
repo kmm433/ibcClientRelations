@@ -118,10 +118,6 @@ class SurveyStat extends React.Component {
             },
             success : function(response){
                 this.setState({questions: response});
-                //console.log('get_SurveyQuestions Success' + this.props.ID + ' ' + response);
-            }.bind(this),
-            error: function(xhr, status, err){
-                console.log('get_SurveyQuestions Error');
             }.bind(this)
         });
       }
@@ -136,10 +132,6 @@ class SurveyStat extends React.Component {
                 },
                 success : function(response){
                     this.setState({answers: response});
-                    //console.log('get_SurveyAnswers Success' + this.props.ID + ' ' + response);
-                }.bind(this),
-                error: function(xhr, status, err){
-                    console.log('get_SurveyAnswers Error');
                 }.bind(this)
             });
         }
@@ -153,10 +145,6 @@ class SurveyStat extends React.Component {
                       'SurveyID': this.state.ID
                   },
                   success : function(response){
-                      //console.log('delete_Survey Success');
-                  }.bind(this),
-                  error: function(xhr, status, err){
-                      console.log('delete_Survey Error' + xhr.responseText);
                   }.bind(this)
               });
 
