@@ -64,7 +64,7 @@ class TmpNotice extends React.Component {
                   <div className="tmpnotice-title notice-title">
                     <h2>{this.props.title}</h2>
                   </div>
-                  <div className="notice-content" style={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}>
+                  <div className="notice-content" style={{whiteSpace: 'pre-line'}}>
                     <p>{this.props.message}</p>
                     <div>
                         {<button type="button" className="btn btn-success" style={{marginLeft: '0px'}} id="btnApprove" onClick={this.approve}>Approve</button>}

@@ -6,6 +6,7 @@
   width: 20%;
   max-width: 292px;
   overflow-y: auto;
+  z-index: 999;
 }
 
 .side-menu ul {
@@ -30,8 +31,15 @@
 }
 
 @media (max-width: 720px) {
-  .side-menu {
+  #layout > .side-menu {
     display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .side-menu {
+    width: 280px;
+    position: relative;
   }
 }
 

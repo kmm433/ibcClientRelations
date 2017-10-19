@@ -121,7 +121,7 @@ html, body, .establish-fonts, #menu, #layout {
 }
 
 .slick-prev{
-    z-index:100000;
+    z-index:1;
     left: 0%;
 }
 
@@ -138,6 +138,12 @@ html, body, .establish-fonts, #menu, #layout {
   margin-right: 20%;
   margin-top: 15px;
   margin-bottom: 60px;
+}
+
+@media (max-width: 720px) {
+  .main-component {
+    margin-top: 35px;
+  }
 }
 
 #notice-board {
