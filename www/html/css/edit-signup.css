@@ -1,0 +1,239 @@
+* The following is to style the edit sign up fields table */
+
+.header-blue{
+  background-color: #2462ab;
+  height: 10%;
+  width: 100%
+}
+
+#header-logo{
+    width: 10%;
+    padding: 3%;
+
+}
+#header-logo img{
+    margin-left: 2000%;
+    width: 400%;
+}
+
+#edit-fields-table {
+    float: left;
+    margin-left: 22%;
+    margin-right: 20%;
+    margin-top:2%;
+
+}
+
+#edit-signup-panel{
+    background-color: aliceblue!important;
+    color: #000!important;
+    border-radius: 5px;
+}
+
+#signup-checkbox {
+    display: block;
+    margin: auto;
+}
+
+#editsignup-value{
+    text-align: center;
+}
+
+#addfield-button{
+    width: 20%;
+    background-color: #2462AB;
+    color: white;
+}
+#asterisk{
+    color: red;
+}
+
+.border-error{
+    background-color: #FCC8C8;
+}
+
+
+
+#select-signup{
+    padding: 30px;
+    height: 30%;
+}
+/*
+.signup-fields label{
+    margin-left: 27%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 10px;
+     text-align: left;
+}
+
+.signup-fields input{
+    max-width: 250px;
+    min-width: 30%;
+}
+
+.signup-fields h1, h4{
+    margin-left: 27%;
+}*/
+
+.signup label {
+    color: #595959;
+}
+
+#length-button {
+    max-width: 175px;
+    min-width: 30%;
+}
+
+#addfields-label {
+
+    margin-left: 22%;
+    display: grid;
+     grid-template-columns: 1fr 3fr;
+     padding: 20px;
+     text-align: left;
+}
+
+#submitform-button {
+
+    margin-left: 27%;
+    max-width: 175px;
+    min-width: 30%;
+}
+
+.signup-dropdown{
+    margin-left: 1.5%;
+    margin-top: 0%;
+}
+.form-horizontal .form-group {
+    padding: 3%;
+}
+
+#signup-logo img{
+margin-left: 85%;
+width: 15%;
+margin-top: 2%;
+margin-bottom: 2%;
+}
+
+#signup-headings {
+    font-size: xx-large;
+    margin-bottom: 5%;
+}
+
+
+#edit-signup{
+  float: left;
+  margin-left: 22%;
+  width: 75%;
+  margin-right: 20%;
+  margin-right: 3%;
+  margin-top: 3%;
+}
+
+#h2-editsignup{
+  padding-top: 1%;
+  padding-left: 2%;
+}
+
+#h3-editsignup{
+  padding-left: 2%;
+}
+
+.edit-signup-input input[type=text], input[type=number]{
+    width: 100%;
+}
+
+.edit-signup-input input[type=checkbox]{
+    display: block;
+    margin: auto;
+}
+#dropdown-btn {
+    width: 100%;
+}
+#columnWidth{
+    width:10%;
+}
+#edit-btn{
+    display: flex;
+}
+
+@media (min-width: 992px) {
+    #edit-signup .container {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    #edit-signup .container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 720px) {
+    #edit-signup {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 100%;
+    }
+}
+
+.open>.dropdown-menu {
+    margin-left: 20%;
+}
+
+@media (min-width: 768px) {
+    #edit-signup-table {
+        width: 100%;
+    }
+}
+
+@media (min-width: 369px) {
+    #edit-signup-table {
+        width: 100%;
+    }
+}
+
+@media (max-width: 369px) {
+    #edit-signup-table {
+        margin-left: 3%;
+        margin-right: 3%;
+        width: 100%;
+    }
+}
+
+#signup-container{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+#signup-submitbtn{
+    margin-left: 47%;
+}
+
+.signup-fields2 ol, ul {
+    list-style-type: none;
+}
+
+.signup-fields2 label {
+    display: grid;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+#edit-signup-table{
+    background-color: #2462AB;
+    color: white;
+}
+
+div.container4 {
+    height: 10em;
+    position: relative }
+div.container4 p {
+    margin: 0;
+    background: yellow;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)

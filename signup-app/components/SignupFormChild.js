@@ -42,7 +42,7 @@ class PaymentMenu extends React.Component {
             </thead>
             <tbody>
                {this.props.list.map((item, i) =>
-                    <tr key = {this.props.list[i].membershipID}>
+                    <tr key = {i}>
                         <td>{this.props.list[i].name}</td>
                         <td>{this.props.list[i].info}</td>
                         <td>{this.props.list[i].amount}</td>
@@ -54,7 +54,6 @@ class PaymentMenu extends React.Component {
 
   displayAmount(){
       var i = this.state.index;
-      console.log("What the shit:", i, this.props.list[i].amount)
       return(
           <ControlLabel>
               The total amount to be paid is:{'  '} {this.props.list[i].amount}
@@ -113,7 +112,7 @@ class SignupForm extends React.Component {
           error: "",
           pAddressReady: false,
           bAddressReady: false,
-          membershipID: "",
+          membershipID: null,
           line1: "",
           line2: "",
           city: "",
@@ -139,6 +138,8 @@ class SignupForm extends React.Component {
       this.checkAddressReady = this.checkAddressReady.bind(this);
       this.checkBAddress = this.checkBAddress.bind(this);
       this.checkPAddress = this.checkPAddress.bind(this);
+      this.checkMembership = this.checkMembership.bind(this);
+
   }
 
   componentWillMount(){
@@ -172,12 +173,22 @@ class SignupForm extends React.Component {
 
     //check all the data is filled out before payment
     checkReadyForSubmit(){
-        console.log("cheching submit ready", this.checkAnswersReady(), this.checkAddressReady(), this.checkAnswersReady())
-        if(this.checkAnswersReady() && this.checkAddressReady()){
+        console.log("checking submit ready", this.checkAnswersReady(), this.checkAddressReady(), this.checkAnswersReady())
+        if(this.checkAnswersReady() && this.checkAddressReady() && this.checkMembership()){
             return true;
         }
         else{
             return false;
+        }
+    }
+
+    checkMembership(){
+        console.log(this.state.membershipID)
+        if(this.state.membershipID == null || this.state.membershipID == ""){
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
@@ -227,40 +238,38 @@ class SignupForm extends React.Component {
          console.log("is address ready", this.checkBAddress(), this.checkReadyForSubmit())
          if(!this.checkReadyForSubmit()){
              console.log("Please fill out all required fields")
-             this.setState({error: "Please fill out all required fields"})
+             alert("Please fill out all required fields")
              return
          }
-         console.log(this.state.storeAnswers[0], this.state.storeAnswers[1])
-         if(this.state.storeAnswers[0] !== this.state.storeAnswers[1]){
+         else if(this.state.storeAnswers[0] !== this.state.storeAnswers[1]){
              console.log("getting here")
-             this.setState({error: "Emails do not Match"})
+             alert("Emails do not match")
              return
          }
-         console.log(this.state.storeAnswers[2], this.state.storeAnswers[3])
-         if(this.state.storeAnswers[2] !== this.state.storeAnswers[3]){
+         else if(this.state.storeAnswers[2] !== this.state.storeAnswers[3]){
              console.log("getting here")
-             this.setState({error: "Passwords do not Match"})
+             alert("Passwords do not Match")
              return
          }
-
-         var address = {
-             line1: this.state.line1,
-             line2: this.state.line2,
-             city: this.state.city,
-             postcode: this.state.postcode,
-             state: this.state.state,
-             country: this.state.country
+         else{
+             var address = {
+                 line1: this.state.line1,
+                 line2: this.state.line2,
+                 city: this.state.city,
+                 postcode: this.state.postcode,
+                 state: this.state.state,
+                 country: this.state.country
+             }
+             var postal = {
+                 postalline1: this.state.postalline1,
+                 postalline2: this.state.postalline2,
+                 postalcity: this.state.postalcity,
+                 postalpostcode: this.state.postalpostcode,
+                 postalstate: this.state.postalstate,
+                 postalcountry: this.state.postalcountry
+             }
+             this.props.sendData(this.state.storeAnswers, address, postal, this.state.membershipID);
          }
-         var postal = {
-             postalline1: this.state.postalline1,
-             postalline2: this.state.postalline2,
-             postalcity: this.state.postalcity,
-             postalpostcode: this.state.postalpostcode,
-             postalstate: this.state.postalstate,
-             postalcountry: this.state.postalcountry
-         }
-
-         this.props.sendData(this.state.storeAnswers, address, postal);
      }
 
      checkboxAddress(checked){
@@ -296,11 +305,15 @@ class SignupForm extends React.Component {
          })
      }
 
-
   render() {
     return (
         <div id="signup-container" className="w3-row">
-                <Form method='POST' className="w3-container w3-card-4 w3-light-grey" horizontal={true}>
+                <Form
+                    method='POST'
+                    id="form"
+                    onSubmit={this.handleSubmit}
+                    className="w3-container w3-card-4 w3-light-grey"
+                    horizontal={true}>
                     <div id="signup-headings">Membership Form</div>
                     {this.props.fields.map((item, i) =>
                             <Validator
@@ -308,6 +321,7 @@ class SignupForm extends React.Component {
                                 type = {this.props.fields[i].inputtype}
                                 displayName = {this.props.fields[i].displayname}
                                 minimum = {this.props.fields[i].minimum}
+                                value={""}
                                 maximum = {this.props.fields[i].maximum}
                                 mandatory = {this.props.fields[i].mandatory}
                                 userAnswer = {this.storeUserData}
@@ -324,21 +338,17 @@ class SignupForm extends React.Component {
                         name = "Postal Address"
                         mandatory = {false}
                     />}
-                    {/*<PaymentMenu
+                    <PaymentMenu
                         list={this.props.membershipList}
                         type={this.props.membershipType}
                         save = {this.saveMembership}
                     />
-                    <Payment
-                        amount = {this.state.amount}
-                        token={this.props.token}
-                    />*/}
-                    <button
+                    <Button
                         id="signup-submitbtn"
                         className = "btn"
-                        onClick={this.handleSubmit}>
-                        Conitnue to Payment
-                    </button>
+                        type="submit">
+                        {this.props.requireApproval == 0 ? "Continue to Payment" : "Submit"}
+                    </Button>
                     <HelpBlock style={{'marginLeft': '45%', 'color': 'red'}}>{this.state.error}</HelpBlock>
                 </Form>
         </div>

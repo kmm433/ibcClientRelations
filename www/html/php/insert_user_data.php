@@ -9,11 +9,14 @@ function sanitise($variable){
 }
 
 $error = "success";
-$chamber = $_POST["chamber"];
+if(!isset($_POST['chamber']) || empty($_POST['chamber'])) {
+    $chamber = $_SESSION['chamber'];
+} else {
+    $chamber = $_POST['chamber'];
+}
 
 $tablename = "BUSINESS_";
 $tablename .= $chamber;
-
 $answers = $_POST["answers"];
 $column = $_POST["columnname"];
 $table = $_POST["tablename"];
@@ -34,14 +37,14 @@ $mobile=null;
 $numofemployees=null;
 $website=null;
 $addressid=null;
+$postalid = null;
 $id="HELLO";
 
 $address = $_POST['address'];
 $postal = $_POST['postal'];
 
-
+$requireApproval = $_POST['requireApproval'];
 $size = count($answers);
-
 
 for($i = 0; $i<($size); $i++){
 
@@ -58,35 +61,27 @@ for($i = 0; $i<($size); $i++){
             $lastname = $answers[$i];
         else if($column[$i] == 'jobtitle')
             $jobtitle = $answers[$i];
+
+
         else
             $error = $column[$i];
     }
 
     else if($table[$i]=='BUSINESS' && $answers[$i] != ""){
-        if($column[$i] == 'established')
-            $established = $answers[$i];
-
-        else if($column[$i] == 'ABN'){
-            !filter_var($answers[$i], FILTER_VALIDATE_INT) ? $error = "Invalid Input Field: ABN" : ($abn = $answers[$i]);
-        }
-        else if($column[$i] == 'businessphone'){
-            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($businessphone = $answers[$i]) : $error = "Invalid Input Field: Business Phone";
-        }
-        else if($column[$i] == 'businessname'){
-            $businessname = sanitise($answers[$i]);
-        }
-        else if($column[$i] == 'mobile'){
-            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($mobile = $answers[$i]) : $error = "Invalid Input Field: mobile";
-        }
-        else if($column[$i] == 'anziccode'){
-            filter_var($answers[$i], FILTER_VALIDATE_INT) ? ($anzic = $answers[$i]) : $error = "Invalid Input Field: Anzic Code";
-        }
-        else if($column[$i] == 'numofemployees'){
-            filter_var($answers[$i], FILTER_VALIDATE_INT) ? $numofemployees = $answers[$i] : $error = "Invalid Input Field: Number of Employees";
-        }
-        else if($column[$i] == 'website'){
-            $website = sanitise($answers[$i]);
-        }
+            if($column[$i] == 'established')
+                $established = $answers[$i];
+            else if($column[$i] == 'ABN')
+                $abn = $answers[$i];
+            else if($column[$i] == 'businessname')
+                $businessname = $answers[$i];
+            else if($column[$i] == 'businessphone')
+                $businessphone = $answers[$i];
+            else if($column[$i] == 'mobile')
+                $mobile = $answers[$i];
+            else if($column[$i] == 'anziccode')
+                $anziccode = $answers[$i];
+            else if($column[$i] == 'numofemployees')
+                $numofemployees = $answers[$i];
         else{
             $error = "Error";
         }
@@ -100,34 +95,6 @@ $options = [
 ];
 $password = password_hash($password, PASSWORD_DEFAULT, $options);
 
-$results =  $db->insertAddress($address['line1'], $address['line2'], $address['city'], $address['state'], $address['postcode'], $address['country']);
-$addressid = $db->getLastID();
-if(!(isset($postal) || empty($postal))){
-    $postalid =  $db->insertAddress($postal->line1, $postal->line2, $postal->city, $postal->state, $postal->postcode, $postal->country);
-    $postalid = $db->getLastID();
-}
-else{
-    $postalid = $addressid;
-}
+$userid = $db->insertUserTransaction($size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval)
 
-
-$results = $db->insertBusiness($established, $chamber, $addressid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
-$id = $db->getLastID();
-$results1 =  $db->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP + INTERVAL 1 YEAR', $jobtitle, 3);
-$userID = $db->getLastID();
-
-$var = null;
-for($i = 0; $i<($size); $i++){
-    if($table[$i]==$tablename){
-
-        $var = $answers[$i];
-        $data = $DataID[$i];
-
-        $db->insertExtraUserData($tablename, $data, $var, $id);
-    }
-}
-
-$db->insert_StatNewMember($userID,$chamber);
-
-echo json_encode($_POST['address']);
 ?>
