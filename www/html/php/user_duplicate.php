@@ -2,8 +2,13 @@
 include 'db_handler.php';
 
 $db = new DB_Handler();
-$email = $_POST["email"];
-$results = $db->countUser("SELECT COUNT(*) FROM USER where email='$email'");
 
-echo json_encode($results);
+if(isset($_SESSION['user'])){
+    $email = $_POST["email"];
+    $results = $db->countUserEmail($email);
+    echo json_encode($results);
+}
+else {
+    echo json_encode(false);
+}
 ?>
