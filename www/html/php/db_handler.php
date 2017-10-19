@@ -1380,42 +1380,62 @@ function getFields($query){
     }
 }
 
+
 //inserts a new field for the sign up form
   function insertNewField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $ordering){
-      $sql = $this->db->prepare("INSERT INTO $inserttable (displayname, inputtype, mandatory, tablename, minimum, maximum, ordering)
-                  VALUES(:name, :type, :optional, :tablename, :minimum, :maximum, :ordering)");
 
-      $sql->bindParam(':name', $name, PDO::PARAM_STR);
-      $sql->bindParam(':type', $type, PDO::PARAM_STR);
-      $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
-      $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
-      $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
-      $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
-      $sql->bindParam(':ordering', $ordering, PDO::PARAM_INT);
-      if($sql->execute()){
-          return true;
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+      try{
+          $sql = $this->db->prepare("INSERT INTO $inserttable (displayname, inputtype, mandatory, tablename, minimum, maximum, ordering)
+                      VALUES(:name, :type, :optional, :tablename, :minimum, :maximum, :ordering)");
+
+          $sql->bindParam(':name', $name, PDO::PARAM_STR);
+          $sql->bindParam(':type', $type, PDO::PARAM_STR);
+          $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
+          $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
+          $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
+          $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
+          $sql->bindParam(':ordering', $ordering, PDO::PARAM_INT);
+          if($sql->execute()){
+              return true;
+          }
+          else{
+              return false;
+          }
+
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
       }
-      else{
-          return false;
-      }
+
   }
+
+
 //updates changes made to a field on the sign up form
   function updateField($inserttable, $name, $optional, $type, $tablename, $minimum, $maximum, $dataID){
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-      $sql = $this->db->prepare("UPDATE $inserttable SET displayname = :name, mandatory = :optional, inputtype=:type,
-           tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID");
+      try{
+          $sql = $this->db->prepare("UPDATE $inserttable SET displayname = :name, mandatory = :optional, inputtype=:type,
+               tablename=:tablename, minimum = :minimum, maximum=:maximum WHERE DataID = :dataID");
 
-      $sql->bindParam(':name', $name, PDO::PARAM_STR);
-      $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
-      $sql->bindParam(':type', $type, PDO::PARAM_STR);
-      $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
-      $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
-      $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
-      $sql->bindParam(':dataID', $dataID, PDO::PARAM_INT);
-      if($sql->execute())
-        return true;
-      else
-          return false;
+          $sql->bindParam(':name', $name, PDO::PARAM_STR);
+          $sql->bindParam(':optional', $optional, PDO::PARAM_INT);
+          $sql->bindParam(':type', $type, PDO::PARAM_STR);
+          $sql->bindParam(':tablename', $tablename, PDO::PARAM_STR);
+          $sql->bindParam(':minimum', $minimum, PDO::PARAM_INT);
+          $sql->bindParam(':maximum', $maximum, PDO::PARAM_INT);
+          $sql->bindParam(':dataID', $dataID, PDO::PARAM_INT);
+          if($sql->execute())
+            return true;
+          else
+              return false;
+
+
+      } catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
 
   }
 //inserts a new user
@@ -1701,7 +1721,8 @@ function getFields($query){
 
 //insert a new business
   function insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website){
-
+$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+try{
             if(!isset($established) || empty($established)) { $established = null; }
             if(!isset($mobile) || empty($mobile)) { $mobile = null; }
             if(!isset($postalid) || empty($postalid)) { $postalid = null; }
@@ -1714,6 +1735,9 @@ function getFields($query){
                               VALUES(:established, $chamber, :addressid, :postalid, :abn, :businessname, :businessphone, :mobile, :anzic, :numofemployees, :website)");
 
 
+        //$array = [];
+        //array_push($array);
+
         $sql->bindParam(':abn', $abn, PDO::PARAM_INT);
         $sql->bindParam(':businessname', $businessname, PDO::PARAM_STR);
         $sql->bindParam(':businessphone', $businessphone, PDO::PARAM_INT);
@@ -1725,7 +1749,6 @@ function getFields($query){
         $sql->bindParam(':numofemployees', $numofemployees, PDO::PARAM_INT);
         $sql->bindParam(':website', $website, PDO::PARAM_STR);
 
-          try{
               if($sql->execute())
                 return ("success");
             else {
@@ -2119,17 +2142,17 @@ function addPayment($payment, $expiry, $chamber){
           $this->addPayment("Annual", null, $id);
           //default settings to automatcally approve new users
           $this->justExecute("INSERT INTO APPROVAL (chamberID) VALUES ($id)");
-          $this->pdo->commit();
+          $this->db->commit();
 
           return true;
       }
       catch(PDOExecption $e) {
-          $this->pdo->rollBack();
+          $this->db->rollBack();
           echo $e->getMessage();
       }
   }
 
-  function insertUserTransaction($firstname, $lastname, $id, $jobtitle, $email, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
+  function insertUserTransaction($size, $firstname, $lastname, $jobtitle, $email, $table, $tablename, $password, $address, $postal, $postalid, $addressid, $established, $chamber, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $DataID, $answers, $requireApproval){
 
       $this->db->beginTransaction();
 
@@ -2140,8 +2163,11 @@ function addPayment($payment, $expiry, $chamber){
           $postalid =  $this->insertAddress($postal['line1'], $postal['line2'], $postal['city'], $postal['state'], $postal['postcode'], $postal['country']);
           $postalid = $this->getLastID();
 
-          $results = $this->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website, $email, $password, $id, $firstname, $lastname, $jobtitle, $tablename, $table);
+          $results = $this->insertBusiness($established, $chamber, $addressid, $postalid, $abn, $businessname, $businessphone, $mobile, $anzic, $numofemployees, $website);
           $id = $this->getLastID();
+
+
+
 
           //if requires approval then assign user type as 3 otherwise as 2
           $usertype = 2;
@@ -2149,28 +2175,28 @@ function addPayment($payment, $expiry, $chamber){
               $usertype = 3;
           }
 
-          $results1 =  $this->insertUser($email, $password, $id, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
+          $results1 =  $this->insertUser($email, $password, null, $chamber, $firstname, $lastname, 'CURRENT_TIMESTAMP() - INTERVAL 1 DAY', $jobtitle, $usertype);
           $userid = $this->getLastID();
 
 
           $var = null;
           for($i = 0; $i<($size); $i++){
-              if($table[$i]==$tablename){
+             if($table[$i]==$tablename){
 
-                  $var = $answers[$i];
-                  $data = $DataID[$i];
+                $var = $answers[$i];
+                $data = $DataID[$i];
 
-                  $this->insertExtraUserData($tablename, $data, $var, $id);
-              }
+            $this->insertExtraUserData($tablename, $data, $var, $id);
+             }
           }
 
-          $this->insert_StatNewMember($userID,$chamber);
+          $this->insert_StatNewMember($userid,$chamber);
 
-          $this->pdo->commit();
+          $this->db->commit();
           echo json_encode($userid);
 
       } catch(PDOExecption $e) {
-          $this->pdo->rollBack();
+          $this->db->rollBack();
           echo $e->getMessage();
       }
 
