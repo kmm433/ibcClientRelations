@@ -1293,7 +1293,7 @@ BEGIN
 	Author: Hayden Lummis
     Date: 09/10/2017
     Purpose: To add a new event
-    Use: 
+    Use:
 
 */
 
@@ -1323,7 +1323,7 @@ BEGIN
 	Author: Hayden Lummis
     Date: 04/10/2017
     Purpose: To add a new notification
-    Use: 
+    Use:
 
 */
 
@@ -1413,7 +1413,7 @@ BEGIN
     Date: 15/10/2017
     Purpose: This is used when a user is given a link to a event, it pulls up the title for the user whilst
     confirming that the user has permissions to see it
-    
+
 */
 
 select DISTINCT e.EventID, e.EventTitle, e.Event, e.EventDate, e.endTime, e.EventURL, e.DatePosted, e.Location from MYEVENTLOOKUP L
@@ -1421,8 +1421,8 @@ select DISTINCT e.EventID, e.EventTitle, e.Event, e.EventDate, e.endTime, e.Even
 	left join USER u on u.UserID = user
     where user not in (
 			select UserID from MYEVENTHIDDEN where EventID = L.EventID
-	) 
-	AND 
+	)
+	AND
 	(user  = L.UserID or
 	u.ChamberID = L.ChamberID or
 	u.businessID = L.BusinessID or
@@ -1453,14 +1453,14 @@ BEGIN
     Date: 15/10/2017
     Purpose: This is used when a user is given a link to a survey, it pulls up the title for the user whilst
     confirming that the user has permissions to see it
-    
+
 */
 	select DISTINCT s.SurveyID, s.SurveyTitle, s.DatePosted from SURVEYLOOKUP L
     left join SURVEY s on s.SurveyID = L.SurveyID
     left join USER u on u.UserID = user
     where user not in (
 			select UserID from SURVEYRESULTS where SurveyID = L.SurveyID
-	) 
+	)
 	AND
 	(user = L.UserID or
 	u.ChamberID = L.ChamberID or
@@ -1513,14 +1513,14 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`ibc`@`%` PROCEDURE `SPgetCompleteMemberDetails`(providedEmail varchar(255))
 BEGIN
-	SELECT USER.firstname, USER.lastname, USER.email, USER.jobtitle, 
-		USER.type, USER.date_joined, USER.expiry, BUSINESS.businessname, 
-        ADDRESS.line1, ADDRESS.line2, ADDRESS.city, ADDRESS.postcode, 
-        ADDRESS.state, ADDRESS.country, 
-		BUSINESS.businessphone, BUSINESS.phone, BUSINESS.mobile, 
-		BUSINESS.anziccode, BUSINESS.numofemployees, BUSINESS.established, 
-        BUSINESS.ABN 
-		FROM USER 
+	SELECT USER.firstname, USER.lastname, USER.email, USER.jobtitle,
+		USER.type, USER.date_joined, USER.expiry, BUSINESS.businessname,
+        ADDRESS.line1, ADDRESS.line2, ADDRESS.city, ADDRESS.postcode,
+        ADDRESS.state, ADDRESS.country,
+		BUSINESS.businessphone, BUSINESS.phone, BUSINESS.mobile,
+		BUSINESS.anziccode, BUSINESS.numofemployees, BUSINESS.established,
+        BUSINESS.ABN
+		FROM USER
 			LEFT JOIN BUSINESS ON USER.businessID = BUSINESS.businessID
             LEFT JOIN ADDRESS ON BUSINESS.addressID = ADDRESS.addressID
         WHERE USER.email=providedEmail;
@@ -1603,7 +1603,7 @@ BEGIN
     Date: 16/08/2017
     Purpose: To retieve all events corresponding to given user / chamber / business / group
     Use: CALL SPgetEvents(-1,-1,-1,-1); , replace -1 with given values
-    
+
     TODO: Add support for groups
 
 */
@@ -1616,7 +1616,7 @@ BEGIN
         chamberid = L.ChamberID or
         businessid = L.BusinessID
 	 order by e.DatePosted desc;
-	
+
 
 END ;;
 DELIMITER ;
@@ -1639,7 +1639,7 @@ BEGIN
 /*
 	Author: Hayden Lummis
     Date: 03/09/2017
-    Purpose: To retieve all events corresponding to given user / chamber / business / group without the hidden ones 
+    Purpose: To retieve all events corresponding to given user / chamber / business / group without the hidden ones
     for the noticeboard, different to other SPgetEvents that gets all events regardless if marked as hidden
     Use: CALL SPgetEventsNoticeBoard(-1,-1,-1,-1); , replace -1 with given values
 
@@ -1650,13 +1650,13 @@ BEGIN
     left join MYEVENT e on e.EventID = L.EventID
     where userid not in (
 			select UserID from MYEVENTHIDDEN where EventID = L.EventID
-        ) 
-        AND 
+        )
+        AND
 		(userid  = L.UserID or
         chamberid = L.ChamberID or
         businessid = L.BusinessID or
         L.GroupID in (SELECT groupID FROM GROUPMEMBERS WHERE USERID = userid))
-		AND 
+		AND
 		e.DatePosted > DATE_SUB(now(), INTERVAL 6 MONTH);
 
 END ;;
@@ -1690,11 +1690,11 @@ BEGIN
 	select DISTINCT e.EventID, e.EventTitle, e.Event, e.EventDate, e.endTime, e.EventURL, e.DatePosted, e.Location
     from MYEVENTLOOKUPtemp L
     left join MYEVENTtemp e on e.EventID = L.EventID
-    where 
+    where
 		(userid  = L.UserID or
         chamberid = L.ChamberID or
         businessid = L.BusinessID);
-        
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1719,7 +1719,7 @@ BEGIN
     Purpose:  - To retieve all notifications corresponding to given user / chamber / business / group
 					- Limit the results to the last 6 months
     Use: CALL SPgetNotifications(-1,-1,-1); , replace -1 with given values
-    
+
     TODO: Add support for users in groups
 
 */
@@ -1732,10 +1732,10 @@ BEGIN
         chamberid = L.ChamberID or
         businessid = L.BusinessID
         or L.GroupID in (SELECT groupID FROM GROUPMEMBERS WHERE USERID = userid)
-	and 
+	and
 		n.DatePosted > DATE_SUB(now(), INTERVAL 6 MONTH);
-        
-	
+
+
 
 END ;;
 DELIMITER ;
@@ -1795,22 +1795,22 @@ BEGIN
     Date: 16/08/2017
     Purpose: To retieve all survey ID's corresponding to given user / chamber / business / group
     Use: CALL SPgetSurvey(-1,-1,-1,-1); , replace -1 with given values
-    
+
 */
 	select DISTINCT s.SurveyID, s.SurveyTitle, s.DatePosted
     from SURVEYLOOKUP L
     left join SURVEY s on s.SurveyID = L.SurveyID
     where userid not in (
 			select UserID from SURVEYRESULTS where SurveyID = L.SurveyID
-        ) 
+        )
         AND
 		(userid  = L.UserID or
         chamberid = L.ChamberID or
         businessid = L.BusinessID or
         L.GroupID in (SELECT groupID FROM GROUPMEMBERS WHERE USERID = userid))
-		AND 
+		AND
 		s.DatePosted > DATE_SUB(now(), INTERVAL 6 MONTH);
-	
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1835,13 +1835,13 @@ select DISTINCT s.SurveyID, s.SurveyTitle, s.DatePosted
     left join SURVEY s on s.SurveyID = L.SurveyID
     where user not in (
 			select UserID from SURVEYRESULTS where SurveyID = L.SurveyID
-        ) 
+        )
         AND
 		(user  = L.UserID or
         chamber = L.ChamberID or
         business = L.BusinessID or
         L.GroupID in (SELECT groupID FROM GROUPMEMBERS WHERE USERID = user))
-		AND 
+		AND
 		s.DatePosted > DATE_SUB(now(), INTERVAL 6 MONTH);
 
 END ;;
@@ -1867,14 +1867,14 @@ BEGIN
 	Author: Hayden Lummis
     Date: 16/08/2017
     Purpose: To retieve answers associated with a question
-    Use: CALL SPgetSurveyAnswers(QuestionNumber); 
+    Use: CALL SPgetSurveyAnswers(QuestionNumber);
 
 */
 
 	select s.SurveyID, s.questionNo, s.answer, s.AnswerID
     from SURVEYANSWER s
     where
-		s.SurveyID = surveyid; 
+		s.SurveyID = surveyid;
 
 
 END ;;
@@ -1900,7 +1900,7 @@ BEGIN
 	Author: Hayden Lummis
     Date: 16/08/2017
     Purpose: To retieve questions associated with a survey
-    Use: CALL SPgetSurveyQuestion(SurveyID); 
+    Use: CALL SPgetSurveyQuestion(SurveyID);
 
 */
 
@@ -1908,7 +1908,7 @@ BEGIN
     from SURVEYQUESTION
     where
 		SurveyID = surveyid;
-		
+
 
 END ;;
 DELIMITER ;
@@ -1935,7 +1935,7 @@ BEGIN
     Purpose: To retieve all survey ID's corresponding to given user / chamber / business / group passed down from a parent chamber
     to a child chamber
     Use: CALL SPgetSurveyTEMP(-1,-1,-1,-1); , replace -1 with given values
-    
+
     TODO: Add support for groups
 
 */
@@ -1947,7 +1947,7 @@ BEGIN
 		userid  = L.UserID or
         chamberid = L.ChamberID or
         businessid = L.BusinessID;
-	
+
 
 END ;;
 DELIMITER ;
@@ -1972,7 +1972,7 @@ BEGIN
 	Author: Hayden Lummis
     Date: 17/09/2017
     Purpose: To create a new notification
-    Use: 
+    Use:
 
 */
 INSERT INTO NOTIFICATION (`NoticeTitle`, `Notice`, `DatePosted`, `UserID`) VALUES (title, content, NOW(), userid);
@@ -2142,7 +2142,7 @@ BEGIN
 	Author: Hayden Lummis
     Date: 03/09/2017
     Purpose: To mark an Event for a user as cant go, make sure its the only RSVP they have
-    Use: CALL SPsetEventCantgo(EventID, UserID); 
+    Use: CALL SPsetEventCantgo(EventID, UserID);
 
 */
 
@@ -2174,18 +2174,22 @@ BEGIN
 	Author: Hayden Lummis
     Date: 03/09/2017
     Purpose: To mark an Event for a user as attending, make sure its the only RSVP they have
-    Use: CALL SPsetEventGoing(EventID, UserID); 
+    Use: CALL SPsetEventGoing(EventID, UserID);
 
 */
-	
+
     INSERT INTO MYEVENTGOING (`EventID`, `UserID`) VALUES (eventid,userid);
 
 	DELETE FROM MYEVENTCANTGO WHERE MYEVENTCANTGO.EventID = eventid AND MYEVENTCANTGO.UserID = userid;
-    
+
 
 
 END ;;
 DELIMITER ;
+
+
+INSERT INTO USER (`UserID`, `email`, `password`, `type`, `date_joined`, `firstname`, `lastname`, `archived`) VALUES ('1', 'admin@admin.com', '$2y$10$2NXAciEZ1GRWowGZpjXWvOEzWHkvQ4ku5ErGZd1BsskM5HM1skTly', '0', NOW(), 'Admin', 'Admin', '0');
+
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
