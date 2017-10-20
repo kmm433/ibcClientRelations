@@ -108,7 +108,7 @@ elseif (isset($_GET['operation']) && $_GET['operation'] == 'create_invoice') {
     ->setEmailAddress($_POST['email_address']);
 
   // Create the line item for the membership 'sale'
-  $lineItem = new \XeroPHP\Models\Accounting\Invoice\Lineitem($xero);
+  $lineItem = new \XeroPHP\Models\Accounting\Invoice\LineItem($xero);
   $lineItem->setQuantity(1)
     ->setLineItemID($_POST['item_id'])
     ->setUnitAmount($_POST['unit_price'])
@@ -148,7 +148,7 @@ elseif (isset($_GET['operation']) && $_GET['operation'] == 'download_invoice') {
     fclose($handle);
     // Send the PDF to the browser
     header("Content-type:application/pdf");
-    header("Content-Disposition:attachment;filename='".$pdfFile."'");
+    header("Content-Disposition:attachment;filename=".$pdfFile);
     readfile($pdfFile);
     // Remove the new PDF
     unlink($pdfFile);
