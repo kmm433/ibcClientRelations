@@ -35,7 +35,6 @@ class EditChamber extends React.Component{
             postal: 0
         }
 
-        console.log(this.props.chamberlist)
         this.setChamberData = this.setChamberData.bind(this);
         this.saveAddress = this.saveAddress.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -67,12 +66,9 @@ class EditChamber extends React.Component{
         this.setState({
             postal: check
         })
-        console.log(this.state.name, this.state.abn, this.state.businessphone, this.state.mobilephone, this.state.anziccode, this.state.website,this.state.chamberemail)
-        console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
     }
 
     handleSubmit(){
-        console.log(this.state.name, this.state.abn, this.state.businessphone, this.state.mobilephone, this.state.anziccode, this.state.website,this.state.chamberemail)
         $.ajax({url: '/php/update_chamber.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -85,15 +81,13 @@ class EditChamber extends React.Component{
                 'chamberemail': this.state.chamberemail
             },
         success: response => {
-            console.log(response)
+            console.log("success")
         },
         error: (xhr, status, err) => {
-            console.log("error",xhr.responseText, status, err)
+            console.log("error")
 
         }
         });
-        console.log(this.state.line1, this.state.line2, this.state.city, this.state.postcode, this.state.state)
-        console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
         $.ajax({url: '/php/update_address.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -115,10 +109,10 @@ class EditChamber extends React.Component{
 
             },
         success: response => {
-            console.log(response)
+            console.log("success")
         },
         error: (xhr, status, err) => {
-            console.log("error",xhr.responseText, status, err)
+            console.log("error")
         }
         });
     }
@@ -128,13 +122,10 @@ class EditChamber extends React.Component{
         var array = ['Name', 'Business Phone', 'Mobile Phone', 'Anzic Code', 'Website', 'Chamber Email', 'ABN'];
         var name = array[index]
         name = name.replace(/\s+/g, "").toLowerCase();
-
-        console.log("which one", name, value, index)
         this.setState({[name]: value})
     }
 //save the address to send back to the data handling component
     saveAddress(name, value){
-        console.log("address", name, value)
         this.setState({[name]: value})
     }
 

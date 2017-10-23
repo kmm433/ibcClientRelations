@@ -2364,15 +2364,70 @@ function addPayment($payment, $expiry, $chamber){
       if(!isset($line2) || empty($line2)) { $line2 = null; }
 
       try{
-          $sql = $this->db->prepare("select addressID, postal from BUSINESS b JOIN USER u ON b.businessID = u.businessID where userID = 123719");
+          $sql = $this->db->prepare("select addressID, postal from BUSINESS b JOIN USER u ON b.businessID = u.businessID where userID = :user");
 
-          if($sql->execute()){
+          if($sql->execute(array(
+              ":user" => $userID))){
               $row = $sql->fetch(PDO::FETCH_ASSOC);
               return $row;
           }
           return false;
       }
       catch(PDOExecption $e) {
+          echo $e->getMessage();
+      }
+
+  }
+
+  function mergeChambers($oldChamber, $newChamber){
+
+      $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+      try{
+          $this->db->beginTransaction();
+          $mergeUser = $this->db->prepare("UPDATE USER SET chamberID=:newChamberID where chamberID = :oldChamberID");
+          $mergeBusiness = $this->db->prepare("UPDATE BUSINESS SET chamberID = :newChamberID where chamberID = :oldChamberID");
+          $mergeGroups = $this->db->prepare("UPDATE BUSINESS SET chamberID = :newChamberID where chamberID = :oldChamberID");
+          $mergeMemberships = $this->db->prepare("UPDATE BUSINESS SET chamberID = :newChamberID where chamberID = :oldChamberID");
+          $this->disableChamber($oldChamber);
+
+          if($mergeUser->execute(array(
+              ":oldChamberID" => $oldChamber,
+              ":newChamberID" => $newChamber))) {
+              return true;
+          }
+          else {
+              return false;
+          }
+          if($mergeBusiness->execute(array(
+              ":oldChamber" => $oldChamber,
+              ":newChamber" => $newChamber))) {
+              return true;
+          }
+          else {
+              return false;
+          }
+          if($mergeGroups->execute(array(
+              ":oldChamber" => $oldChamber,
+              ":newChamber" => $newChamber))) {
+              return true;
+          }
+          else {
+              return false;
+          }
+          if($mergeMemberships->execute(array(
+              ":oldChamber" => $oldChamber,
+              ":newChamber" => $newChamber))) {
+              return true;
+          }
+          else {
+              return false;
+          }
+          $this->db->commit();
+
+      }
+      catch(PDOExecption $e) {
+          $this->db->rollBack();
           echo $e->getMessage();
       }
 

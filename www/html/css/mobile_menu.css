@@ -11,3 +11,8 @@
     display:none;
   }
 }
+
+@media (min-width: 720px) {
+  .mobile-menu-header {
+    display:none;
+  }

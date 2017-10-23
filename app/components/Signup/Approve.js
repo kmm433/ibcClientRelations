@@ -53,7 +53,7 @@ class ApproveUser extends React.Component {
     renderManual(){
         return(
             <div>
-                <div style={{'padding': '2%'}}>
+                <div>
                     <Col sm={12}>
                         <div>
                                 Your approval settings are currently set to Manual.

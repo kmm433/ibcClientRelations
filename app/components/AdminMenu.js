@@ -27,6 +27,11 @@ class AdminMenu extends React.Component {
                 ENABLE A CHAMBER
             </NavLink>
         </li>
+        <li>
+            <NavLink activeClassName='active-route' to='/merge_chamber'>
+                MERGE A CHAMBER
+            </NavLink>
+        </li>
       </ul>
 
       <div id="bottom-options">

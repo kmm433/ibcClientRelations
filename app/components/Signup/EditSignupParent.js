@@ -7,6 +7,8 @@ import ApproveUser from './Approve.js'
 import UploadLogo from './UploadLogo.js'
 import DatePicker from 'react-datepicker';                          /* https://github.com/Hacker0x01/react-datepicker */
 import moment from 'moment';
+import {Col} from 'react-bootstrap';
+import Payment from './Paypal';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class EditSignup extends React.Component{
@@ -43,9 +45,11 @@ class EditSignup extends React.Component{
              currentIndex: "",
              paymentType: "",
              expiry: "",
-             clientID: "",
-             approval: ""
+             clientID: null,
+             approval: "",
+             live: ""
         }
+
         this.renderPage = this.renderPage.bind(this);
         this.sendData = this.sendData.bind(this);
         this.sendFieldtoDisable = this.sendFieldtoDisable.bind(this);
@@ -66,6 +70,7 @@ class EditSignup extends React.Component{
         this.getApproval = this.getApproval.bind(this);
         this.updateApproval = this.updateApproval.bind(this);
         this.checkifLive = this.checkifLive.bind(this);
+        this.renderTestPayment = this.renderTestPayment.bind(this);
 
     }
 
@@ -290,7 +295,7 @@ class EditSignup extends React.Component{
         $.ajax({url: '/php/chamber_live.php', type: 'POST',
             dataType: 'json',
             success: response => {
-                console.log("")
+                this.setState({live: response})
             },
             error: response => {
                 alert("An error occured, please refresh the page!")
@@ -427,6 +432,23 @@ class EditSignup extends React.Component{
         });
     }
 
+    renderTestPayment(){
+        return(
+            <div>
+                <Col sm={6}>
+                    <div>
+                        Test yout Paypal is set up correctly by sending $0.01.
+                    </div>
+                </Col>
+                    <Col sm={5}>
+                        <Payment
+                            amount = {0.01}
+                            token = {this.state.clientID}/>
+                    </Col>
+            </div>
+        )
+    }
+
 
     renderPage(){
         return(
@@ -434,66 +456,79 @@ class EditSignup extends React.Component{
                 <div className="w3-container w3-card-4 w3-light-grey">
                     <h2 id="h2-editsignup">Edit Sign up Form</h2>
                     <hr className = "signup-divider" />
-                <div> Users will only be able to access the online Sign up Form if you have:
-                    <li>Filled out Membership Payments</li>
-                    <li>Added your Paypal Client ID</li>
-                    <li>If you dont have your Paypal Client ID ready you can still recieve new users if your Approval settings are Manual </li>
-                    <li>If your Approval settings are set to Manual then you must manually approve them before they become a member</li>
-                 </div>
+                    <div className="w3-container">
+                        {this.state.live ? "This Chamber is currently LIVE" : "This Chamber is NOT currently LIVE"}<br/>
+                        Users will only be able to access the online Sign up Form if you have:
+                        <li>Filled out Membership Payments</li>
+                        <li>Added your Paypal Client ID</li>
+                        <li>If you dont have your Paypal Client ID ready you can still recieve new users if your Approval settings are Manual </li>
+                        <li>If your Approval settings are set to Manual then you must manually approve them before they become a member</li>
+                     </div>
                     <hr className = "signup-divider" />
-                    <h3
-                        id="h3-editsignup">
-                        Fields currently on Sign up Form
-                    </h3>
-                    <FieldTable
-                        sendNewFields = {this.sendData}
-                        disableField={this.sendFieldtoDisable}
-                        enableField={this.sendFieldtoEnable}
-                        signupFields = {this.state.signupFields}
-                        edit = {this.state.edit}
-                        currentIndex = {this.state.currentIndex}
-                        updateEdit = {this.updateEdit}
-                        sendUpdatedField ={this.sendUpdatedField}
-                        editFalse = {this.editFalse}/>
-                    <h3
-                        id="h3-editsignup">
-                        Edit Membership Payments
-                    </h3>
-                    <hr className = "signup-divider" />
-                    <EditPayment
-                        paymentFields = {this.state.paymentFields}
-                        paymentType={this.state.paymentType}
-                        expiry={this.state.expiry}
-                        updatePaymentType = {this.updatePayment}
-                        addPaymentField = {this.sendMembershipData}
-                        enableMembership = {this.sendMembershiptoEnable}
-                        disableMembership = {this.sendMembershiptoDisable}
-                        updateMembership = {this.sendUpdatedMembership}
-                        paymentIndex = {this.state.paymentIndex}
-                        updateEdit = {this.updatePaymentEdit}
-                        editPaymentFalse = {this.editPaymentFalse}
-                        editPayment = {this.state.editPayment}
-                    />
-                    <h3
-                        id="h3-editsignup">
-                        Add Paypal Client ID
-                    </h3>
-                    <hr className = "signup-divider" />
-                    <AddClientID
-                        token = {this.state.clientID}
-                        remove = {this.removeClientID}
-                        add = {this.addClientID}
-                    />
-                    <h3
-                        style={{'paddingTop': '7%'}}
-                        id="h3-editsignup">
-                        Approve New Users
-                    </h3>
-                    <hr className = "signup-divider" />
-                    <ApproveUser
-                        approval={this.state.approval}
-                        updateApproval={this.updateApproval}/>
-                </div>
+                    <div className="w3-container">
+                        <h3
+                            id="h3-editsignup">
+                            Fields currently on Sign up Form
+                        </h3>
+                        <FieldTable
+                            sendNewFields = {this.sendData}
+                            disableField={this.sendFieldtoDisable}
+                            enableField={this.sendFieldtoEnable}
+                            signupFields = {this.state.signupFields}
+                            edit = {this.state.edit}
+                            currentIndex = {this.state.currentIndex}
+                            updateEdit = {this.updateEdit}
+                            sendUpdatedField ={this.sendUpdatedField}
+                            editFalse = {this.editFalse}/>
+                    </div>
+                    <div className="w3-container">
+                        <h3
+                            id="h3-editsignup">
+                            Edit Membership Payments
+                        </h3>
+                        <hr className = "signup-divider" />
+                        <EditPayment
+                            paymentFields = {this.state.paymentFields}
+                            paymentType={this.state.paymentType}
+                            expiry={this.state.expiry}
+                            updatePaymentType = {this.updatePayment}
+                            addPaymentField = {this.sendMembershipData}
+                            enableMembership = {this.sendMembershiptoEnable}
+                            disableMembership = {this.sendMembershiptoDisable}
+                            updateMembership = {this.sendUpdatedMembership}
+                            paymentIndex = {this.state.paymentIndex}
+                            updateEdit = {this.updatePaymentEdit}
+                            editPaymentFalse = {this.editPaymentFalse}
+                            editPayment = {this.state.editPayment}
+                        />
+                    </div>
+                    <div className="w3-container">
+                        <h3
+                            id="h3-editsignup">
+                            Add Paypal Client ID
+                        </h3>
+                        <hr className = "signup-divider" />
+                        <AddClientID
+                            token = {this.state.clientID}
+                            remove = {this.removeClientID}
+                            add = {this.addClientID}
+                        />
+                    </div>
+                    <div className="w3-container" style={{'paddingTop': '4%'}}>
+                        {this.state.clientID != null && this.renderTestPayment()}
+                    </div>
+                    <div className="w3-container">
+                        <h3
+                            style={{'paddingTop': '7%'}}
+                            id="h3-editsignup">
+                            Approve New Users
+                        </h3>
+                        <hr className = "signup-divider" />
+                        <ApproveUser
+                            approval={this.state.approval}
+                            updateApproval={this.updateApproval}/>
+                    </div>
+                    </div>
             </div>
         )
     }
