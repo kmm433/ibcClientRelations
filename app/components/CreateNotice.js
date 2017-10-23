@@ -940,7 +940,7 @@ class Question extends React.Component {
     return(
         <div>
             <div>
-                <div className="w3-col s3 CreateNoticeDiv surveyAddQuestions"><div><label>Question: {this.props.count}</label></div></div>
+                <div className="w3-col s3 CreateNoticeDiv surveyAddQuestions"><div><label>Question:</label></div></div>
                 <div className="w3-col s7 CreateNoticeDiv surveyAddQuestions"> <div><input type="text" name="SQ" placeholder="Question" value={this.state.question} onChange={this.handleChange}/></div></div>
                 <div className="w3-col s2 questionSwitch"><label className="switch"><input type="checkbox" name="questionType" onChange={this.handleChangeCheckbox}/><span className="slider round"></span></label></div>
 

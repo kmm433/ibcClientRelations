@@ -78,7 +78,6 @@ export function createNewInvoice(firstname, lastname, email, listItem, dueDate) 
     error: result => {
       if (JSON.stringify(result.responseText).indexOf('UnauthorizedException') !== -1) {
         unsetSession();
-      } else {
       }
     }
   });
@@ -157,7 +156,7 @@ export function updateExpiryDate(userId, date) {
       else
         alert(result.value);
     }
-  });  
+  });
 }
 
 // When the Xero session has expired some variables will need to be unset an the user alerted

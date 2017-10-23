@@ -4,6 +4,7 @@
 
   if(isset($_SESSION['user'])){
       $data = $_POST["data"];
+      $thisID = $_POST["surveyID"];
 
       $count = count($data);
 
@@ -13,7 +14,9 @@
           $question = $data[$i]['question'];
           $AnswerID = $data[$i]['AnswerID'];
           $Answer = $data[$i]['Answer'];
-          $db->insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer);
+          if($surveyID == $thisID){
+              $db->insert_SurveyAnswers($surveyID, $questionNo, $question, $AnswerID, $Answer);
+          }
       }
       echo json_encode($surveyID);
   }

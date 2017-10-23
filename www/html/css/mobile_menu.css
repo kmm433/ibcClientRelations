@@ -3,6 +3,13 @@
   position: fixed;
   height: 40px;
   background-color: #2462AB;
+  z-index: 1;
+}
+
+@media (min-width: 720px) {
+  .mobile-menu-header {
+    display:none;
+  }
 }
 
 @media (min-width: 720px) {
