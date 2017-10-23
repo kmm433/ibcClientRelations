@@ -42,24 +42,21 @@ class AddUser extends React.Component {
 }
 
 componentWillMount(){
-    console.log("Here")
     this.getFields();
 }
 
     getFields(){
-        console.log("is this even working")
 
       $.ajax({url: '/php/get_chambersignup.php', type: 'POST',
           dataType: 'json',
           success: response => {
-              console.log(response)
               this.setState({
                   signupFields: response,
                   loaded: true
               });
           },
           error: (xhr, status, err) => {
-              console.log("error",xhr, status, err)
+              console.log("error")
           }
       });
     }
@@ -76,7 +73,6 @@ componentWillMount(){
             columnname[i]= this.state.signupFields[i].columnname;
         }
 
-        console.log("Did you get answers?", answers, data, tablename, columnname)
         $.ajax({url: '/php/insert_user_data.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -88,10 +84,10 @@ componentWillMount(){
                 'postal': address
             },
             success: response => {
-                console.log("success",response)
+                console.log("success")
             },
             error: (xhr, status, err) => {
-                console.log("error",xhr, status, err)
+                alert("An error occured!")
             }
         });
     }
@@ -103,14 +99,13 @@ componentWillMount(){
                 'chamber': chamber
             },
         success: response => {
-            console.log(response)
            this.setState({
                paymentFields: response,
                loaded1: true
            });
        },
        error: response => {
-           console.log(response)
+           console.log("error")
        }
         })
         }
@@ -122,7 +117,6 @@ componentWillMount(){
                     'chamber': chamber
                 },
             success: response => {
-                console.log("membership types: ", response[0].type, response[0].expiry_date)
                this.setState({
                    paymentType: response[0].type,
                    expiry: response[0].expiry_date,
@@ -130,13 +124,12 @@ componentWillMount(){
                });
           },
           error: response => {
-              console.log(response)
+              console.log("error")
           }
         });
         }
 
         renderSignupForm(){
-            console.log("Is this working")
             return(
                 <SignupForm
                     fields={this.state.signupFields}
@@ -152,7 +145,6 @@ componentWillMount(){
   render() {
     return (
         <div className='main-component w3-row'>
-                {console.log("whats this", this.state.loaded)}
                 {(this.state.loaded == true) ? this.renderSignupForm() : null}
         </div>
 

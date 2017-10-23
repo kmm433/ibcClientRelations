@@ -29,14 +29,12 @@ class UserAddress extends React.Component{
 
 //get all the details of the chamber to display to the user
     getDetails(){
-        console.log("ccaling")
         $.ajax({url: '/php/get_address_ids.php', type: 'POST',
             dataType: 'json',
             data: {
                 'userID': this.props.userID
             },
         success: response => {
-            console.log(response.addressID, response.postal)
             this.setState({
                 addressid: response.addressID,
                 postalid: response.postal
@@ -44,7 +42,7 @@ class UserAddress extends React.Component{
             this.getAddress(response.addressID, response.postal)
         },
         error: response => {
-            console.log(response)
+            console.log("error")
         }
         });
     }
@@ -57,8 +55,6 @@ class UserAddress extends React.Component{
                 'postalid': postalid
             },
         success: response => {
-            console.log("getting here")
-            console.log(response)
             this.setState({
                 address: response['address'][0],
                 postal: response['postal'][0],
@@ -67,7 +63,7 @@ class UserAddress extends React.Component{
 
         },
         error: response => {
-            console.log(response)
+            console.log("error")
         }
         });
     }
@@ -151,9 +147,6 @@ class EditChamber extends React.Component{
     }
 
     handleSubmit(){
-
-        console.log(this.state.line1, this.state.line2, this.state.city, this.state.postcode, this.state.state)
-        console.log(this.state.postalline1, this.state.postalline2, this.state.postalcity, this.state.postalpostcode, this.state.postalstate)
         $.ajax({url: '/php/update_address.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -175,17 +168,16 @@ class EditChamber extends React.Component{
 
             },
         success: response => {
-            console.log(response)
+            console.log("success")
         },
         error: (xhr, status, err) => {
-            console.log("error",xhr.responseText, status, err)
+            console.log("error")
         }
         });
     }
 
 //save the address to send back to the data handling component
     saveAddress(name, value){
-        console.log("address", name, value)
         this.setState({[name]: value})
     }
 
@@ -232,8 +224,6 @@ class EditAddress extends React.Component{
         var array = ['line1', 'line2', 'city','state', 'postcode', 'country'];
 
         name = array[index];
-        console.log(value, index)
-        console.log(index, name, value)
 
         if(this.props.type === "Postal Address")
             name = "postal" + name

@@ -31,46 +31,6 @@ class Help extends React.Component {
                             </div>
                         </Collapsible>
                     </div>
-                    <div className="member-list-item">
-                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up automated payments from members?</h4>}>
-                            <div style={{marginBottom: '25px'}}>
-                                First you must create a Business Paypal account (this is different to a personal account)
-                                The following link will take you to the sign up page.
-                                https://www.paypal.com/au/webapps/mpp/business-solutions
-                                The account must be verified before obtaining a client ID.
-                                Follow this link: https://developer.paypal.com/developer/accounts/
-                                And log in with your exising Paypal Business Account.
-                                Next, click on the Generate BraintreeSDK access token.
-                                Copy and Paste this token into the Client ID section of the Edit Signup Page.
-                            </div>
-                        </Collapsible>
-                    </div>
-                    <div className="member-list-item">
-                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up Pro Rata Payments?</h4>}>
-                            <div style={{marginBottom: '25px'}}>
-                                Go to the Edit Signup Page and scroll down to "Edit Membership Payments".
-                                Underneath the table of membership types, your current payment settings will be displayed.
-                                If your current settings are Annual then you can switch to Pro Rata by pressing the button.
-                                Now you must select a date. The data selected will be the date that all members who join after that point in time will expire.
-                                You can edit the amount to be paid for the remainder of the term in the table.
-                            </div>
-                        </Collapsible>
-                    </div>
-                    <div className="member-list-item">
-                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I manually/automatically accept new members?</h4>}>
-                            <div style={{marginBottom: '25px'}}>
-                                Go to the Edit Signup Form on the side menu. Under the heading "Approve New Users" will be displayed your current settings.
-                                You can switch settings by clicking the button.
-                            </div>
-                        </Collapsible>
-                    </div>
-                    <div className="member-list-item">
-                        <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up users to automatically join?</h4>}>
-                            <div style={{marginBottom: '25px'}}>
-                                For users to join automatically you must fill our the membership types in the Edit Payment section of the Edit Sigup Page.
-                            </div>
-                        </Collapsible>
-                    </div>
                     <ExecHelp user_type = {this.props.user_type}/>
                 </div>
             </div>
@@ -202,6 +162,69 @@ class ExecHelp extends React.Component {
                           <br/><br/>
                           Did you know? You can scroll and zoom in on the membership statistics by clicking and dragging,
                           and scrolling your mouse.
+                      </div>
+                  </Collapsible>
+              </div>
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up automated payments from members?</h4>}>
+                      <div style={{marginBottom: '25px'}}>
+                          First you must create a Business Paypal account (this is different to a personal account)
+                          The following link will take you to the sign up page.
+                          https://www.paypal.com/au/webapps/mpp/business-solutions
+                          Link this account with the bank account of your chamber, the account must be verified before obtaining a client ID.
+                          The following screen will be displayed upong successful creation of your account, to link it to the CRM click on "On Your Website".
+                           <img src='/img/PayPal_Step1.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          After you click continue in the above screen, the below screen will be displayed. Select Continue on the first option on the left.
+                          <img src='/img/PayPal_Step2.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          Now you will see the below screen, Click on Option A and select "Get your API" credentials.
+                          <img src='/img/PayPal_Step3.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          This will take you to the following screen, under Braintree SDK Integration, click on "Manage SDK Credentials".
+                          <img src='/img/PayPal_Step4.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          In this next screen, click on "Request Credentials".
+                          <img src='/img/PayPal_Step5.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          Now click on "Manage credentials and currency settings."
+                          <img src='/img/PayPal_Step6.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          You should now be logged in to a Paypal Developer account. Scroll down to the bottom of this page until you are viewing the following:
+                          <img src='/img/PayPal_Step7.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          Click on the name of the app, this name should be the same name you called your business during the paypal business signup phase.
+                          You can create a new app and name if it does not appear in the list.
+                          Once you have clicked on the app, the following page will be displayed.
+                          <img src='/img/PayPal_Step8.png' className='help-img' style={{'paddingTop': '3%', 'paddingBottom': '3%'}}/>
+                          Make sure that you are viewing the "Live" credentials, look in the top right corner and make sure live is selected and not "Sandbox".
+                          The Client ID in this section is what you will need to copy and paste into the Paypal section of the Edit Sign up Page.
+                      </div>
+                  </Collapsible>
+              </div>
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I change the paypal account linked to my chamber?</h4>}>
+                      <div style={{marginBottom: '25px'}}>
+
+                      </div>
+                  </Collapsible>
+              </div>
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up Pro Rata Payments?</h4>}>
+                      <div style={{marginBottom: '25px'}}>
+                          Go to the Edit Signup Page and scroll down to "Edit Membership Payments".
+                          Underneath the table of membership types, your current payment settings will be displayed.
+                          If your current settings are Annual then you can switch to Pro Rata by pressing the button.
+                          Now you must select a date. The data selected will be the date that all members who join after that point in time will expire.
+                          You can edit the amount to be paid for the remainder of the term in the table.
+                      </div>
+                  </Collapsible>
+              </div>
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I manually/automatically accept new members?</h4>}>
+                      <div style={{marginBottom: '25px'}}>
+                          Go to the Edit Signup Form on the side menu. Under the heading "Approve New Users" will be displayed your current settings.
+                          You can switch settings by clicking the button.
+                      </div>
+                  </Collapsible>
+              </div>
+              <div className="member-list-item">
+                  <Collapsible trigger={<h4 style={{paddingTop:'5px',paddingBottom:'5px'}}>How do I set up users to automatically join?</h4>}>
+                      <div style={{marginBottom: '25px'}}>
+                          For users to join automatically you must fill our the membership types in the Edit Payment section of the Edit Sigup Page.
                       </div>
                   </Collapsible>
               </div>

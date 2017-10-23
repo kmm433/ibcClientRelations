@@ -1,39 +1,19 @@
 import React from 'react';
 import $ from 'jquery';
 import PaypalExpressBtn from 'react-paypal-express-checkout';
-import PaypalButton from './Button.js';
+import PaypalButton from '../../../signup-app/components/Payment/Button.js';
 
 export default class Payment extends React.Component {
     constructor(props){
         super(props)
+        console.log("GETTING THE CLIENTI", this.props.token)
 
-        this.sendData = this.sendData.bind(this);
     }
 
-    sendData(){
-        $.ajax({url: '/php/approve_payment.php',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                'userid': this.props.userid,
-                'amount': this.props.amount,
-                'expiry': this.props.expiry
-            },
-        success: response => {
-          if(confirm("Successful payment, thank you for joining!")){
-              window.location.href = "/signin.php";
-          }
-        },
-        error: (xhr, status, err) => {
-            alert("An error occured, please refresh the page!")
-
-        }});
-    }
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
-            this.sendData();
-
+            alert("Payment was a success! Your account is set up!")
 
             // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         }
@@ -58,7 +38,7 @@ export default class Payment extends React.Component {
 
         const client = {
             //sandbox:   this.props.token,
-            production: this.props.token,
+            production: this.props.token
         }
         // In order to get production's app-ID, you will have to send your app to Paypal for approval first
         // For sandbox app-ID (after logging into your developer account, please locate the "REST API apps" section, click "Create App"):

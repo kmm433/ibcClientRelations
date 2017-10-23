@@ -87,7 +87,6 @@ class ChamberDetails extends React.Component{
             dataType: 'json',
 
         success: response => {
-            console.log(response)
             this.setState({
                 info: response
             })
@@ -98,7 +97,7 @@ class ChamberDetails extends React.Component{
             this.getAddress(response[0].location, response[0].postal)
         },
         error: response => {
-            console.log(response)
+            console.log("")
         }
         });
     }
@@ -119,7 +118,7 @@ class ChamberDetails extends React.Component{
 
         },
         error: response => {
-            console.log(response)
+            console.log("")
         }
         });
     }

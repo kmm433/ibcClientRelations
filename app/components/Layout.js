@@ -22,6 +22,7 @@ import ContactUs from './ContactUs/ContactUs';
 import Help from './Help'
 import Statistics from './Statistics'
 import AddUser from './ApproveNewUser/AddUser';
+import MergeChamber from './Admin/MergeChambers'
 
 //This component is responsibe for displaying the menu and the main item component.
 class Layout extends React.Component {
@@ -109,6 +110,7 @@ class Layout extends React.Component {
                 <Route path='/create_chamber' component={CreateChamber} />
                 <Route path='/delete_chamber' component={DisableChamber} />
                 <Route path='/enable_chamber' component={EnableChamber} />
+                <Route path ='/merge_chamber' render={()=> <MergeChamber user_type={this.props.user_type} />}  />
             </div>
         )
 

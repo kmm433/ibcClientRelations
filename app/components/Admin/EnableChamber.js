@@ -48,11 +48,11 @@ class DropDown extends React.Component {
         <div>
             <FormGroup>
             <Col sm={3}>
-                    <ControlLabel style={{'paddingTop': '2%'}}>
+                    <ControlLabel style={{'paddingTop': '7%'}}>
                         {this.props.label}
                     </ControlLabel>
             </Col>
-                <Col sm={9}>
+                <Col sm={9} style={{'paddingBottom': '5%'}}>
                     <ButtonGroup className="signup-dropdown">
                         <DropdownButton
                             id="dropdown-btn-menu"
@@ -229,7 +229,6 @@ class EnableChamber extends React.Component{
                  ReactDOM.findDOMNode(this.refs.form).submit();
              },
              error: (xhr, status, err) => {
-                 console.log(xhr.responseText, status, err)
                  alert("An error occured, please refresh the page!")
              }
              });
