@@ -176,7 +176,6 @@ class EditSignup extends React.Component{
     }
 //add a new client id
     addClientID(newID){
-        console.log("The ID is: ", newID)
         $.ajax({url: '/php/get_paypalID.php', type: 'POST',
             dataType: 'json',
             data: {
@@ -434,7 +433,6 @@ class EditSignup extends React.Component{
     }
 
     renderTestPayment(){
-        console.log("The client token is: ", this.state.clientID)
         return(
             <div>
                 <Col sm={6}>

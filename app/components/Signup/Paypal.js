@@ -6,7 +6,6 @@ import PaypalButton from '../../../signup-app/components/Payment/Button.js';
 export default class Payment extends React.Component {
     constructor(props){
         super(props)
-        console.log("GETTING THE CLIENTI", this.props.token)
 
     }
 

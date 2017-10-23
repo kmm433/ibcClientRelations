@@ -62,8 +62,6 @@ class MergeChamber extends React.Component{
 
         }
 
-        console.log("mounting components")
-
         this.getChamberList = this.getChamberList.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.save = this.save.bind(this);
@@ -83,14 +81,12 @@ class MergeChamber extends React.Component{
                 'mode': 0
             },
         success: response => {
-            console.log(response)
             this.setState({
                 chamberList: response,
                 loaded: true
             });
         },
         error: (xhr, status, err) => {
-            console.log(xhr.responseText, status, err)
             alert("An error occured, please refresh the page!")
         }
         });
@@ -106,7 +102,6 @@ class MergeChamber extends React.Component{
     }
 
      save(name, value){
-         console.log("getting here")
          this.setState({[name]: value})
      }
 
@@ -122,11 +117,9 @@ class MergeChamber extends React.Component{
                         'newChamber': this.state.newChamber
                     },
                 success: response => {
-                    console.log("Success")
                     ReactDOM.findDOMNode(this.refs.form).submit();
                 },
                 error: (xhr, status, err) => {
-                    console.log(xhr.responseText, status, err)
                     alert("An error occured, please refresh the page!")
                 }
                 });
