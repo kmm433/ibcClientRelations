@@ -92,6 +92,8 @@ class Results extends React.Component {
     }
 
     reload(){
+        this.get_Allevents();
+        this.get_AllSurveys();
         if(this.state.Reload == false){
             this.setState({
                 Reload: true
@@ -101,8 +103,6 @@ class Results extends React.Component {
                 Reload: false
             });
         }
-        this.get_Allevents();
-        this.get_AllSurveys();
     }
 
 

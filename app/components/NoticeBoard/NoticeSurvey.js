@@ -37,7 +37,6 @@ class NoticeSurvey extends React.Component {
       this.deleteNotice = this.deleteNotice.bind(this);
       questions = [];
       answers = [];
-      userAnswers = [];
     }
 
     componentWillMount(){
@@ -55,6 +54,15 @@ class NoticeSurvey extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
+        if (this.props.Disabled == true){
+            // For use in Create Survey Page, provides a disabled preview version of component
+            questions = this.props.Questions;
+            answers = this.props.Answers;
+        }
+        else{
+            this.get_SurveyQuestions();
+            this.get_SurveyAnswers();
+        }
         this.setData();
     }
 
@@ -95,6 +103,7 @@ class NoticeSurvey extends React.Component {
                         key={questions[i].questionNo}
                         question={questions[i].question}
                         answers={tmpA}
+                        ID = {this.props.SurveyID}
                 />)
             }
             else if (questions[i].answerType == 1){ // Type is TextBox
@@ -106,6 +115,7 @@ class NoticeSurvey extends React.Component {
                         qID={questions[i].questionNo}
                         question={questions[i].question}
                         answers={tmpA}
+                        ID={this.props.SurveyID}
                 />)
             }
         }
@@ -119,6 +129,7 @@ class NoticeSurvey extends React.Component {
                 key="Submit"
                 collapseSurvey={this.collapse}
                 disabled={disableMe}
+                ID={this.props.SurveyID}
         />)
 
         // Set the state to completed question/answer pairs + submit page
@@ -232,7 +243,7 @@ class SurveyRadio extends React.Component {
   }
     getIndex(id) {
         for(var i = 0; i < userAnswers.length; i++) {
-            if(userAnswers[i].questionNo == id) {
+            if(userAnswers[i].questionNo == id && userAnswers[i].surveyID == this.props.ID) {
                 return i;
             }
         }
@@ -270,7 +281,7 @@ class SurveyText extends React.Component {
   }
     getIndex(id) {
         for(var i = 0; i < userAnswers.length; i++) {
-            if(userAnswers[i].questionNo == id) {
+            if(userAnswers[i].questionNo == id && userAnswers[i].surveyID == this.props.ID) {
                 return i;
             }
         }
@@ -323,7 +334,8 @@ class SubmitPage extends React.Component {
           type:'POST',
           dataType: "json",
           data: {
-              'data': userAnswers
+              'data': userAnswers,
+              'surveyID' : this.props.ID
           }
       });
 

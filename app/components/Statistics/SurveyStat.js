@@ -40,7 +40,6 @@ class SurveyStat extends React.Component {
         this.get_SurveyAnswers()
     }
 
-
     render(){
         return(
             <div className='event-list-item'>
@@ -51,10 +50,10 @@ class SurveyStat extends React.Component {
 
                     <div className="w3-row">
                         <NoticeSurvey
-                            key={this.state.ID}
-                            SurveyID={this.state.ID}
-                            title={this.state.title}
-                            DatePosted={this.state.DatePosted}
+                            key={this.props.ID}
+                            SurveyID={this.props.ID}
+                            title={this.props.title}
+                            DatePosted={this.props.DatePosted}
                             statPage={true}
                         />
                     </div>
