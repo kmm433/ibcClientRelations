@@ -26,6 +26,7 @@ class SignupData extends React.Component {
                DataID: []
            }],
            paymentFields: [{
+               membershipID: [],
                name: [],
                info: [],
                amount: [],
@@ -69,6 +70,7 @@ class SignupData extends React.Component {
                 'chamber': this.props.chamberID
             },
             success: response => {
+                console.log("ClientID:", response)
                this.setState({clientToken: response});
             },
             error: response => {
@@ -136,7 +138,7 @@ class SignupData extends React.Component {
             },
             success: response => {
                 //send back up if requires approval, the amount to be paid and the UserID
-                this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken, this.state.expiry)
+                this.props.handleFinish(this.state.requireApproval, amount, response, this.state.clientToken, this.state.expiry)
 
             },
             error: (xhr, status, err) => {
@@ -152,6 +154,7 @@ class SignupData extends React.Component {
                 'chamber': chamber
             },
         success: response => {
+            console.log(response)
            this.setState({
                paymentFields: response,
                loaded1: true

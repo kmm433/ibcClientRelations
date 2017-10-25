@@ -167,6 +167,7 @@ class EditSignup extends React.Component{
                 'mode': 'RETRIEVE'
             },
             success: response => {
+                console.log("getting clientid",response)
                this.setState({clientID: response});
             },
             error: response => {
@@ -295,7 +296,9 @@ class EditSignup extends React.Component{
         $.ajax({url: '/php/chamber_live.php', type: 'POST',
             dataType: 'json',
             success: response => {
+                console.log("chamber is",response)
                 this.setState({live: response})
+                this.forceUpdate();
             },
             error: response => {
                 alert("An error occured, please refresh the page!")
@@ -456,14 +459,7 @@ class EditSignup extends React.Component{
                 <div className="w3-container w3-card-4 w3-light-grey">
                     <h2 id="h2-editsignup">Edit Sign up Form</h2>
                     <hr className = "signup-divider" />
-                    <div className="w3-container">
-                        {this.state.live ? "This Chamber is currently LIVE" : "This Chamber is NOT currently LIVE"}<br/>
-                        Users will only be able to access the online Sign up Form if you have:
-                        <li>Filled out Membership Payments</li>
-                        <li>Added your Paypal Client ID</li>
-                        <li>If you dont have your Paypal Client ID ready you can still recieve new users if your Approval settings are Manual </li>
-                        <li>If your Approval settings are set to Manual then you must manually approve them before they become a member</li>
-                     </div>
+                    <ChamberLive live = {this.state.live}/>
                     <hr className = "signup-divider" />
                     <div className="w3-container">
                         <h3
@@ -515,7 +511,7 @@ class EditSignup extends React.Component{
                         />
                     </div>
                     <div className="w3-container" style={{'paddingTop': '4%'}}>
-                        {this.state.clientID != null && this.renderTestPayment()}
+                        {this.state.clientID != false && this.renderTestPayment()}
                     </div>
                     <div className="w3-container">
                         <h3
@@ -546,3 +542,18 @@ class EditSignup extends React.Component{
 }
 
 export default EditSignup;
+
+class ChamberLive extends React.Component{
+    render(){
+        return(
+            <div className="w3-container">
+                {this.props.live ? "This Chamber is currently LIVE" : "This Chamber is NOT currently LIVE"}<br/>
+                Users will only be able to access the online Sign up Form if you have:
+                <li>Filled out Membership Payments</li>
+                <li>Added your Paypal Client ID</li>
+                <li>If you dont have your Paypal Client ID ready you can still recieve new users if your Approval settings are Manual </li>
+                <li>If your Approval settings are set to Manual then you must manually approve them before they become a member</li>
+             </div>
+        )
+    }
+}
