@@ -70,7 +70,6 @@ class SignupData extends React.Component {
                 'chamber': this.props.chamberID
             },
             success: response => {
-                console.log("ClientID:", response)
                this.setState({clientToken: response});
             },
             error: response => {
@@ -154,7 +153,6 @@ class SignupData extends React.Component {
                 'chamber': chamber
             },
         success: response => {
-            console.log(response)
            this.setState({
                paymentFields: response,
                loaded1: true

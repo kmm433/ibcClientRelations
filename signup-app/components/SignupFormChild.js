@@ -10,8 +10,6 @@ class PaymentMenu extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props.list)
-
     this.state = {
         value: "Select...",
         index: "unselected"
@@ -28,7 +26,6 @@ class PaymentMenu extends React.Component {
           value: this.props.list[evt].name,
           index: evt
       })
-      console.log("Selected: ", this.props.list[evt].membershipID)
       this.props.save(this.props.list[evt].membershipID, evt);
   }
 
@@ -67,7 +64,6 @@ class PaymentMenu extends React.Component {
 
       var array = [];
       for (var i=0; i < this.props.list.length; i++){
-          console.log("Iterating througth", this.props.list[i].membershipID)
           array.push(this.props.list[i].membershipID)
       }
 
@@ -156,7 +152,6 @@ class SignupForm extends React.Component {
   }
 
     storeUserData(data, index){
-        console.log(this.state.storeAnswers)
         var temp = this.state.storeAnswers;
         temp[index] = data;
         this.setState({
@@ -173,7 +168,6 @@ class SignupForm extends React.Component {
 
     //check all the data is filled out before payment
     checkReadyForSubmit(){
-        console.log("Checking: ", this.checkAnswersReady(), this.checkAddressReady(), this.checkMembership())
         if(this.checkAnswersReady() && this.checkAddressReady() && this.checkMembership()){
             return true;
         }
@@ -183,7 +177,6 @@ class SignupForm extends React.Component {
     }
 
     checkMembership(){
-        console.log("Membership: ", this.state.membershipID)
         if(this.state.membershipID == null || this.state.membershipID == ""){
             return false;
         }
@@ -291,7 +284,6 @@ class SignupForm extends React.Component {
      }
      //save the memebership selected by the user and the amount
      saveMembership(memID, i){
-         console.log("membershipID",memID)
          this.setState({
              membershipID: memID,
              amount: this.props.membershipList[i].amount

@@ -8,8 +8,6 @@ class FieldTable extends React.Component {
   constructor(props) {
       super(props);
 
-      console.log(this.props.signupFields)
-
       this.state = {
           newDisplayname: "",
           newOptional: "",
@@ -293,7 +291,6 @@ class FieldTable extends React.Component {
     handleChange(event){
         var name = event.target.name;
         var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        console.log("Updating:",name, event.target.checked)
         this.setState({
             [name]: value
         })
@@ -301,7 +298,6 @@ class FieldTable extends React.Component {
     }
 
     handleCheckbox(checked){
-        console.log("Updating checkbox", this.state.newOptional)
         var check = checked ? 1 : 0;
         this.setState({
             newOptional: check

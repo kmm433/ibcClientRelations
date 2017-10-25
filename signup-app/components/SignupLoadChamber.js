@@ -73,7 +73,6 @@ class Main extends React.Component {
     }
 
     handleFinish(requireApproval, amount, userid, clientID, expiry){
-        console.log(requireApproval, amount, userid, clientID, expiry)
         this.setState({
             finish: true,
             selected: false,

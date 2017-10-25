@@ -167,7 +167,6 @@ class EditSignup extends React.Component{
                 'mode': 'RETRIEVE'
             },
             success: response => {
-                console.log("getting clientid",response)
                this.setState({clientID: response});
             },
             error: response => {
@@ -296,7 +295,6 @@ class EditSignup extends React.Component{
         $.ajax({url: '/php/chamber_live.php', type: 'POST',
             dataType: 'json',
             success: response => {
-                console.log("chamber is",response)
                 this.setState({live: response})
                 this.forceUpdate();
             },
