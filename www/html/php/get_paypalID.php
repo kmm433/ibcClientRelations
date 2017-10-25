@@ -26,7 +26,7 @@
     echo json_encode($results);
   }
   else {
-      echo json_encode(false);
+      echo json_encode("error");
   }
 
 ?>

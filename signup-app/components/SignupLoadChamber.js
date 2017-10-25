@@ -103,7 +103,7 @@ class Main extends React.Component {
                                     userid = {this.state.userid}
                                     amount = {this.state.amount}
                                     expiry = {this.state.expiry}
-                                    token = {this.props.clientID}/>
+                                    token = {this.state.clientID}/>
                             </Col>
                     </div>
                 </div>

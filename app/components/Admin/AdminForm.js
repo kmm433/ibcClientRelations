@@ -21,9 +21,9 @@ class ChamberDropdown extends React.Component {
 
   render() {
     return (
-        <div>
+        <div style={{'paddingBottom': '8%'}}>
             <Col sm={3}>
-                <ControlLabel>
+                <ControlLabel style={{'marginLeft': '5%'}}>
                     Select Parent Chamber:
                 </ControlLabel>
             </Col>
@@ -122,6 +122,7 @@ class AdminForm extends React.Component {
      }
 //storing the result of a checkbox
      checkboxParent(checked){
+         console.log("Checked")
          var check = (this.state.showMenu + 1)%2;
          this.setState({
              showMenu: check
@@ -149,7 +150,7 @@ class AdminForm extends React.Component {
 
   render() {
 
-      var type = ['email', 'email','password', 'password', 'text', 'text','text', 'number','number', 'email', 'number', 'number', 'text'];
+      var type = ['email', 'email','password', 'password', 'text', 'text','text', 'number','number', 'text', 'number', 'number', 'text'];
       var name = ['email', 'confirmemail','password', 'confirmpassword', 'firstname', 'lastname', 'jobtitle', 'businessphone', 'mobilephone', 'chamberemail', 'anziccode','abn', 'website'];
       var displayName = ['Email', 'Confirm Email', 'Password', 'Confirm Password', 'First Name', 'Last Name', 'Job Title', 'Business Phone', 'Mobile Phone', 'Chamber Email', 'Anzic Code', 'ABN', 'Website'];
       var min = [1, 1, 6, 6, 1, 1, 1, 8, 8, 1, 5, 11, 1];
@@ -170,6 +171,10 @@ class AdminForm extends React.Component {
                             userAnswer = {this.storeName}
                             index = {0}/>
                         {this.checkbox2()}
+                        {this.state.showMenu == 1 && <ChamberDropdown
+                            sendChamber = {this.saveParent}
+                            chamber_list= {this.props.chamberlist}
+                        />}
                     {name.map((item, i) =>
                             <Validator
                                 key = {i}

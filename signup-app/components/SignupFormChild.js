@@ -26,7 +26,7 @@ class PaymentMenu extends React.Component {
           value: this.props.list[evt].name,
           index: evt
       })
-      this.props.save(evt);
+      this.props.save(this.props.list[evt].membershipID, evt);
   }
 
   displayMembershipOptions(){
@@ -63,8 +63,9 @@ class PaymentMenu extends React.Component {
   render() {
 
       var array = [];
-      for (var i=0; i < this.props.list.length; i++)
-        array.push(this.props.list[i].name)
+      for (var i=0; i < this.props.list.length; i++){
+          array.push(this.props.list[i].membershipID)
+      }
 
     return (
         <div>
@@ -84,7 +85,7 @@ class PaymentMenu extends React.Component {
                         {array.map((item,index) =>
                             <MenuItem
                                 key = {item}
-                                eventKey={index}>{item}
+                                eventKey={index}>{this.props.list[index].name}
                             </MenuItem>)}
                     </DropdownButton>
                     {this.state.index!== 'unselected' && this.displayAmount()}
@@ -282,9 +283,9 @@ class SignupForm extends React.Component {
 
      }
      //save the memebership selected by the user and the amount
-     saveMembership(i){
+     saveMembership(memID, i){
          this.setState({
-             membershipID: i,
+             membershipID: memID,
              amount: this.props.membershipList[i].amount
          })
      }

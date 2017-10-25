@@ -23,5 +23,5 @@
        $result = $db->justExecute("UPDATE CHAMBER SET live = 0 where chamberID=$chamber");
   }
 
-  echo json_encode($result1);
+  echo json_encode($live);
 ?>

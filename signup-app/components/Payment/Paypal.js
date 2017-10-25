@@ -58,7 +58,7 @@ export default class Payment extends React.Component {
 
         const client = {
             //sandbox:   this.props.token,
-            production: this.props.token,
+            production: this.props.token
         }
         // In order to get production's app-ID, you will have to send your app to Paypal for approval first
         // For sandbox app-ID (after logging into your developer account, please locate the "REST API apps" section, click "Create App"):

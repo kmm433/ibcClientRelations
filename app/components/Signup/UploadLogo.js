@@ -16,8 +16,6 @@ class UploadLogo extends React.Component{
     submitImage(event){
         event.preventDefault();
         var image = document.querySelector('input[type="file"]').files[0];
-        //console.log(event)
-        console.log(image)
 
     $.ajax({
         url:'/php/insert_logo.php',

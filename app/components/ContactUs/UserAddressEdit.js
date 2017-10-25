@@ -6,15 +6,16 @@ import Validator from '../../../signup-app/components/SignupValidator.js';
 //this class retrieves and sends data to display a contact us page if the user is signed in as a normal user
 //if the user is signed in as an executive then they will see the same page but have the added option to edit their information
 class UserAddress extends React.Component{
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
+
+        console.log(this.props.userID)
 
         this.state = {
             edit: false,
             loaded: false,
             addressid: "",
-            postalid: "",
-            edit: false
+            postalid: ""
 
         }
         this.getDetails = this.getDetails.bind(this);
@@ -63,7 +64,7 @@ class UserAddress extends React.Component{
 
         },
         error: response => {
-            console.log("error")
+            console.log(response)
         }
         });
     }

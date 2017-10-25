@@ -33,6 +33,7 @@ class FieldTable extends React.Component {
         this.outputDisabled = this.outputDisabled.bind(this);
         this.renderSubmitDisabled = this.renderSubmitDisabled.bind(this);
         this.renderSubmitEnabled = this.renderSubmitEnabled.bind(this);
+        this.handleCheckbox = this.handleCheckbox.bind(this);
 
     }
 
@@ -48,21 +49,24 @@ class FieldTable extends React.Component {
         })
     }
 
-    //
-    disabledInput(){
+    disabledInput(i){
+        var check = this.props.signupFields[i].mandatory == 1 ? "checked" : "";
         return(
             <td><input id="signup-checkbox"
                 type="checkbox"
-                defaultChecked="false" disabled/></td>
+                checked={check}
+                onChange={e => this.handleCheckbox(e.target.checked)} disabled/></td>
         )
 
     }
 
-    notdisabledInput(){
+    notdisabledInput(i){
+        var check = this.props.signupFields[i].mandatory == 1 ? "checked" : "";
         return(
             <td><input id="signup-checkbox"
                 type="checkbox"
-                defaultChecked="false"/></td>
+                checked={check}
+                onChange={e => this.handleCheckbox(e.target.checked)}/></td>
         )
     }
 
@@ -131,11 +135,11 @@ class FieldTable extends React.Component {
                   <thead>
                       <tr id="edit-signup-table">
                         <th> Name of Field </th>
-                        <th style={{'width': '20%'}}> Optional </th>
+                        <th style={{'width': '10%'}}> Optional </th>
                         <th style={{'width': '10%'}}> Type </th>
                         <th id="columnWidth"> Minimum</th>
                         <th id="columnWidth"> Maximum </th>
-                        <th id="columnWidth"> </th>
+                        <th style={{'width': '20%'}}> </th>
                       </tr>
                   </thead>
                   <tbody>
@@ -144,7 +148,7 @@ class FieldTable extends React.Component {
                               <td>{this.props.signupFields[i].disabled==='1' ? this.outputDisabled() : ""}
                                   {this.props.signupFields[i].displayname}</td>
                                   {tables.includes(this.props.signupFields[i].tablename)
-                                  ? this.disabledInput() : this.notdisabledInput(i)}
+                                  ? this.disabledInput(i) : this.notdisabledInput(i)}
                               <td>{this.props.signupFields[i].inputtype}</td>
                               <td id="editsignup-value">{this.props.signupFields[i].minimum}</td>
                               <td id="editsignup-value">{this.props.signupFields[i].maximum}</td>
@@ -197,7 +201,6 @@ class FieldTable extends React.Component {
     checkSubmitReady(){
         var ready = false;
         if(this.state.newDisplayname &&
-        this.state.newOptional &&
         this.state.newType &&
         this.state.newMin &&
         this.state.newMax){
@@ -287,16 +290,22 @@ class FieldTable extends React.Component {
 
     handleChange(event){
         var name = event.target.name;
-        var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;;
+        var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         this.setState({
             [name]: value
+        })
+        this.forceUpdate();
+    }
+
+    handleCheckbox(checked){
+        var check = checked ? 1 : 0;
+        this.setState({
+            newOptional: check
         })
     }
 
     handleSubmit(){
-        var optional=1;
-        this.state.newOptional === true ? optional = '1' : optional = '0'
-        this.props.sendNewFields(this.state.newDisplayname, optional, this.state.newType, this.state.newMin, this.state.newMax);
+        this.props.sendNewFields(this.state.newDisplayname, this.state.newOptional, this.state.newType, this.state.newMin, this.state.newMax);
 
         this.setState({
             newDisplayname: "",

@@ -26,6 +26,7 @@ class SignupData extends React.Component {
                DataID: []
            }],
            paymentFields: [{
+               membershipID: [],
                name: [],
                info: [],
                amount: [],
@@ -136,7 +137,7 @@ class SignupData extends React.Component {
             },
             success: response => {
                 //send back up if requires approval, the amount to be paid and the UserID
-                this.props.handleFinish(this.state.requireApproval, this.state.paymentFields[membershipID].amount, response, this.state.clientToken, this.state.expiry)
+                this.props.handleFinish(this.state.requireApproval, amount, response, this.state.clientToken, this.state.expiry)
 
             },
             error: (xhr, status, err) => {

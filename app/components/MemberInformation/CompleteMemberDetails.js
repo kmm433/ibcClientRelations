@@ -16,6 +16,8 @@ class CompleteMemberDetails extends React.Component {
       address_id: null,
       postal_id: null,
     };
+
+    console.log("userID", this.props.memberID)
     this.renderDetails = this.renderDetails.bind(this);
     this.updateDetail = this.updateDetail.bind(this);
     this.updateError = this.updateError.bind(this);
